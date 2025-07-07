@@ -1,0 +1,442 @@
+{
+    "Nigeria": {
+      "status": "Implemented",
+      "year": "2014",
+      "features": ["Biometric", "NIN", "Digital Card"],
+      "coverage": "65%",
+      "authority": "NIMC",
+      "description": "The National Identification Number (NIN) system with biometric verification including fingerprints and facial recognition"
+    },
+    "Kenya": {
+      "status": "Implemented",
+      "year": "2019",
+      "features": ["Biometric", "Huduma Namba", "Digital ID"],
+      "coverage": "70%",
+      "authority": "NIIMS",
+      "description": "The Huduma Namba system provides a unified digital identity for accessing government services"
+    },
+    "South Africa": {
+      "status": "Implemented",
+      "year": "2013",
+      "features": ["Biometric", "Smart ID Card", "Digital Authentication"],
+      "coverage": "85%",
+      "authority": "DHA",
+      "description": "Smart ID card with embedded chip technology and biometric verification"
+    },
+    "Rwanda": {
+      "status": "Implemented",
+      "year": "2015",
+      "features": ["Biometric", "National ID", "Digital Services"],
+      "coverage": "95%",
+      "authority": "NIDA",
+      "description": "Comprehensive national ID system with high population coverage used for service delivery"
+    },
+    "Morocco": {
+      "status": "Implemented",
+      "year": "2016",
+      "features": ["Biometric", "CNIE", "Digital Authentication"],
+      "coverage": "80%",
+      "authority": "DGSN",
+      "description": "Electronic ID cards with chip technology and online verification capabilities"
+    },
+    "Egypt": {
+      "status": "Implemented",
+      "year": "2018",
+      "features": ["Biometric", "National ID Card", "Digital Services"],
+      "coverage": "75%",
+      "authority": "CAPMAS",
+      "description": "National ID with integrated biometric verification system and digital service access"
+    },
+    "Ghana": {
+      "status": "Implemented",
+      "year": "2017",
+      "features": ["Biometric", "Ghana Card", "Digital ID"],
+      "coverage": "60%",
+      "authority": "NIA",
+      "description": "The Ghana Card provides a unique identifier with biometric verification for citizens and residents"
+    },
+    "Botswana": {
+      "status": "Implemented",
+      "year": "2011",
+      "features": ["Biometric", "Omang ID"],
+      "coverage": "90%",
+      "authority": "Department of Civil Registration",
+      "description": "The Omang ID system provides a national identity card with biometric data"
+    },
+    "Mauritius": {
+      "status": "Implemented",
+      "year": "2013",
+      "features": ["Biometric", "Smart ID Card", "Digital Authentication"],
+      "coverage": "98%",
+      "authority": "MNIC",
+      "description": "Smart ID card with chip technology and comprehensive digital authentication"
+    },
+    "Namibia": {
+      "status": "Implemented",
+      "year": "2017",
+      "features": ["Biometric", "National ID", "Population Register"],
+      "coverage": "85%",
+      "authority": "MHAI",
+      "description": "National ID system with integrated population register and biometric verification"
+    },
+    "Gabon": {
+      "status": "Implemented",
+      "year": "2018",
+      "features": ["Biometric", "National ID", "Digital Services"],
+      "coverage": "70%",
+      "authority": "DGAPN",
+      "description": "National biometric ID system for citizens and foreigners with electronic services integration"
+    },
+    "Algeria": {
+      "status": "Implemented",
+      "year": "2016",
+      "features": ["Biometric", "National eID", "Digital Services"],
+      "coverage": "75%",
+      "authority": "Ministry of Interior",
+      "description": "Biometric ID card with electronic chip for identity verification and e-services"
+    },
+    "Tunisia": {
+      "status": "Implemented",
+      "year": "2016",
+      "features": ["Biometric", "National ID Card"],
+      "coverage": "82%",
+      "authority": "Ministry of Interior",
+      "description": "National biometric ID card system with personal data and identity verification"
+    },
+    "Zimbabwe": {
+      "status": "Implemented",
+      "year": "2017",
+      "features": ["Biometric", "National Registry", "E-Passport"],
+      "coverage": "65%",
+      "authority": "Civil Registry Department",
+      "description": "National biometric ID system with integration to population registry and e-passport"
+    },
+    "Tanzania": {
+      "status": "Partial",
+      "year": "2018",
+      "features": ["Biometric", "NIDA"],
+      "coverage": "45%",
+      "authority": "NIDA",
+      "description": "National Identification Authority (NIDA) cards with limited coverage in urban areas"
+    },
+    "Uganda": {
+      "status": "Partial",
+      "year": "2018",
+      "features": ["Biometric", "National ID", "Limited Digital Services"],
+      "coverage": "50%",
+      "authority": "NIRA",
+      "description": "National ID system with ongoing implementation and coverage challenges in rural areas"
+    },
+    "Ethiopia": {
+      "status": "Partial",
+      "year": "2019",
+      "features": ["Biometric", "National ID", "Limited Coverage"],
+      "coverage": "35%",
+      "authority": "NIDP",
+      "description": "National ID Program with ongoing rollout and implementation across regions"
+    },
+    "Mozambique": {
+      "status": "Partial",
+      "year": "2019",
+      "features": ["Biometric", "NUIC", "Limited Coverage"],
+      "coverage": "40%",
+      "authority": "Civil Registration Services",
+      "description": "Unique Citizen Identification Number (NUIC) with partial population coverage"
+    },
+    "Ivory Coast": {
+      "status": "Partial",
+      "year": "2020",
+      "features": ["Biometric", "National ID", "Limited Coverage"],
+      "coverage": "55%",
+      "authority": "ONI",
+      "description": "National ID system with ongoing implementation and digital service integration"
+    },
+    "Benin": {
+      "status": "Partial",
+      "year": "2020",
+      "features": ["Biometric", "RAVIP", "Digital ID"],
+      "coverage": "50%",
+      "authority": "ANIP",
+      "description": "Administrative Census for Population Identification (RAVIP) with growing coverage"
+    },
+    "Togo": {
+      "status": "Partial",
+      "year": "2020",
+      "features": ["Biometric", "e-ID", "Limited Digital Services"],
+      "coverage": "45%",
+      "authority": "ANID",
+      "description": "National biometric identification system with ongoing enrollment"
+    },
+    "Burkina Faso": {
+      "status": "Partial",
+      "year": "2019",
+      "features": ["Biometric", "CNIB", "Limited Coverage"],
+      "coverage": "35%",
+      "authority": "ONECI",
+      "description": "National Identification Card with biometric features and ongoing implementation"
+    },
+    "Angola": {
+      "status": "Partial",
+      "year": "2019",
+      "features": ["Biometric", "National ID", "Limited Coverage"],
+      "coverage": "40%",
+      "authority": "Civil Registration",
+      "description": "National ID system with ongoing rollout and limited digital integration"
+    },
+    "Senegal": {
+      "status": "Planning",
+      "year": "Expected 2024",
+      "features": ["Biometric", "Digital ID", "Mobile App"],
+      "coverage": "Pilot",
+      "authority": "DGPN",
+      "description": "Developing a comprehensive digital ID system with mobile application integration"
+    },
+    "Mali": {
+      "status": "Planning",
+      "year": "Expected 2024",
+      "features": ["Biometric", "National ID", "Digital Services"],
+      "coverage": "Pilot",
+      "authority": "MATD",
+      "description": "Planning stage for national biometric ID system with digital service components"
+    },
+    "Zambia": {
+      "status": "Planning",
+      "year": "Expected 2024",
+      "features": ["Biometric", "Integrated ID System"],
+      "coverage": "Pilot",
+      "authority": "Department of National Registration",
+      "description": "Development of integrated national ID system with biometric verification"
+    },
+    "Cameroon": {
+      "status": "Planning",
+      "year": "Expected 2023",
+      "features": ["Biometric", "National ID", "Digital Authentication"],
+      "coverage": "Pilot",
+      "authority": "DGSN",
+      "description": "Planning implementation of national biometric ID with digital authentication"
+    },
+    "Congo": {
+      "status": "Planning",
+      "year": "Expected 2024",
+      "features": ["Biometric", "National ID", "Population Register"],
+      "coverage": "Design Phase",
+      "authority": "Ministry of Interior",
+      "description": "Design phase for national ID system with biometric components"
+    },
+    "Libya": {
+      "status": "Planning",
+      "year": "Expected 2025",
+      "features": ["Biometric", "National ID", "Digital Services"],
+      "coverage": "Planning",
+      "authority": "Civil Registry Authority",
+      "description": "Initial planning for biometric ID system with digital service integration"
+    },
+    "Madagascar": {
+      "status": "Planning",
+      "year": "Expected 2025",
+      "features": ["Biometric", "Digital ID", "Service Integration"],
+      "coverage": "Planning",
+      "authority": "Ministry of Interior",
+      "description": "Early planning phase for national digital ID with service integration"
+    },
+    "Chad": {
+      "status": "None",
+      "year": "N/A",
+      "features": [],
+      "coverage": "None",
+      "authority": "N/A",
+      "description": "No significant digital ID infrastructure implemented"
+    },
+    "Central African Republic": {
+      "status": "None",
+      "year": "N/A",
+      "features": [],
+      "coverage": "None",
+      "authority": "N/A",
+      "description": "Limited civil registration with no digital ID system"
+    },
+    "Somalia": {
+      "status": "None",
+      "year": "N/A",
+      "features": [],
+      "coverage": "None",
+      "authority": "N/A",
+      "description": "No centralized digital ID system due to governance challenges"
+    },
+    "South Sudan": {
+      "status": "None",
+      "year": "N/A",
+      "features": [],
+      "coverage": "None",
+      "authority": "N/A",
+      "description": "No digital ID infrastructure implemented due to ongoing conflict"
+    },
+    "Guinea-Bissau": {
+      "status": "None",
+      "year": "N/A",
+      "features": [],
+      "coverage": "None",
+      "authority": "N/A",
+      "description": "Basic civil registration only with no digital ID system"
+    },
+    "Eritrea": {
+      "status": "None",
+      "year": "N/A",
+      "features": [],
+      "coverage": "None",
+      "authority": "N/A",
+      "description": "Limited paper-based ID system with no digital components"
+    },
+    "Burundi": {
+      "status": "None",
+      "year": "N/A",
+      "features": [],
+      "coverage": "None",
+      "authority": "N/A",
+      "description": "Basic civil registration only with no digital ID infrastructure"
+    },
+    "Lesotho": {
+      "status": "Partial",
+      "year": "2021",
+      "features": ["Biometric", "National ID", "Limited Coverage"],
+      "coverage": "40%",
+      "authority": "Department of Home Affairs",
+      "description": "National ID cards with biometric features and ongoing enrollment"
+    },
+    "Eswatini": {
+      "status": "Partial",
+      "year": "2018",
+      "features": ["Biometric", "National ID", "Limited Digital Services"],
+      "coverage": "50%",
+      "authority": "Ministry of Home Affairs",
+      "description": "National ID system with biometric features and limited digital integration"
+    },
+    "Malawi": {
+      "status": "Implemented",
+      "year": "2017",
+      "features": ["Biometric", "National ID", "Digital Authentication"],
+      "coverage": "70%",
+      "authority": "NRB",
+      "description": "National Registration Bureau ID cards with biometric verification"
+    },
+    "Gambia": {
+      "status": "Partial",
+      "year": "2018",
+      "features": ["Biometric", "National ID", "Limited Coverage"],
+      "coverage": "45%",
+      "authority": "GBOS",
+      "description": "National biometric ID with ongoing enrollment and integration"
+    },
+    "Liberia": {
+      "status": "Planning",
+      "year": "Expected 2024",
+      "features": ["Biometric", "National ID"],
+      "coverage": "Pilot",
+      "authority": "NIR",
+      "description": "Planning stage for national biometric ID system"
+    },
+    "Sierra Leone": {
+      "status": "Partial",
+      "year": "2019",
+      "features": ["Biometric", "National ID", "Limited Coverage"],
+      "coverage": "35%",
+      "authority": "NCRA",
+      "description": "National ID system with ongoing implementation across regions"
+    },
+    "Guinea": {
+      "status": "Planning",
+      "year": "Expected 2024",
+      "features": ["Biometric", "National ID", "Digital Services"],
+      "coverage": "Pilot",
+      "authority": "ANLC",
+      "description": "Development of digital ID system with biometric components"
+    },
+    "Niger": {
+      "status": "Partial",
+      "year": "2020",
+      "features": ["Biometric", "National ID", "Limited Coverage"],
+      "coverage": "30%",
+      "authority": "ANSI",
+      "description": "National biometric ID with limited coverage primarily in urban areas"
+    },
+    "Djibouti": {
+      "status": "Implemented",
+      "year": "2018",
+      "features": ["Biometric", "National ID", "Digital Services"],
+      "coverage": "75%",
+      "authority": "ONEC",
+      "description": "National biometric ID system with digital service integration"
+    },
+    "Equatorial Guinea": {
+      "status": "Partial",
+      "year": "2019",
+      "features": ["Biometric", "National ID", "Limited Coverage"],
+      "coverage": "50%",
+      "authority": "Ministry of Interior",
+      "description": "Biometric ID cards with ongoing enrollment and limited digital integration"
+    },
+    "Democratic Republic of Congo": {
+      "status": "Planning",
+      "year": "Expected 2024",
+      "features": ["Biometric", "National ID"],
+      "coverage": "Pilot",
+      "authority": "ONI",
+      "description": "Planning phase for national biometric ID system"
+    },
+    "Mauritania": {
+      "status": "Implemented",
+      "year": "2016",
+      "features": ["Biometric", "National ID", "Digital Services"],
+      "coverage": "65%",
+      "authority": "ANRPTS",
+      "description": "National biometric ID with digital service integration"
+    },
+    "Cape Verde": {
+      "status": "Implemented",
+      "year": "2016",
+      "features": ["Biometric", "National ID Card", "Digital Authentication"],
+      "coverage": "90%",
+      "authority": "CNPD",
+      "description": "National ID card with digital authentication capabilities"
+    },
+    "Comoros": {
+      "status": "Partial",
+      "year": "2019",
+      "features": ["Biometric", "National ID", "Limited Coverage"],
+      "coverage": "40%",
+      "authority": "CNDRS",
+      "description": "National biometric ID with ongoing enrollment and limited coverage"
+    },
+    "Sao Tome and Principe": {
+      "status": "Partial",
+      "year": "2018",
+      "features": ["Biometric", "National ID", "Limited Digital Services"],
+      "coverage": "55%",
+      "authority": "Ministry of Justice",
+      "description": "Biometric ID system with ongoing implementation and integration"
+    },
+    "Seychelles": {
+      "status": "Implemented",
+      "year": "2015",
+      "features": ["Biometric", "Smart ID Card", "Digital Services"],
+      "coverage": "95%",
+      "authority": "Department of Immigration",
+      "description": "Smart ID card with comprehensive digital service integration"
+    },
+    "Sudan": {
+      "status": "Partial",
+      "year": "2018",
+      "features": ["Biometric", "National ID", "Limited Coverage"],
+      "coverage": "40%",
+      "authority": "Ministry of Interior",
+      "description": "National ID system with ongoing enrollment and integration"
+    },
+    "Swaziland": {
+      "status": "Partial",
+      "year": "2018",
+      "features": ["Biometric", "National ID", "Limited Coverage"],
+      "coverage": "50%",
+      "authority": "Ministry of Home Affairs",
+      "description": "National ID cards with biometric features and ongoing enrollment"
+    }
+  }

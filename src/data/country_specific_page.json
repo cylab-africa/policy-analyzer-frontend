@@ -1,0 +1,90 @@
+{
+    "DZ": {
+      "flagEmoji": "🇩🇿",
+      "isoAlpha2": "DZ",
+      "name": "Algeria",
+      "dataProtectionLaw": "Law No. 18-07 of 2018",
+      "dataProtectionLegislationStatus": "Enacted",
+      "yearLegislationEnacted": "2018",
+      "keyProvisions": [
+        "Applies to natural persons and public entities",
+        "Notification of breaches to the Data Protection Authority (DPA)",
+        "Right of access, correction, and deletion of data for citizens"
+      ],
+      "internationalCommitments": [
+        "Malabo Convention",
+        "ICCPR",
+        "Council of Europe Convention 108"
+      ],
+      "dpaDetails": {
+        "exists": true,
+        "independence": true,
+        "powers": [
+          "Investigate breaches",
+          "Enforce compliance",
+          "Impose penalties"
+        ]
+      },
+      "resources": [
+        "/resources/algeria-law-2018.pdf",
+        "/resources/algeria-dpa-guide.pdf"
+      ]
+    },
+    "KE": {
+      "flagEmoji": "🇰🇪",
+      "isoAlpha2": "KE",
+      "name": "Kenya",
+      "dataProtectionLaw": "Data Protection Act, 2019",
+      "dataProtectionLegislationStatus": "Enacted",
+      "yearLegislationEnacted": "2019",
+      "keyProvisions": [
+        "Applies to both natural and juristic persons",
+        "Mandatory breach notifications to DPA within 72 hours",
+        "Data subjects have the right to access, correct, and erase personal data"
+      ],
+      "internationalCommitments": [
+        "Malabo Convention",
+        "GDPR Adequacy Talks",
+        "African Union Cybersecurity Treaty"
+      ],
+      "dpaDetails": {
+        "exists": true,
+        "independence": false,
+        "powers": [
+          "Conduct inspections",
+          "Issue fines for non-compliance",
+          "Suspend data processing activities"
+        ]
+      },
+      "resources": [
+        "/resources/kenya-data-protection-act-2019.pdf",
+        "/resources/kenya-breach-notification-guidelines.pdf"
+      ]
+    },
+    "BJ": {
+      "flagEmoji": "🇧🇯",
+      "isoAlpha2": "BJ",
+      "name": "Benin",
+      "dataProtectionLaw": "Data Privacy Act, 2017",
+      "dataProtectionLegislationStatus": "Draft",
+      "yearLegislationEnacted": "N/A",
+      "keyProvisions": [
+        "Draft applies to public and private sectors",
+        "Establishes guidelines for personal data collection and use",
+        "Grants data subjects the right to be forgotten"
+      ],
+      "internationalCommitments": [
+        "Malabo Convention",
+        "ICCPR"
+      ],
+      "dpaDetails": {
+        "exists": false,
+        "independence": false,
+        "powers": []
+      },
+      "resources": [
+        "/resources/benin-data-privacy-draft-2017.pdf"
+      ]
+    }
+  }
+  
