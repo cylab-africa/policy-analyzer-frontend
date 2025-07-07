@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌍 Policy Analyzer Frontend
 
-## Getting Started
+[![Next.js](https://img.shields.io/badge/Next.js-15.3.2-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-06B6D4?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 
-First, run the development server:
+A modern, interactive web application for analyzing and comparing data protection and digital identity policies across Africa. Built with cutting-edge web technologies to provide policymakers, implementers, and researchers with comprehensive policy insights.
+
+## ✨ Features
+
+### 🗺️ Interactive Maps
+
+-   **Data Protection Legislation Map**: Visualize the status of data protection laws across African countries
+-   **Digital ID Systems Map**: Explore digital identity implementation across the continent
+-   **Professional tooltips** with detailed country information
+-   **Glass morphism design** with modern animations and hover effects
+
+### 💬 Policy Chat
+
+-   AI-powered chatbot for policy inquiries
+-   Real-time policy analysis and recommendations
+-   Interactive Q&A interface
+
+### 📚 Resource Center
+
+-   Comprehensive policy documentation
+-   Links to relevant legislation and frameworks
+-   Educational materials and guides
+
+
+### 🎨 Modern UI/UX
+
+-   **Responsive design** optimized for all devices
+-   **Professional glass morphism** effects
+-   **Smooth animations** and micro-interactions
+-   **Dark gradient themes** with professional styling
+-   **Accessible navigation** with keyboard support
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+-   **Node.js** 18+
+-   **npm** or **yarn** package manager
+
+### Installation
+
+1. **Clone the repository**
+
+    ```bash
+    git clone https://github.com/cmu-africa/policy-analyzer-frontend.git
+    cd policy-analyzer-frontend
+    ```
+
+2. **Install dependencies**
+
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+
+3. **Start the development server**
+
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
+
+4. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+### Build for Production
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Core Technologies
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+-   **[Next.js 15.3.2](https://nextjs.org/)** - React framework with App Router
+-   **[React 19](https://reactjs.org/)** - Modern React with latest features
+-   **[TypeScript 5](https://www.typescriptlang.org/)** - Type-safe development
+-   **[Tailwind CSS 4](https://tailwindcss.com/)** - Utility-first CSS framework
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
