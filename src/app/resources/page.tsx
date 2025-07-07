@@ -3,7 +3,7 @@ import React from "react";
 
 function page() {
     return (
-        <div className="pt-20">
+        <div>
             <div className="bg-primary text-white py-12 mb-8">
                 <div className="max-w-7xl mx-auto px-6">
                     <h1 className="text-4xl font-bold mb-2">Resources</h1>
