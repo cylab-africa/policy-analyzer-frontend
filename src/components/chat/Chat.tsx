@@ -1,12 +1,13 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
-import { Clock, MessageSquare, Send } from "lucide-react";
+import { Menu, MessageSquare, Send, Sparkles, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -26,6 +27,24 @@ interface Message {
     tab: ChatTab;
 }
 
+// Suggested questions for quick start
+const suggestedQuestions = {
+    [ChatTab.DATA_PROTECTION]: [
+        "Which countries have data protection laws?",
+        "What is the Malabo Convention?",
+        "Compare Ghana and Nigeria's data laws",
+        "Data protection implementation timeline",
+        "GDPR vs African data protection laws",
+    ],
+    [ChatTab.DIGITAL_ID]: [
+        "Which countries have digital ID systems?",
+        "How does Kenya's Huduma Namba work?",
+        "Digital ID systems for women",
+        "Biometric data protection concerns",
+        "Cross-border digital ID recognition",
+    ],
+};
+
 // Main Chat Page Component
 export default function ChatPage() {
     const [activeTab, setActiveTab] = useState<ChatTab>(ChatTab.DATA_PROTECTION);
@@ -34,7 +53,7 @@ export default function ChatPage() {
     const [currentBotResponse, setCurrentBotResponse] = useState<string>("");
     const chatBodyRef = useRef<HTMLDivElement>(null);
     const [isStreaming, setIsStreaming] = useState<boolean>(false);
-    const [showChatHistory, setShowChatHistory] = useState<boolean>(true);
+    const [showHistoryMobile, setShowHistoryMobile] = useState<boolean>(false);
 
     // Load chat history from local storage on component mount
     useEffect(() => {
@@ -44,7 +63,7 @@ export default function ChatPage() {
                 setMessages(JSON.parse(savedChats));
             } catch (error) {
                 console.error("Failed to parse chat history from localStorage:", error);
-                localStorage.removeItem("chatHistory"); // Remove corrupted data
+                localStorage.removeItem("chatHistory");
             }
         }
     }, []);
@@ -94,37 +113,33 @@ export default function ChatPage() {
 
     // Add a typewriter effect for simulating responses
     const simulateBotResponse = (query: string) => {
-        // Reset bot response
         setCurrentBotResponse("");
         setIsStreaming(true);
 
-        // Just for demo - in a real app, this would be replaced with actual API calls
         const responses = {
             "data-protection": {
                 "Which countries have data protection laws?":
-                    "Based on our database, 36 African countries have enacted data protection laws, including **South Africa**, **Kenya**, **Nigeria**, **Ghana**, and **Morocco**.\n\nAnother 3 countries have draft laws pending approval, while 16 countries have no specific data protection legislation yet.",
+                    "Based on our database, **36 African countries** have enacted data protection laws, including:\n\n- **South Africa** - Protection of Personal Information Act (2013)\n- **Kenya** - Data Protection Act (2019)\n- **Nigeria** - Nigeria Data Protection Regulation (2019)\n- **Ghana** - Data Protection Act (2012)\n- **Morocco** - Law 09-08 (2009)\n\nAnother **3 countries** have draft laws pending approval, while **16 countries** have no specific data protection legislation yet.",
                 "What is the Malabo Convention?":
-                    "The **Malabo Convention** (officially the African Union Convention on Cyber Security and Personal Data Protection) was adopted in 2014 in Malabo, Equatorial Guinea.\n\nIt provides a framework for cybersecurity and personal data protection across Africa. The convention came into force on June 8, 2023, after reaching 15 ratifications.",
+                    "The **Malabo Convention** (African Union Convention on Cyber Security and Personal Data Protection) was adopted in 2014 in Malabo, Equatorial Guinea.\n\n**Key Features:**\n- Framework for cybersecurity and personal data protection\n- Harmonizes data protection across Africa\n- Came into force on **June 8, 2023**\n- Currently has **15+ ratifying countries**\n\nIt aims to create a unified approach to data protection and cybersecurity across the African continent.",
                 "Compare Ghana and Nigeria's data laws":
-                    "**Ghana's Data Protection Act** (2012):\n- Independent Data Protection Commission\n- Requires registration of data processors\n- Maximum penalty: 250,000 GHS fine\n\n**Nigeria's Data Protection Regulation** (2019):\n- Administered by NITDA (National Information Technology Development Agency)\n- 2% of annual gross revenue penalty for violations\n- More focus on international data transfers",
+                    "**Ghana's Data Protection Act (2012):**\n- Independent Data Protection Commission\n- Requires registration of data processors\n- Maximum penalty: 250,000 GHS fine\n- Focus on consent and individual rights\n\n**Nigeria's Data Protection Regulation (2019):**\n- Administered by NITDA\n- **2% of annual gross revenue** penalty for violations\n- More emphasis on international data transfers\n- Stronger enforcement mechanisms\n\n**Key Difference:** Nigeria has significantly higher penalties and stricter enforcement.",
             },
             "digital-id": {
                 "Which countries have digital ID systems?":
-                    "Currently, 32 African countries have implemented some form of digital ID system. Notable examples include:\n\n- **South Africa**: Smart ID Card system\n- **Kenya**: Huduma Namba\n- **Nigeria**: National Identification Number (NIN)\n- **Rwanda**: National ID integrated with services\n\nAnother 12 countries have partial implementations, and 6 are in the planning stages.",
+                    "Currently, **32 African countries** have implemented digital ID systems:\n\n**Fully Implemented:**\n- **South Africa**: Smart ID Card system\n- **Kenya**: Huduma Namba\n- **Nigeria**: National Identification Number (NIN)\n- **Rwanda**: National ID with service integration\n- **Morocco**: National Electronic ID Card\n\n**Partial Implementation:** 12 countries\n**Planning Stage:** 6 countries\n\nThese systems vary from basic digitization to advanced biometric-enabled platforms.",
                 "How does Kenya's Huduma Namba work?":
-                    "**Kenya's Huduma Namba** (which means 'Service Number' in Swahili) is a biometric-based national ID system that:\n\n1. Collects biometric data (fingerprints, facial photos)\n2. Assigns a unique identifier to citizens and residents\n3. Intended to be a single source of identity verification\n4. Aims to streamline access to government services\n\nThe implementation has faced legal challenges related to data protection concerns, and enrollment is still ongoing.",
+                    "**Kenya's Huduma Namba** ('Service Number' in Swahili) is a comprehensive digital ID system:\n\n**Features:**\n- Biometric data collection (fingerprints, facial photos)\n- Unique identifier for all citizens and residents\n- Single source of identity verification\n- Integration with government services\n\n**Current Status:**\n- Implementation ongoing since 2019\n- Faced legal challenges on data protection\n- Gradual rollout with improved privacy safeguards\n- Aims to streamline access to government benefits and services",
                 "Digital ID systems for women":
-                    "Digital ID systems present both opportunities and challenges for women in Africa:\n\n**Benefits**:\n- Financial inclusion through easier account opening\n- Access to government benefits directly\n- Reduction in identity-related barriers to services\n\n**Challenges**:\n- Enrollment barriers in conservative regions\n- Lower digital literacy among women in rural areas\n- Requirements for supporting documentation women may lack\n\nCountries like **Rwanda** and **Morocco** have made efforts to ensure gender-inclusive ID systems with better outreach to women.",
+                    "Digital ID systems present **opportunities and challenges** for women in Africa:\n\n**✅ Benefits:**\n- Enhanced financial inclusion\n- Direct access to government benefits\n- Reduced documentation barriers\n- Better access to healthcare and education\n\n**⚠️ Challenges:**\n- Enrollment barriers in conservative regions\n- Lower digital literacy in rural areas\n- Documentation requirements women may lack\n- Privacy and safety concerns\n\n**Success Stories:**\n- **Rwanda**: 90%+ women enrollment\n- **Morocco**: Gender-inclusive outreach programs",
             },
         };
 
-        // Get the appropriate response based on tab and query, or a default response
         const defaultResponse =
             "I don't have specific information on that query. Would you like me to help you find information about data protection laws or digital ID systems in Africa?";
         const tabResponses = responses[activeTab] || {};
         const response = (tabResponses as Record<string, string>)[query] || defaultResponse;
 
-        // Simulate streaming with a typing effect
         let index = 0;
         const typingInterval = setInterval(() => {
             if (index < response.length) {
@@ -133,10 +148,8 @@ export default function ChatPage() {
             } else {
                 clearInterval(typingInterval);
 
-                // After "typing" is complete, save the message
                 setMessages((prevMessages) => {
                     const updatedMessages = [...prevMessages];
-                    // Update the bot response of the last message
                     if (updatedMessages.length > 0) {
                         updatedMessages[updatedMessages.length - 1].bot = response;
                     }
@@ -146,14 +159,13 @@ export default function ChatPage() {
                 setCurrentBotResponse("");
                 setIsStreaming(false);
             }
-        }, 10); // Adjust speed as needed
+        }, 20);
     };
 
     // Handle sending messages
     const handleSend = () => {
-        if (input.trim() === "") return;
+        if (input.trim() === "" || isStreaming) return;
 
-        // Create new message with unique ID
         const newMessage: Message = {
             id: Date.now().toString(),
             user: input,
@@ -164,9 +176,8 @@ export default function ChatPage() {
 
         setMessages((prevMessages) => [...prevMessages, newMessage]);
         const query = input;
-        setInput(""); // Clear the input
+        setInput("");
 
-        // Simulate fetching the response
         simulateBotResponse(query);
     };
 
@@ -183,272 +194,315 @@ export default function ChatPage() {
         localStorage.setItem("chatHistory", JSON.stringify(updatedMessages));
     };
 
-    // Start a new chat for the current tab
-    const startNewChat = () => {
-        clearChatHistory();
-    };
-
-    return (
-        <Card className="p-4 shadow-md">
-            <div className="flex min-h-[80vh] bg-gray-50">
-                <div
-                    className={cn(
-                        "w-64 bg-white border-r border-gray-200 flex flex-col transition-all duration-300",
-                        showChatHistory ? "block" : "hidden"
-                    )}
+    // Chat History Component (reusable for both desktop sidebar and mobile sheet)
+    const ChatHistoryContent = () => (
+        <div className="flex flex-col h-full">
+            <div className="p-4 border-b border-border flex items-center justify-between">
+                <h2 className="text-lg font-semibold">Chat History</h2>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1 text-xs"
+                    onClick={clearChatHistory}
                 >
-                    <div className="p-4 border-b border-gray-200 flex items-center">
-                        <h2 className="text-lg font-semibold">Chat History</h2>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="ml-auto flex items-center gap-1 text-xs h-8"
-                            onClick={startNewChat}
-                        >
-                            <Clock size={14} />
-                            New Chat
-                        </Button>
-                    </div>
+                    <X className="h-3 w-3" />
+                    Clear
+                </Button>
+            </div>
 
-                    <ScrollArea className="flex-1">
-                        {getChatHistory().length > 0 ? (
-                            getChatHistory().map(([date, dateMessages]) => (
-                                <div key={date} className="mb-4 px-2">
-                                    <div className="px-2 py-1 text-xs font-semibold text-gray-500 flex items-center gap-2">
-                                        <div className="w-1/3 h-px bg-gray-200" />
-                                        {date}
-                                        <div className="flex-1 h-px bg-gray-200" />
-                                    </div>
-                                    {dateMessages.map((message) => (
-                                        <div
-                                            key={message.id}
-                                            className="px-3 py-2 mx-1 my-1 rounded-md hover:bg-gray-100 cursor-pointer border-l-2 border-transparent hover:border-primary transition-all"
-                                            onClick={() => {
-                                                const element = document.getElementById(`message-${message.id}`);
-                                                if (element) {
-                                                    element.scrollIntoView({ behavior: "smooth" });
-                                                }
-                                            }}
-                                        >
-                                            <div className="text-sm font-medium text-gray-800 truncate">
+            <ScrollArea className="flex-1">
+                {getChatHistory().length > 0 ? (
+                    <div className="p-2">
+                        {getChatHistory().map(([date, dateMessages]) => (
+                            <div key={date} className="mb-4">
+                                <div className="px-2 py-1 text-xs font-semibold text-muted-foreground mb-2">{date}</div>
+                                {dateMessages.map((message) => (
+                                    <Card
+                                        key={message.id}
+                                        className="mb-2 cursor-pointer hover:bg-accent/50 transition-colors border-0 shadow-sm"
+                                        onClick={() => {
+                                            const element = document.getElementById(`message-${message.id}`);
+                                            if (element) {
+                                                element.scrollIntoView({ behavior: "smooth" });
+                                                setShowHistoryMobile(false);
+                                            }
+                                        }}
+                                    >
+                                        <CardContent className="p-3">
+                                            <div className="text-sm font-medium text-foreground line-clamp-2 mb-1">
                                                 {message.user}
                                             </div>
-                                            <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                                                <MessageSquare size={12} />
+                                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                                <MessageSquare className="h-3 w-3" />
                                                 {formatTime(message.timestamp)}
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ))
-                        ) : (
-                            <div className="p-6 text-center text-gray-400 text-sm">No chat history yet</div>
-                        )}
-                    </ScrollArea>
-                </div>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="p-6 text-center text-muted-foreground text-sm">No chat history yet</div>
+                )}
+            </ScrollArea>
+        </div>
+    );
 
-                {/* Main Content */}
-                <div className="flex-1 flex flex-col">
-                    {/* Header */}
-                    <div className="bg-white border-b border-gray-200 p-2 flex items-center">
-                        <Tabs
-                            defaultValue={activeTab}
-                            value={activeTab}
-                            className="w-full"
-                            onValueChange={(value) => handleTabChange(value as ChatTab)}
-                        >
-                            <TabsList className="grid w-[400px] grid-cols-2">
-                                <TabsTrigger className="cursor-pointer" value={ChatTab.DATA_PROTECTION}>
-                                    Data Protection
-                                </TabsTrigger>
-                                <TabsTrigger className="cursor-pointer" value={ChatTab.DIGITAL_ID}>
-                                    Digital ID
-                                </TabsTrigger>
-                            </TabsList>
-                        </Tabs>
+    return (
+        <div className="flex flex-col h-screen max-h-screen bg-background">
+            {/* Mobile Header */}
+            <div className="lg:hidden border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
+                <div className="flex items-center justify-between p-4">
+                    <div className="flex items-center gap-3">
+                        <Sheet open={showHistoryMobile} onOpenChange={setShowHistoryMobile}>
+                            <SheetTrigger asChild>
+                                <Button variant="ghost" size="sm" className="p-2">
+                                    <Menu className="h-5 w-5" />
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="left" className="w-80 p-0">
+                                <SheetHeader className="sr-only">
+                                    <SheetTitle>Chat History</SheetTitle>
+                                </SheetHeader>
+                                <ChatHistoryContent />
+                            </SheetContent>
+                        </Sheet>
 
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="ml-auto mr-2"
-                            onClick={() => setShowChatHistory(!showChatHistory)}
-                        >
-                            {showChatHistory ? "Hide History" : "Show History"}
-                        </Button>
+                        <div className="flex items-center gap-2">
+                            <Sparkles className="h-5 w-5 text-primary" />
+                            <span className="font-semibold text-lg">Policy Chat</span>
+                        </div>
                     </div>
 
-                    {/* Chat Area */}
-                    <div ref={chatBodyRef} className="flex-1 overflow-y-auto p-4 bg-gray-50">
-                        {getFilteredMessages().length === 0 ? (
-                            <div className="h-full flex flex-col items-center justify-center text-center p-6">
-                                <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                                    {activeTab === ChatTab.DATA_PROTECTION
-                                        ? "Ask me about Data Protection policies in Africa"
-                                        : "Ask me about Digital ID systems in Africa"}
-                                </h2>
-                                <p className="text-gray-600 mb-8 max-w-md">
-                                    Your guide to understanding policies, privacy, and compliance.
-                                </p>
+                    <Badge variant="secondary" className="text-xs">
+                        {getFilteredMessages().length} chats
+                    </Badge>
+                </div>
 
-                                <div className="flex flex-wrap justify-center gap-2 max-w-2xl">
-                                    <Button
-                                        variant="outline"
-                                        className="rounded-full bg-white"
-                                        onClick={() => {
-                                            setInput(
-                                                activeTab === ChatTab.DATA_PROTECTION
-                                                    ? "Which countries have data protection laws?"
-                                                    : "Which countries have digital ID systems?"
-                                            );
-                                        }}
-                                    >
+                {/* Mobile Tabs */}
+                <div className="px-4 pb-3">
+                    <Tabs value={activeTab} onValueChange={(value) => handleTabChange(value as ChatTab)}>
+                        <TabsList className="grid w-full grid-cols-2 h-9">
+                            <TabsTrigger value={ChatTab.DATA_PROTECTION} className="text-xs">
+                                Data Protection
+                            </TabsTrigger>
+                            <TabsTrigger value={ChatTab.DIGITAL_ID} className="text-xs">
+                                Digital ID
+                            </TabsTrigger>
+                        </TabsList>
+                    </Tabs>
+                </div>
+            </div>
+
+            <div className="flex flex-1 overflow-hidden">
+                {/* Desktop Sidebar */}
+                <div className="hidden lg:flex w-80 border-r border-border bg-muted/30 flex-col">
+                    <ChatHistoryContent />
+                </div>
+
+                {/* Main Chat Area */}
+                <div className="flex-1 flex flex-col min-w-0">
+                    {/* Desktop Header */}
+                    <div className="hidden lg:flex border-b border-border bg-background p-4 items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <Sparkles className="h-6 w-6 text-primary" />
+                            <h1 className="text-xl font-semibold">African Policy Assistant</h1>
+                        </div>
+
+                        <Tabs value={activeTab} onValueChange={(value) => handleTabChange(value as ChatTab)}>
+                            <TabsList className="grid grid-cols-2">
+                                <TabsTrigger value={ChatTab.DATA_PROTECTION}>Data Protection</TabsTrigger>
+                                <TabsTrigger value={ChatTab.DIGITAL_ID}>Digital ID</TabsTrigger>
+                            </TabsList>
+                        </Tabs>
+                    </div>
+
+                    {/* Chat Messages Area */}
+                    <div
+                        ref={chatBodyRef}
+                        className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 bg-gradient-to-b from-background to-muted/20"
+                    >
+                        {getFilteredMessages().length === 0 ? (
+                            // Welcome Screen
+                            <div className="h-full flex flex-col items-center justify-center text-center max-w-2xl mx-auto px-4">
+                                <div className="mb-6">
+                                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto">
+                                        <Sparkles className="h-8 w-8 text-primary" />
+                                    </div>
+                                    <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
                                         {activeTab === ChatTab.DATA_PROTECTION
-                                            ? "Which countries have data protection laws?"
-                                            : "Which countries have digital ID systems?"}
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        className="rounded-full bg-white"
-                                        onClick={() => {
-                                            setInput(
-                                                activeTab === ChatTab.DATA_PROTECTION
-                                                    ? "What is the Malabo Convention?"
-                                                    : "How does Kenya's Huduma Namba work?"
-                                            );
-                                        }}
-                                    >
-                                        {activeTab === ChatTab.DATA_PROTECTION
-                                            ? "What is the Malabo Convention?"
-                                            : "How does Kenya's Huduma Namba work?"}
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        className="rounded-full bg-white"
-                                        onClick={() => {
-                                            setInput(
-                                                activeTab === ChatTab.DATA_PROTECTION
-                                                    ? "Compare Ghana and Nigeria's data laws"
-                                                    : "Digital ID systems for women"
-                                            );
-                                        }}
-                                    >
-                                        {activeTab === ChatTab.DATA_PROTECTION
-                                            ? "Compare Ghana and Nigeria's data laws"
-                                            : "Digital ID systems for women"}
-                                    </Button>
+                                            ? "Data Protection Assistant"
+                                            : "Digital ID Assistant"}
+                                    </h2>
+                                    <p className="text-muted-foreground text-sm sm:text-base">
+                                        Your guide to understanding policies, privacy, and compliance across Africa.
+                                    </p>
+                                </div>
+
+                                <div className="w-full space-y-3">
+                                    <p className="text-sm text-muted-foreground mb-3">Try asking:</p>
+                                    <div className="grid grid-cols-1 gap-2">
+                                        {suggestedQuestions[activeTab].slice(0, 3).map((question, index) => (
+                                            <Button
+                                                key={index}
+                                                variant="outline"
+                                                className="h-auto p-3 text-left justify-start text-wrap bg-background/50 hover:bg-accent/50 border-border/50"
+                                                onClick={() => setInput(question)}
+                                            >
+                                                <span className="text-sm">{question}</span>
+                                            </Button>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         ) : (
-                            <>
+                            // Chat Messages
+                            <div className="max-w-4xl mx-auto space-y-4">
                                 {getFilteredMessages().map((message) => (
-                                    <div
-                                        key={message.id}
-                                        id={`message-${message.id}`}
-                                        className="mb-6 max-w-4xl mx-auto"
-                                    >
-                                        <div className="flex justify-end mb-3">
-                                            <Card className="bg-blue-50 border-blue-100 py-3 px-4 max-w-3xl shadow-sm">
-                                                <div className="text-gray-800">{message.user}</div>
-                                                <div className="text-gray-400 text-xs mt-2 text-right">
-                                                    {formatTime(message.timestamp)}
-                                                </div>
+                                    <div key={message.id} id={`message-${message.id}`} className="space-y-3">
+                                        {/* User Message */}
+                                        <div className="flex justify-end">
+                                            <Card className="max-w-[85%] sm:max-w-lg bg-primary text-primary-foreground border-0 shadow-sm">
+                                                <CardContent className="p-3 sm:p-4">
+                                                    <div className="text-sm sm:text-base break-words">
+                                                        {message.user}
+                                                    </div>
+                                                    <div className="text-xs opacity-70 mt-2 text-right">
+                                                        {formatTime(message.timestamp)}
+                                                    </div>
+                                                </CardContent>
                                             </Card>
                                         </div>
 
+                                        {/* Bot Message */}
                                         {message.bot && (
-                                            <div className="flex mb-3">
-                                                <Card className="bg-white border border-gray-200 py-3 px-4 max-w-3xl shadow-sm">
-                                                    <div className="prose prose-sm max-w-none">
-                                                        <Markdown
-                                                            remarkPlugins={[remarkGfm]}
-                                                            components={{
-                                                                p: ({ ...props }) => (
-                                                                    <p className="mb-4 last:mb-0" {...props} />
-                                                                ),
-                                                                li: ({ ...props }) => (
-                                                                    <li className="mb-2" {...props} />
-                                                                ),
-                                                                strong: ({ ...props }) => (
-                                                                    <strong
-                                                                        className="font-semibold text-blue-600"
-                                                                        {...props}
-                                                                    />
-                                                                ),
-                                                            }}
-                                                        >
-                                                            {message.bot}
-                                                        </Markdown>
-                                                    </div>
-                                                    <div className="text-gray-400 text-xs mt-2">
-                                                        {formatTime(message.timestamp)}
-                                                    </div>
+                                            <div className="flex justify-start">
+                                                <Card className="max-w-[85%] sm:max-w-2xl bg-background border border-border shadow-sm">
+                                                    <CardContent className="p-3 sm:p-4">
+                                                        <div className="prose prose-sm max-w-none text-sm sm:text-base">
+                                                            <Markdown
+                                                                remarkPlugins={[remarkGfm]}
+                                                                components={{
+                                                                    p: ({ ...props }) => (
+                                                                        <p
+                                                                            className="mb-3 last:mb-0 leading-relaxed"
+                                                                            {...props}
+                                                                        />
+                                                                    ),
+                                                                    li: ({ ...props }) => (
+                                                                        <li className="mb-1" {...props} />
+                                                                    ),
+                                                                    strong: ({ ...props }) => (
+                                                                        <strong
+                                                                            className="font-semibold text-primary"
+                                                                            {...props}
+                                                                        />
+                                                                    ),
+                                                                    ul: ({ ...props }) => (
+                                                                        <ul className="mb-3 ml-4" {...props} />
+                                                                    ),
+                                                                    ol: ({ ...props }) => (
+                                                                        <ol className="mb-3 ml-4" {...props} />
+                                                                    ),
+                                                                }}
+                                                            >
+                                                                {message.bot}
+                                                            </Markdown>
+                                                        </div>
+                                                        <div className="text-xs text-muted-foreground mt-2">
+                                                            {formatTime(message.timestamp)}
+                                                        </div>
+                                                    </CardContent>
                                                 </Card>
                                             </div>
                                         )}
                                     </div>
                                 ))}
 
+                                {/* Streaming Response */}
                                 {isStreaming && currentBotResponse && (
-                                    <div className="flex mb-3 max-w-4xl mx-auto">
-                                        <Card className="bg-white border border-gray-200 py-3 px-4 max-w-3xl shadow-sm">
-                                            <div className="prose prose-sm max-w-none">
-                                                <Markdown
-                                                    remarkPlugins={[remarkGfm]}
-                                                    components={{
-                                                        p: ({ ...props }) => (
-                                                            <p className="mb-4 last:mb-0" {...props} />
-                                                        ),
-                                                        li: ({ ...props }) => <li className="mb-2" {...props} />,
-                                                        strong: ({ ...props }) => (
-                                                            <strong
-                                                                className="font-semibold text-blue-600"
-                                                                {...props}
-                                                            />
-                                                        ),
-                                                    }}
-                                                >
-                                                    {currentBotResponse}
-                                                </Markdown>
-                                            </div>
-                                            <div className="text-gray-400 text-xs mt-2">Just now</div>
+                                    <div className="flex justify-start">
+                                        <Card className="max-w-[85%] sm:max-w-2xl bg-background border border-border shadow-sm">
+                                            <CardContent className="p-3 sm:p-4">
+                                                <div className="prose prose-sm max-w-none text-sm sm:text-base">
+                                                    <Markdown
+                                                        remarkPlugins={[remarkGfm]}
+                                                        components={{
+                                                            p: ({ ...props }) => (
+                                                                <p
+                                                                    className="mb-3 last:mb-0 leading-relaxed"
+                                                                    {...props}
+                                                                />
+                                                            ),
+                                                            strong: ({ ...props }) => (
+                                                                <strong
+                                                                    className="font-semibold text-primary"
+                                                                    {...props}
+                                                                />
+                                                            ),
+                                                        }}
+                                                    >
+                                                        {currentBotResponse}
+                                                    </Markdown>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
+                                                    <div className="flex space-x-1">
+                                                        <div className="w-1 h-1 bg-current rounded-full animate-pulse"></div>
+                                                        <div
+                                                            className="w-1 h-1 bg-current rounded-full animate-pulse"
+                                                            style={{ animationDelay: "0.2s" }}
+                                                        ></div>
+                                                        <div
+                                                            className="w-1 h-1 bg-current rounded-full animate-pulse"
+                                                            style={{ animationDelay: "0.4s" }}
+                                                        ></div>
+                                                    </div>
+                                                    <span>Typing...</span>
+                                                </div>
+                                            </CardContent>
                                         </Card>
                                     </div>
                                 )}
-                            </>
+                            </div>
                         )}
                     </div>
 
                     {/* Input Area */}
-                    <div className="p-4 border-t border-gray-200 bg-white">
-                        <div className="flex items-center max-w-4xl mx-auto">
-                            <div className="flex-1 relative">
-                                <Input
-                                    type="text"
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    placeholder={
-                                        activeTab === ChatTab.DATA_PROTECTION
-                                            ? "Ask about data protection policies..."
-                                            : "Ask about digital ID systems..."
-                                    }
-                                    onKeyDown={(e) => e.key === "Enter" && !isStreaming && handleSend()}
-                                    className="pr-12 py-6 border-gray-300 shadow-sm rounded-lg"
-                                />
-                                <Button
-                                    onClick={handleSend}
-                                    disabled={input.trim() === "" || isStreaming}
-                                    className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md h-8 w-8 p-0"
-                                >
-                                    <Send size={16} />
-                                </Button>
+                    <div className="border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-3 sm:p-4 lg:p-6">
+                        <div className="max-w-4xl mx-auto">
+                            <div className="flex items-end gap-2 sm:gap-3">
+                                <div className="flex-1 relative">
+                                    <Input
+                                        type="text"
+                                        value={input}
+                                        onChange={(e) => setInput(e.target.value)}
+                                        placeholder={
+                                            activeTab === ChatTab.DATA_PROTECTION
+                                                ? "Ask about data protection policies..."
+                                                : "Ask about digital ID systems..."
+                                        }
+                                        onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
+                                        className="pr-12 py-3 sm:py-4 resize-none border-border shadow-sm rounded-lg text-sm sm:text-base"
+                                        disabled={isStreaming}
+                                    />
+                                    <Button
+                                        onClick={handleSend}
+                                        disabled={input.trim() === "" || isStreaming}
+                                        size="sm"
+                                        className="absolute right-1.5 top-1/2 -translate-y-1/2 h-7 w-7 sm:h-8 sm:w-8 p-0 rounded-md"
+                                    >
+                                        <Send className="h-3 w-3 sm:h-4 sm:w-4" />
+                                    </Button>
+                                </div>
                             </div>
+                            <p className="text-center text-xs text-muted-foreground mt-2">
+                                AI can make mistakes. Verify important information.
+                            </p>
                         </div>
-                        <p className="text-center text-xs text-amber-600 mt-2 max-w-4xl mx-auto">
-                            Note: The AI can make mistakes. Check important information
-                        </p>
                     </div>
                 </div>
             </div>
-        </Card>
+        </div>
     );
 }

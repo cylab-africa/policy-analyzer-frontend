@@ -19,12 +19,6 @@ const Footer = () => {
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-white">Contact Information</h3>
                         <div className="space-y-3">
-                            <div className="text-slate-300 text-sm">
-                                <div className="font-medium text-white mb-1">Carnegie Mellon University Africa</div>
-                                <div>Regional ICT Center of Excellence Bldg</div>
-                                <div>Kigali Innovation City - Bumbogo</div>
-                                <div>BP 6150, Kigali, Rwanda</div>
-                            </div>
                             <a
                                 href="mailto:africa-info@andrew.cmu.edu"
                                 className="flex items-center text-slate-300 hover:text-blue-400 transition-colors text-sm group"

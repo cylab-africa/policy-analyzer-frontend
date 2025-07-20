@@ -1,25 +1,34 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useEffect } from "react";
-import {
-    ExternalLink,
-    FileText,
-    Check,
-    AlertTriangle,
-    Search,
-    FileDigit,
-    CreditCard,
-    Globe,
-    Shield,
-    Book,
-    File,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import {
+    AlertTriangle,
+    Book,
+    Check,
+    Clock,
+    CreditCard,
+    Download,
+    ExternalLink,
+    File,
+    FileDigit,
+    FileText,
+    Filter,
+    Globe,
+    MapPin,
+    Search,
+    Shield,
+    Sparkles,
+    X
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 // Import your data
 import africaData from "@/data/countries_law_data.json";
@@ -67,6 +76,7 @@ export default function ResourcesPage() {
     const [selectedRegion, setSelectedRegion] = useState<string>("all");
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [showMobileFilters, setShowMobileFilters] = useState<boolean>(false);
 
     // Digital ID document type descriptions
     const digitalIdDescriptions = {
@@ -76,38 +86,43 @@ export default function ResourcesPage() {
         [DigitalIdDocType.OTHER]: "Other policies, guidelines and regulatory frameworks for digital identity",
     };
 
-    // Digital ID document type icons and titles
+    // Digital ID document type info
     const getDigitalIdInfo = (docType: string, countryName: string) => {
         switch (docType) {
             case DigitalIdDocType.REGISTRATION:
                 return {
-                    icon: <Book className="h-[18px] w-[18px]" />,
+                    icon: <Book className="h-4 w-4" />,
                     title: `${countryName} Civil Registration Law`,
+                    color: "purple",
                 };
             case DigitalIdDocType.NATIONAL_ID:
                 return {
-                    icon: <CreditCard className="h-[18px] w-[18px]" />,
+                    icon: <CreditCard className="h-4 w-4" />,
                     title: `${countryName} National ID Legislation`,
+                    color: "blue",
                 };
             case DigitalIdDocType.IMMIGRATION:
                 return {
-                    icon: <Globe className="h-[18px] w-[18px]" />,
+                    icon: <Globe className="h-4 w-4" />,
                     title: `${countryName} Immigration & Citizenship Law`,
+                    color: "amber",
                 };
             case DigitalIdDocType.OTHER:
                 return {
-                    icon: <File className="h-[18px] w-[18px]" />,
+                    icon: <File className="h-4 w-4" />,
                     title: `${countryName} Digital ID Framework`,
+                    color: "orange",
                 };
             default:
                 return {
-                    icon: <FileDigit className="h-[18px] w-[18px]" />,
+                    icon: <FileDigit className="h-4 w-4" />,
                     title: `${countryName} Digital ID Document`,
+                    color: "blue",
                 };
         }
     };
 
-    // Generate resources data
+    // Generate resources data (keeping your existing logic)
     useEffect(() => {
         setIsLoading(true);
         const allResources: Resource[] = [];
@@ -117,7 +132,6 @@ export default function ResourcesPage() {
             const region = getRegion(country.name);
             const countryCode = country.isoAlpha2;
 
-            // Only add resources for countries with legislation enacted AND with a document link
             if (
                 country.dataProtectionLegislationStatus === "Enacted" &&
                 documentLinks[countryCode as keyof typeof documentLinks]?.dataProtectionLaw
@@ -136,18 +150,11 @@ export default function ResourcesPage() {
                     language: getDocumentLanguage(country.name),
                     fileType: "PDF",
                     isOfficial: true,
-                    icon: <Shield className="h-[18px] w-[18px]" />,
+                    icon: <Shield className="h-4 w-4" />,
                 });
 
-                // Add guidelines for countries that have them
-                if (
-                    (
-                        documentLinks[countryCode as keyof typeof documentLinks] as {
-                            dataProtectionLaw: string;
-                            dataProtectionGuidelines?: string;
-                        }
-                    )?.dataProtectionGuidelines
-                ) {
+                // Add guidelines if available
+                if ((documentLinks[countryCode as keyof typeof documentLinks] as any)?.dataProtectionGuidelines) {
                     allResources.push({
                         id: `dp-${countryCode}-2`,
                         countryCode: countryCode,
@@ -157,17 +164,13 @@ export default function ResourcesPage() {
                         title: `${country.name} Data Protection Guidelines`,
                         description: `Implementation guidelines and best practices for ${country.name}'s data protection law.`,
                         type: ResourceType.DATA_PROTECTION,
-                        documentUrl: (
-                            documentLinks[countryCode as keyof typeof documentLinks] as {
-                                dataProtectionLaw: string;
-                                dataProtectionGuidelines?: string;
-                            }
-                        )?.dataProtectionGuidelines,
+                        documentUrl: (documentLinks[countryCode as keyof typeof documentLinks] as any)
+                            ?.dataProtectionGuidelines,
                         year: (parseInt(country.yearLegislationEnacted || "2020") + 1).toString(),
                         language: getDocumentLanguage(country.name),
                         fileType: "PDF",
                         isOfficial: true,
-                        icon: <FileText className="h-[18px] w-[18px]" />,
+                        icon: <FileText className="h-4 w-4" />,
                     });
                 }
             }
@@ -175,12 +178,9 @@ export default function ResourcesPage() {
 
         // Generate digital ID resources
         Object.entries(digitalIdLinks as Record<string, Record<string, string>>).forEach(([countryCode, links]) => {
-            // Skip Africa Union for now to handle it separately
             if (countryCode === "AU") return;
 
-            // Find country information
             const country = Object.values(africaData).find((c) => c.isoAlpha2 === countryCode);
-
             let countryName = "";
             let region = "";
             let flagEmoji = "";
@@ -190,16 +190,13 @@ export default function ResourcesPage() {
                 region = getRegion(country.name);
                 flagEmoji = country.flagEmoji || getFlagEmoji(countryCode);
             } else if (countryCode === "ZNZ") {
-                // Special case for Zanzibar
                 countryName = "Zanzibar";
                 region = "East Africa";
-                flagEmoji = "🇹🇿"; // Using Tanzania flag
+                flagEmoji = "🇹🇿";
             }
 
             if (countryName) {
-                // Process each type of digital ID document
                 Object.entries(links).forEach(([docType, url]) => {
-                    // Get document info based on type
                     const { icon, title } = getDigitalIdInfo(docType, countryName);
                     const description =
                         digitalIdDescriptions[docType as DigitalIdDocType] || "Legal framework for digital identity";
@@ -226,13 +223,13 @@ export default function ResourcesPage() {
             }
         });
 
-        // Add Africa Union as a continental resource
+        // Add Africa Union
         if (digitalIdLinks.AU?.digitalIdOther) {
             allResources.push({
                 id: `id-AU-other`,
                 countryCode: "AU",
                 countryName: "Africa Union",
-                flagEmoji: "🌍", // Using Africa emoji instead of AU flag
+                flagEmoji: "🌍",
                 region: "Continental",
                 title: "Africa Union Digital ID Framework",
                 description: "Continental framework for digital identity systems across Africa",
@@ -243,7 +240,7 @@ export default function ResourcesPage() {
                 fileType: "PDF",
                 isOfficial: true,
                 docType: DigitalIdDocType.OTHER,
-                icon: <Globe className="h-[18px] w-[18px]" />,
+                icon: <Globe className="h-4 w-4" />,
             });
         }
 
@@ -251,7 +248,7 @@ export default function ResourcesPage() {
         setIsLoading(false);
     }, []);
 
-    // Apply filters when tab, region, or search changes
+    // Apply filters
     useEffect(() => {
         let filtered = resources.filter((resource) => resource.type === activeTab);
 
@@ -272,7 +269,7 @@ export default function ResourcesPage() {
         setFilteredResources(filtered);
     }, [resources, activeTab, selectedRegion, searchQuery]);
 
-    // Function to get language based on country (simplified)
+    // Helper functions (keeping your existing ones)
     const getDocumentLanguage = (countryName: string): string => {
         const francophoneCountries = [
             "Benin",
@@ -298,37 +295,20 @@ export default function ResourcesPage() {
         ];
 
         const arabicCountries = ["Algeria", "Egypt", "Libya", "Mauritania", "Morocco", "Sudan", "Tunisia"];
-
         const portugueseCountries = ["Angola", "Cape Verde", "Guinea-Bissau", "Mozambique", "São Tomé and Príncipe"];
 
-        if (francophoneCountries.includes(countryName)) {
-            return "French";
-        } else if (arabicCountries.includes(countryName)) {
-            return "Arabic/French";
-        } else if (portugueseCountries.includes(countryName)) {
-            return "Portuguese";
-        }
-
+        if (francophoneCountries.includes(countryName)) return "French";
+        if (arabicCountries.includes(countryName)) return "Arabic/French";
+        if (portugueseCountries.includes(countryName)) return "Portuguese";
         return "English";
     };
 
-    // Function to get estimated year for digital ID documents
     const getEstimatedYear = (countryCode: string, docType: string): string => {
-        // Estimated years for each country's digital ID systems
-        // This would be replaced with actual data
         const yearMapping: Record<string, Record<string, string>> = {
             KE: { digitalIdRegistration: "2015" },
-            GH: {
-                digitalIdRegistration: "2012",
-                digitalIdNational: "2017",
-                digitalIdOther: "2018",
-            },
+            GH: { digitalIdRegistration: "2012", digitalIdNational: "2017", digitalIdOther: "2018" },
             UG: { digitalIdRegistration: "2015" },
-            TZ: {
-                digitalIdRegistration: "2013",
-                digitalIdNational: "2018",
-                digitalIdOther: "2019",
-            },
+            TZ: { digitalIdRegistration: "2013", digitalIdNational: "2018", digitalIdOther: "2019" },
             RW: { digitalIdImmigration: "2014", digitalIdNational: "2015" },
             ZM: { digitalIdRegistration: "2018" },
             ET: { digitalIdRegistration: "2017", digitalIdNational: "2020" },
@@ -338,267 +318,435 @@ export default function ResourcesPage() {
             ZNZ: { digitalIdRegistration: "2018" },
             AU: { digitalIdOther: "2022" },
         };
-
         return yearMapping[countryCode]?.[docType] || "2020";
     };
 
-    // Function to get flag emoji if missing
     const getFlagEmoji = (countryCode: string): string => {
-        // Simplified helper function for demo
-        return "🏳️";
+        const flagMap: Record<string, string> = {
+            DZ: "🇩🇿", // Algeria
+            AO: "🇦🇴", // Angola
+            BJ: "🇧🇯", // Benin
+            BW: "🇧🇼", // Botswana
+            BF: "🇧🇫", // Burkina Faso
+            BI: "🇧🇮", // Burundi
+            CM: "🇨🇲", // Cameroon
+            CV: "🇨🇻", // Cape Verde
+            CF: "🇨🇫", // Central African Republic
+            TD: "🇹🇩", // Chad
+            KM: "🇰🇲", // Comoros
+            CG: "🇨🇬", // Congo
+            CD: "🇨🇩", // Democratic Republic of the Congo
+            DJ: "🇩🇯", // Djibouti
+            EG: "🇪🇬", // Egypt
+            GQ: "🇬🇶", // Equatorial Guinea
+            ER: "🇪🇷", // Eritrea
+            ET: "🇪🇹", // Ethiopia
+            GA: "🇬🇦", // Gabon
+            GM: "🇬🇲", // Gambia
+            GH: "🇬🇭", // Ghana
+            GN: "🇬🇳", // Guinea
+            GW: "🇬🇼", // Guinea-Bissau
+            CI: "🇨🇮", // Ivory Coast
+            KE: "🇰🇪", // Kenya
+            LS: "🇱🇸", // Lesotho
+            LR: "🇱🇷", // Liberia
+            LY: "🇱🇾", // Libya
+            MG: "🇲🇬", // Madagascar
+            MW: "🇲🇼", // Malawi
+            ML: "🇲🇱", // Mali
+            MR: "🇲🇷", // Mauritania
+            MU: "🇲🇺", // Mauritius
+            MA: "🇲🇦", // Morocco
+            MZ: "🇲🇿", // Mozambique
+            NA: "🇳🇦", // Namibia
+            NE: "🇳🇪", // Niger
+            NG: "🇳🇬", // Nigeria
+            RW: "🇷🇼", // Rwanda
+            ST: "🇸🇹", // São Tomé and Príncipe
+            SN: "🇸🇳", // Senegal
+            SC: "🇸🇨", // Seychelles
+            SL: "🇸🇱", // Sierra Leone
+            SO: "🇸🇴", // Somalia
+            ZA: "🇿🇦", // South Africa
+            SS: "🇸🇸", // South Sudan
+            SD: "🇸🇩", // Sudan
+            SZ: "🇸🇿", // Eswatini (Swaziland)
+            TZ: "🇹🇿", // Tanzania
+            TG: "🇹🇬", // Togo
+            TN: "🇹🇳", // Tunisia
+            UG: "🇺🇬", // Uganda
+            ZM: "🇿🇲", // Zambia
+            ZW: "🇿🇼", // Zimbabwe
+            AU: "🌍", // Africa Union (special case)
+            ZNZ: "🇹🇿", // Zanzibar (uses Tanzania flag)
+        };
+
+        return flagMap[countryCode] || "🏳️";
     };
 
-    // Function to determine region (simplified version)
     const getRegion = (countryName: string): string => {
-        // North Africa
-        const northAfrica = ["Morocco", "Algeria", "Tunisia", "Libya", "Egypt", "Western Sahara", "Mauritania"];
+        const regions = {
+            "North Africa": ["Morocco", "Algeria", "Tunisia", "Libya", "Egypt", "Western Sahara", "Mauritania"],
+            "West Africa": [
+                "Nigeria",
+                "Ghana",
+                "Senegal",
+                "Ivory Coast",
+                "Guinea",
+                "Mali",
+                "Burkina Faso",
+                "Benin",
+                "Niger",
+                "Togo",
+                "Liberia",
+                "Sierra Leone",
+                "Gambia",
+                "Guinea-Bissau",
+                "Cape Verde",
+            ],
+            "East Africa": [
+                "Kenya",
+                "Tanzania",
+                "Uganda",
+                "Ethiopia",
+                "Rwanda",
+                "Burundi",
+                "Somalia",
+                "Djibouti",
+                "Eritrea",
+                "South Sudan",
+                "Sudan",
+                "Seychelles",
+                "Comoros",
+                "Madagascar",
+                "Mauritius",
+                "Zanzibar",
+            ],
+            "Central Africa": [
+                "Cameroon",
+                "Chad",
+                "Central African Republic",
+                "Congo",
+                "Gabon",
+                "Equatorial Guinea",
+                "Sao Tome and Principe",
+                "Democratic Republic of the Congo",
+            ],
+            "Southern Africa": [
+                "South Africa",
+                "Namibia",
+                "Botswana",
+                "Zimbabwe",
+                "Mozambique",
+                "Zambia",
+                "Malawi",
+                "Angola",
+                "Lesotho",
+                "Eswatini",
+            ],
+        };
 
-        // West Africa
-        const westAfrica = [
-            "Nigeria",
-            "Ghana",
-            "Senegal",
-            "Ivory Coast",
-            "Guinea",
-            "Mali",
-            "Burkina Faso",
-            "Benin",
-            "Niger",
-            "Togo",
-            "Liberia",
-            "Sierra Leone",
-            "Gambia",
-            "Guinea-Bissau",
-            "Cape Verde",
-        ];
-
-        // East Africa
-        const eastAfrica = [
-            "Kenya",
-            "Tanzania",
-            "Uganda",
-            "Ethiopia",
-            "Rwanda",
-            "Burundi",
-            "Somalia",
-            "Djibouti",
-            "Eritrea",
-            "South Sudan",
-            "Sudan",
-            "Seychelles",
-            "Comoros",
-            "Madagascar",
-            "Mauritius",
-            "Zanzibar",
-        ];
-
-        // Central Africa
-        const centralAfrica = [
-            "Cameroon",
-            "Chad",
-            "Central African Republic",
-            "Congo",
-            "Gabon",
-            "Equatorial Guinea",
-            "Sao Tome and Principe",
-            "Democratic Republic of the Congo",
-        ];
-
-        // Southern Africa
-        const southernAfrica = [
-            "South Africa",
-            "Namibia",
-            "Botswana",
-            "Zimbabwe",
-            "Mozambique",
-            "Zambia",
-            "Malawi",
-            "Angola",
-            "Lesotho",
-            "Eswatini",
-        ];
-
-        if (northAfrica.includes(countryName)) return "North Africa";
-        if (westAfrica.includes(countryName)) return "West Africa";
-        if (eastAfrica.includes(countryName)) return "East Africa";
-        if (centralAfrica.includes(countryName)) return "Central Africa";
-        if (southernAfrica.includes(countryName)) return "Southern Africa";
+        for (const [region, countries] of Object.entries(regions)) {
+            if (countries.includes(countryName)) return region;
+        }
         if (countryName === "Africa Union") return "Continental";
-
         return "Other";
     };
 
-    // Get unique regions from resources
+    // Get statistics
+    const getStats = () => {
+        const currentResources = resources.filter((r) => r.type === activeTab);
+        const totalCountries = new Set(currentResources.map((r) => r.countryName)).size;
+        const totalDocs = currentResources.length;
+        const latestYear = Math.max(...currentResources.map((r) => parseInt(r.year)).filter((y) => !isNaN(y)));
+
+        return { totalCountries, totalDocs, latestYear };
+    };
+
+    const stats = getStats();
     const regions = ["all", ...new Set(resources.map((resource) => resource.region))].sort();
 
     // Group resources by region
     const groupedResources = filteredResources.reduce((groups, resource) => {
         const { region } = resource;
-        if (!groups[region]) {
-            groups[region] = [];
-        }
+        if (!groups[region]) groups[region] = [];
         groups[region].push(resource);
         return groups;
     }, {} as Record<string, Resource[]>);
 
-    // Sort regions alphabetically, but ensure Continental comes first if it exists
     const sortedRegions = Object.keys(groupedResources).sort((a, b) => {
         if (a === "Continental") return -1;
         if (b === "Continental") return 1;
         return a.localeCompare(b);
     });
 
-    // Resource count badges
     const resourceCounts = {
         [ResourceType.DATA_PROTECTION]: resources.filter((r) => r.type === ResourceType.DATA_PROTECTION).length,
         [ResourceType.DIGITAL_ID]: resources.filter((r) => r.type === ResourceType.DIGITAL_ID).length,
     };
 
-    return (
-        <div className="w-full bg-gray-50 min-h-screen">
-            {/* Page Header */}
+    // Filter component for mobile
+    const FilterSheet = () => (
+        <Sheet open={showMobileFilters} onOpenChange={setShowMobileFilters}>
+            <SheetTrigger asChild>
+                <Button variant="outline" size="sm" className="lg:hidden">
+                    <Filter className="h-4 w-4 mr-2" />
+                    Filters
+                </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="px-4 max-h-fit">
+                <SheetHeader>
+                    <SheetTitle>Filter Resources</SheetTitle>
+                </SheetHeader>
+                <div className="space-y-6 pt-6">
+                    <div>
+                        <label className="text-sm font-medium mb-2 block">Region</label>
+                        <Select value={selectedRegion} onValueChange={setSelectedRegion}>
+                            <SelectTrigger>
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Regions</SelectItem>
+                                {regions
+                                    .filter((r) => r !== "all")
+                                    .map((region) => (
+                                        <SelectItem key={region} value={region}>
+                                            {region}
+                                        </SelectItem>
+                                    ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-            <div className="max-w-7xl mx-auto container px-6 pb-16">
-                {/* Tabs and Filters Row */}
-                <div className="mb-10">
-                    {/* Unified container with consistent styling */}
-                    <div className="bg-white rounded-lg shadow-md p-4 flex flex-col md:flex-row gap-4 items-stretch">
-                        {/* Tabs - now with more compact design */}
-                        <div className="flex-1 min-w-0">
-                            <Tabs
-                                defaultValue={activeTab}
-                                onValueChange={(value) => setActiveTab(value as ResourceType)}
-                                className="w-full"
-                            >
-                                <TabsList className="grid grid-cols-2 h-12">
-                                    <TabsTrigger
-                                        value={ResourceType.DIGITAL_ID}
-                                        className="flex items-center justify-center gap-2 data-[state=active]:shadow-sm"
-                                    >
-                                        <FileDigit className="h-4 w-4" />
-                                        <span>Digital ID</span>
-                                        <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full">
-                                            {resourceCounts[ResourceType.DIGITAL_ID]}
-                                        </span>
-                                    </TabsTrigger>
-                                    <TabsTrigger
-                                        value={ResourceType.DATA_PROTECTION}
-                                        className="flex items-center justify-center gap-2 data-[state=active]:shadow-sm"
-                                    >
-                                        <Shield className="h-4 w-4" />
-                                        <span>Data Protection</span>
-                                        <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full">
-                                            {resourceCounts[ResourceType.DATA_PROTECTION]}
-                                        </span>
-                                    </TabsTrigger>
-                                </TabsList>
-                            </Tabs>
+                    <div>
+                        <label className="text-sm font-medium mb-2 block">Search</label>
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                            <Input
+                                type="text"
+                                placeholder="Search resources..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="pl-9"
+                            />
                         </div>
+                    </div>
 
-                        {/* Search and Filter - aligned with tabs */}
-                        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                            <div className="relative flex-1 min-w-[200px]">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                                <Input
-                                    type="text"
-                                    placeholder="Search resources..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-9 h-11 border-gray-200 min-w-[350px]"
-                                />
-                            </div>
-                            <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-                                <SelectTrigger className="h-20 border-gray-200 min-w-[180px]">
-                                    <SelectValue placeholder="Filter by Region" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Regions</SelectItem>
-                                    {regions
-                                        .filter((r) => r !== "all")
-                                        .map((region) => (
-                                            <SelectItem key={region} value={region}>
-                                                {region}
-                                            </SelectItem>
-                                        ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
+                    <div className="pt-4">
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                setSearchQuery("");
+                                setSelectedRegion("all");
+                                setShowMobileFilters(false);
+                            }}
+                            className="w-full"
+                        >
+                            Clear Filters
+                        </Button>
                     </div>
                 </div>
-                {/* Loading State */}
-                {isLoading && (
-                    <div className="bg-white rounded-lg shadow-md p-16 text-center">
-                        <div className="inline-block w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin mb-4"></div>
-                        <p className="text-xl text-gray-600">Loading resources...</p>
-                    </div>
-                )}
+            </SheetContent>
+        </Sheet>
+    );
 
-                {/* Resources by Region */}
-                <div>
-                    {!isLoading && filteredResources.length === 0 ? (
-                        <div className="bg-white rounded-lg shadow-md p-16 text-center">
-                            <AlertTriangle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
-                            <p className="text-xl text-gray-600 mb-6">
-                                No resources found. Try adjusting your search or filters.
-                            </p>
-                            <Button
-                                variant="outline"
-                                onClick={() => {
-                                    setSearchQuery("");
-                                    setSelectedRegion("all");
-                                }}
-                            >
-                                Clear Filters
-                            </Button>
-                        </div>
-                    ) : (
-                        sortedRegions.map((region) => (
-                            <div key={region} className="mb-10">
-                                <h2 className="text-2xl font-bold text-gray-800 mb-6 pl-3 border-l-4 border-primary flex items-center gap-2">
-                                    {region === "Continental" ? (
-                                        <>
-                                            <Globe className="h-5 w-5 text-primary" />
-                                            <span>Pan-African Resources</span>
-                                        </>
-                                    ) : (
-                                        region
-                                    )}
-                                </h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {groupedResources[region].map((resource) => (
-                                        <ResourceCard key={resource.id} resource={resource} />
-                                    ))}
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
+            <div className="max-w-7xl container mx-auto py-12">
+                {/* Stats Cards */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+                    <Card className="border-0 bg-white/80 backdrop-blur-sm">
+                        <CardContent className="p-4 sm:p-6 text-center">
+                            <div className="text-2xl sm:text-3xl font-bold text-primary mb-1">
+                                {stats.totalCountries}
+                            </div>
+                            <div className="text-xs sm:text-sm text-muted-foreground font-medium">Countries</div>
+                        </CardContent>
+                    </Card>
+                    <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+                        <CardContent className="p-4 sm:p-6 text-center">
+                            <div className="text-2xl sm:text-3xl font-bold text-emerald-600 mb-1">
+                                {stats.totalDocs}
+                            </div>
+                            <div className="text-xs sm:text-sm text-muted-foreground font-medium">Documents</div>
+                        </CardContent>
+                    </Card>
+                    <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+                        <CardContent className="p-4 sm:p-6 text-center">
+                            <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1">{stats.latestYear}</div>
+                            <div className="text-xs sm:text-sm text-muted-foreground font-medium">Latest Year</div>
+                        </CardContent>
+                    </Card>
+                    <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+                        <CardContent className="p-4 sm:p-6 text-center">
+                            <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1">5</div>
+                            <div className="text-xs sm:text-sm text-muted-foreground font-medium">Regions</div>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Main Content */}
+                <Card className="shadow-none border-0 bg-white/90 backdrop-blur-sm overflow-hidden">
+                    <CardHeader className="bg-slate-50 border p-4 sm:p-6 lg:p-8">
+                        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
+                            {/* Tabs */}
+                            <div className="flex-1">
+                                <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as ResourceType)}>
+                                    {/* <TabsList className="grid border grid-cols-2 w-full lg:max-w-4/6 p-0 sm:w-auto"> */}
+                                    <TabsList className="grid grid-cols-1 sm:grid-cols-2 w-full xl:max-w-4/6 h-auto p-0 bg-white border">
+                                        <TabsTrigger
+                                            value={ResourceType.DATA_PROTECTION}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <Shield className="h-4 w-4" />
+                                            <span>Data Protection</span>
+                                            <Badge variant="outline" className="text-xs">
+                                                {resourceCounts[ResourceType.DATA_PROTECTION]}
+                                            </Badge>
+                                        </TabsTrigger>
+                                        <TabsTrigger
+                                            value={ResourceType.DIGITAL_ID}
+                                            className="flex items-center gap-2"
+                                        >
+                                            <FileDigit className="h-4 w-4" />
+                                            <span>Digital ID</span>
+                                            <Badge variant="outline" className="text-xs">
+                                                {resourceCounts[ResourceType.DIGITAL_ID]}
+                                            </Badge>
+                                        </TabsTrigger>
+                                    </TabsList>
+                                </Tabs>
+                            </div>
+
+                            {/* Filters */}
+                            <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                                {/* Mobile filter button */}
+                                <FilterSheet />
+
+                                {/* Desktop filters */}
+                                <div className="hidden lg:flex gap-3">
+                                    <div className="relative">
+                                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                                        <Input
+                                            type="text"
+                                            placeholder="Search resources..."
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            className="pl-9 pr-9 w-80"
+                                        />
+                                        {searchQuery && (
+                                            <button
+                                                onClick={() => setSearchQuery("")}
+                                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                            >
+                                                <X className="h-4 w-4" />
+                                            </button>
+                                        )}
+                                    </div>
+                                    <Select value={selectedRegion} onValueChange={setSelectedRegion}>
+                                        <SelectTrigger className="w-48">
+                                            <SelectValue placeholder="Filter by Region" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Regions</SelectItem>
+                                            {regions
+                                                .filter((r) => r !== "all")
+                                                .map((region) => (
+                                                    <SelectItem key={region} value={region}>
+                                                        {region}
+                                                    </SelectItem>
+                                                ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                             </div>
-                        ))
-                    )}
-                </div>
+                        </div>
+                    </CardHeader>
+
+                    <CardContent className="p-4 sm:p-6 lg:p-8">
+                        {/* Loading State */}
+                        {isLoading && (
+                            <div className="text-center py-16">
+                                <div className="inline-block w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin mb-4"></div>
+                                <p className="text-muted-foreground">Loading resources...</p>
+                            </div>
+                        )}
+
+                        {/* Empty State */}
+                        {!isLoading && filteredResources.length === 0 && (
+                            <div className="text-center py-16">
+                                <AlertTriangle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
+                                <h3 className="text-lg font-semibold text-foreground mb-2">No resources found</h3>
+                                <p className="text-muted-foreground mb-6">
+                                    Try adjusting your search or filters to find what you&apos;re looking for.
+                                </p>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                        setSearchQuery("");
+                                        setSelectedRegion("all");
+                                    }}
+                                >
+                                    Clear Filters
+                                </Button>
+                            </div>
+                        )}
+
+                        {/* Resources Grid */}
+                        {!isLoading && filteredResources.length > 0 && (
+                            <div className="space-y-8">
+                                {sortedRegions.map((region) => (
+                                    <div key={region}>
+                                        <div className="flex items-center gap-3 mb-6">
+                                            <div className="flex items-center gap-2">
+                                                {region === "Continental" ? (
+                                                    <Sparkles className="h-5 w-5 text-primary" />
+                                                ) : (
+                                                    <MapPin className="h-5 w-5 text-muted-foreground" />
+                                                )}
+                                                <h2 className="text-xl sm:text-2xl font-bold text-foreground">
+                                                    {region === "Continental" ? "Pan-African Resources" : region}
+                                                </h2>
+                                            </div>
+                                            <Badge variant="outline" className="text-xs">
+                                                {groupedResources[region].length}{" "}
+                                                {groupedResources[region].length === 1 ? "resource" : "resources"}
+                                            </Badge>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+                                            {groupedResources[region].map((resource) => (
+                                                <ResourceCard key={resource.id} resource={resource} />
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );
 }
 
-// Resource Card Component
+// Enhanced Resource Card Component
 function ResourceCard({ resource }: { resource: Resource }) {
     const getBorderColor = () => {
-        if (resource.type === ResourceType.DATA_PROTECTION) {
-            return "border-t-primary";
+        if (resource.type === ResourceType.DATA_PROTECTION) return "border-t-primary";
+
+        switch (resource.docType) {
+            case DigitalIdDocType.REGISTRATION:
+                return "border-t-purple-500";
+            case DigitalIdDocType.NATIONAL_ID:
+                return "border-t-blue-500";
+            case DigitalIdDocType.IMMIGRATION:
+                return "border-t-amber-500";
+            case DigitalIdDocType.OTHER:
+                return "border-t-orange-500";
+            default:
+                return "border-t-primary";
         }
-        if (resource.type === ResourceType.DIGITAL_ID) {
-            switch (resource.docType) {
-                case DigitalIdDocType.REGISTRATION:
-                    return "border-t-purple-600";
-                case DigitalIdDocType.NATIONAL_ID:
-                    return "border-t-blue-500";
-                case DigitalIdDocType.IMMIGRATION:
-                    return "border-t-amber-500";
-                case DigitalIdDocType.OTHER:
-                    return "border-t-orange-500";
-                default:
-                    return "border-t-blue-500";
-            }
-        }
-        return "border-t-primary";
     };
 
     const isSpecial = resource.region === "Continental";
@@ -606,73 +754,98 @@ function ResourceCard({ resource }: { resource: Resource }) {
     return (
         <Card
             className={cn(
-                "border border-gray-200 overflow-hidden h-full transition-all hover:-translate-y-1 hover:shadow-lg relative group border-t-4",
+                "border-0 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group border-t-4 h-full bg-white/80 backdrop-blur-sm",
                 getBorderColor(),
-                isSpecial && "border-2 border-primary/10 shadow-md"
+                isSpecial && "ring-2 ring-primary/10 shadow-lg"
             )}
         >
             {isSpecial && (
-                <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-blue-500 to-orange-500"></div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-blue-500 to-purple-500"></div>
             )}
 
-            <div className="p-6 flex flex-col h-full">
+            <CardContent className="p-4 sm:p-6 flex flex-col h-full">
                 {/* Header */}
-                <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center gap-2">
-                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-xl">
+                <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center text-lg sm:text-xl shadow-sm">
                             {resource.flagEmoji}
                         </div>
-                        <span className="font-medium text-gray-700">{resource.countryName}</span>
+                        <div>
+                            <div className="font-medium text-foreground text-sm sm:text-base">
+                                {resource.countryName}
+                            </div>
+                            <div className="text-xs text-muted-foreground">{resource.region}</div>
+                        </div>
                     </div>
-                    <span className="text-sm text-gray-500 px-2 py-1 bg-gray-100 rounded">{resource.year}</span>
+                    <div className="flex flex-col items-end gap-1">
+                        <Badge variant="outline" className="text-xs">
+                            <Clock className="h-3 w-3 mr-1" />
+                            {resource.year}
+                        </Badge>
+                        {resource.isOfficial && (
+                            <Badge variant="outline" className="text-xs">
+                                <Check className="h-3 w-3 mr-1" />
+                                Official
+                            </Badge>
+                        )}
+                    </div>
                 </div>
 
                 {/* Title */}
-                <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-start gap-2">
-                    <span className="text-primary mt-1">{resource.icon}</span>
-                    <span>{resource.title}</span>
-                </h3>
+                <div className="mb-3">
+                    <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 flex items-start gap-2 group-hover:text-primary transition-colors">
+                        <span className="text-primary mt-0.5 flex-shrink-0">{resource.icon}</span>
+                        <span className="line-clamp-2">{resource.title}</span>
+                    </h3>
+                </div>
 
                 {/* Description */}
-                <p className="text-gray-600 text-sm mb-6 flex-grow">{resource.description}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-4 flex-grow line-clamp-3">
+                    {resource.description}
+                </p>
 
                 {/* Metadata */}
-                <div className="flex flex-wrap gap-3 mb-6">
-                    <span className="text-xs text-gray-500">
-                        <span className="text-gray-400">Language:</span> {resource.language}
-                    </span>
+                <div className="flex flex-wrap gap-2 mb-4">
+                    <Badge variant="outline" className="text-xs">
+                        🌐 {resource.language}
+                    </Badge>
                     {resource.fileType && (
-                        <span className="text-xs text-gray-500">
-                            <span className="text-gray-400">Format:</span> {resource.fileType}
-                        </span>
+                        <Badge variant="outline" className="text-xs">
+                            📄 {resource.fileType}
+                        </Badge>
                     )}
-                    {resource.isOfficial && (
-                        <span className="text-xs text-primary flex items-center">
-                            <Check className="h-3 w-3 mr-1" /> Official
-                        </span>
+                    {resource.docType && (
+                        <Badge variant="outline" className="text-xs">
+                            {resource.docType === DigitalIdDocType.REGISTRATION && "📋 Registration"}
+                            {resource.docType === DigitalIdDocType.NATIONAL_ID && "🆔 National ID"}
+                            {resource.docType === DigitalIdDocType.IMMIGRATION && "🌍 Immigration"}
+                            {resource.docType === DigitalIdDocType.OTHER && "📋 Framework"}
+                        </Badge>
                     )}
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-3 mt-auto">
+                <div className="flex gap-2 mt-auto">
                     {resource.documentUrl && (
-                        <Button className="flex-1 flex items-center gap-2" asChild>
+                        <Button className="flex-1 text-xs sm:text-sm h-9" asChild>
                             <a href={resource.documentUrl} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-4 w-4" />
-                                <span>View Document</span>
+                                <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5" />
+                                <span className="hidden sm:inline">View Document</span>
+                                <span className="sm:hidden">View</span>
                             </a>
                         </Button>
                     )}
                     {resource.websiteUrl && resource.websiteUrl !== "#" && (
-                        <Button variant="outline" className="flex-1 flex items-center gap-2" asChild>
+                        <Button variant="outline" className="flex-1 text-xs sm:text-sm h-9" asChild>
                             <a href={resource.websiteUrl} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-4 w-4" />
-                                <span>Visit Website</span>
+                                <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5" />
+                                <span className="hidden sm:inline">Website</span>
+                                <span className="sm:hidden">Site</span>
                             </a>
                         </Button>
                     )}
                 </div>
-            </div>
+            </CardContent>
         </Card>
     );
 }
