@@ -30,11 +30,8 @@ export default function Home() {
                 </div>
             </div>
 
-            {/* The rest of the content */}
-            <div className="max-w-7xl container mx-auto px-6">
-                <TabSection />
-                <PolicyHighlightsSection />
-            </div>
+            <TabSection />
+            <PolicyHighlightsSection />
         </div>
     );
 }
