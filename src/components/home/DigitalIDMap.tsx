@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// components/maps/DigitalIDMap.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -7,56 +8,44 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { Loader2, AlertCircle, RefreshCw } from "lucide-react";
 import africanCountries from "@/data/africa.json";
-import digitalIDData from "@/data/digitalIDData.json";
+import { useDigitalIdData } from "@/redux/api/apiSlice";
 
 // Define the color mapping for Digital ID status
-const getColor = (status: string): string => {
-    switch (status) {
-        case "Implemented":
-            return "#10b981";
-        case "Partial":
-            return "#f59e0b";
-        case "Planning":
-            return "#3b82f6";
-        case "None":
-            return "#6b7280";
-        default:
-            return "#d1d5db";
-    }
-};
+// const getColor = (status: string): string => {
+//     switch (status) {
+//         case "Implemented":
+//             return "#10b981";
+//         case "Partial":
+//             return "#f59e0b";
+//         case "Planning":
+//             return "#3b82f6";
+//         case "None":
+//             return "#6b7280";
+//         default:
+//             return "#d1d5db";
+//     }
+// };
 
 // Professional Legend component
-const Legend: React.FC = () => {
-    // Calculate actual stats from digitalIDData
-    const stats = Object.values(digitalIDData).reduce((acc, country: any) => {
-        const status = country.status || "None";
-        acc[status] = (acc[status] || 0) + 1;
-        return acc;
-    }, {} as Record<string, number>);
-
-    // Count countries with biometric systems
-    const biometricCount = Object.values(digitalIDData).filter(
-        (country: any) =>
-            country.features &&
-            country.features.some(
-                (feature: string) =>
-                    feature.toLowerCase().includes("biometric") || feature.toLowerCase().includes("fingerprint")
-            )
-    ).length;
-
+const Legend: React.FC<{ stats: any }> = ({ stats }) => {
     const legendItems = [
-        { status: "Implemented", color: "#10b981", label: "Fully Implemented", count: stats["Implemented"] || 0 },
-        { status: "Partial", color: "#f59e0b", label: "Partially Implemented", count: stats["Partial"] || 0 },
-        { status: "Planning", color: "#3b82f6", label: "In Planning", count: stats["Planning"] || 0 },
-        { status: "None", color: "#6b7280", label: "No System", count: stats["None"] || 0 },
+        { status: "Implemented", color: "#10b981", label: "Fully Implemented", count: stats.implementedSystems },
+        { status: "Partial", color: "#f59e0b", label: "Partially Implemented", count: stats.partialSystems },
+        { status: "Planning", color: "#3b82f6", label: "In Planning", count: stats.planningSystems },
+        { status: "None", color: "#6b7280", label: "No System", count: stats.noSystems },
     ];
 
-    const totalCountriesWithData = Object.keys(digitalIDData).length;
+    // Calculate biometric systems count
+    const biometricCount =
+        stats.digitalIds?.filter((id: any) => id.biometric_capabilities && id.biometric_capabilities.length > 0)
+            .length || 0;
 
     return (
-        <Card className="h-fit shadow-sm border-0 bg-gradient-to-br from-background via-background to-muted/20">
-            <CardHeader>
+        <Card className="h-fit shadow-lg border-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <CardHeader className="pb-4">
                 <CardTitle className="text-base sm:text-lg font-semibold flex items-center gap-3">
                     <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-sm"></div>
                     Digital ID Systems
@@ -66,7 +55,7 @@ const Legend: React.FC = () => {
             <CardContent className="space-y-4">
                 {legendItems.map((item) => (
                     <div key={item.status} className="group">
-                        <div className="flex items-center justify-between md:px-3 md:py-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all duration-200 border border-transparent hover:border-border/50">
+                        <div className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all duration-200 border border-transparent hover:border-border/50">
                             <div className="flex items-center gap-3">
                                 <div
                                     className="w-4 h-4 rounded-full shadow-sm ring-2 ring-white group-hover:scale-110 transition-transform duration-200"
@@ -96,18 +85,19 @@ const Legend: React.FC = () => {
 
                 <Separator className="my-4" />
 
-                <div className="grid grid-cols-2 gap-3">
-                    <div className="flex flex-col items-center p-3 bg-gradient-to-br from-primary/8 to-primary/4 rounded-lg border border-primary/15 hover:border-primary/25 transition-all duration-200">
-                        <div className="text-lg font-bold text-primary mb-1">{totalCountriesWithData}</div>
-                        <div className="text-xs text-muted-foreground font-medium text-center leading-tight">Total Coverage</div>
-                    </div>
-                    
-                    <div className="flex flex-col items-center p-3 bg-gradient-to-br from-purple-500/8 to-purple-500/4 rounded-lg border border-purple-500/15 hover:border-purple-500/25 transition-all duration-200">
-                        <div className="text-lg font-bold text-purple-600 mb-1">{biometricCount}</div>
-                        <div className="text-xs text-muted-foreground font-medium text-center leading-tight">Biometric ID</div>
-                    </div>
+                <div className="text-center p-3 bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg border border-primary/10">
+                    <div className="text-2xl font-bold text-foreground">{stats.totalCountries}</div>
+                    <div className="text-xs text-muted-foreground font-medium">Countries with Data</div>
                 </div>
 
+                {biometricCount > 0 && (
+                    <div className="text-center p-3 bg-gradient-to-r from-purple-500/5 to-pink-500/5 rounded-lg border border-purple-500/10">
+                        <div className="text-xl font-bold text-purple-600">{biometricCount}</div>
+                        <div className="text-xs text-muted-foreground font-medium">Biometric Systems</div>
+                    </div>
+                )}
+
+                <div className="text-xs text-muted-foreground text-center pt-2">Hover over countries for details</div>
             </CardContent>
         </Card>
     );
@@ -116,38 +106,44 @@ const Legend: React.FC = () => {
 const DigitalIDMap: React.FC = () => {
     const [tooltipContent, setTooltipContent] = useState<string>("");
 
+    // Use RTK Query hook with updated structure
+    const {
+        digitalIds,
+        isLoading,
+        error,
+        totalCountries,
+        countriesWithSystems,
+        totalFeatures,
+        countriesWithBiometrics,
+    } = useDigitalIdData();
+
     const handleMouseEnter = (countryName: string) => {
-        const countryData = digitalIDData[countryName as keyof typeof digitalIDData];
+        const countryData = digitalIds.find((id) => id.country === countryName);
 
         if (countryData) {
-            const statusColor = getColor(countryData.status);
+            const statusColor = getColorFromFeatures(countryData.features);
             const featuresHTML = countryData.features
                 .map(
-                    (feature) =>
+                    (feature: string) =>
                         `<span class="inline-block bg-white/90 backdrop-blur-sm border border-white/40 rounded-md px-2 py-1 text-xs font-medium text-gray-700 mr-1 mb-1 shadow-sm">${feature}</span>`
                 )
                 .join(" ");
+
+            const systemStatus = getSystemStatus(countryData);
 
             setTooltipContent(`
                 <div class="font-sans rounded-xl overflow-hidden shadow-2xl bg-white/95 backdrop-blur-lg text-gray-800 w-80 border border-white/30">
                     <div class="relative p-4" style="background: linear-gradient(135deg, ${statusColor}, ${statusColor}dd);">
                         <div class="absolute inset-0 bg-black/10 rounded-t-xl"></div>
                         <div class="relative flex justify-between items-center">
-                            <h3 class="m-0 text-white font-bold text-base tracking-tight drop-shadow-sm">${countryName}</h3>
-                            <span class="bg-white/25 backdrop-blur-sm py-1.5 px-3 rounded-full text-xs text-white font-semibold border border-white/30 shadow-sm">${
-                                countryData.status
-                            }</span>
+                            <h3 class="m-0 text-white font-bold text-base tracking-tight drop-shadow-sm">${
+                                countryData.country
+                            }</h3>
+                            <span class="bg-white/25 backdrop-blur-sm py-1.5 px-3 rounded-full text-xs text-white font-semibold border border-white/30 shadow-sm">${systemStatus}</span>
                         </div>
                     </div>
                     <div class="p-4 space-y-3">
                         <div class="grid grid-cols-1 gap-2">
-                            <div class="flex items-center justify-between py-2 px-3 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 rounded-lg border border-blue-100/50">
-                                <span class="font-semibold text-blue-700 text-xs flex items-center">
-                                    <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                                    Implementation Year
-                                </span>
-                                <span class="text-xs font-bold text-blue-800">${countryData.year}</span>
-                            </div>
                             ${
                                 countryData.authority
                                     ? `
@@ -172,8 +168,36 @@ const DigitalIDMap: React.FC = () => {
                             </div>`
                                     : ""
                             }
+                            ${
+                                countryData.isoAlpha2
+                                    ? `
+                            <div class="flex items-center justify-between py-2 px-3 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 rounded-lg border border-blue-100/50">
+                                <span class="font-semibold text-blue-700 text-xs flex items-center">
+                                    <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                                    Country Code
+                                </span>
+                                <span class="text-xs font-bold text-blue-800">${countryData.isoAlpha2}</span>
+                            </div>`
+                                    : ""
+                            }
                         </div>
                         
+                        ${
+                            countryData.description
+                                ? `
+                        <div class="pt-3 border-t border-gray-100">
+                            <span class="font-semibold text-gray-700 text-xs mb-2 flex items-center">
+                                <div class="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mr-2"></div>
+                                Description
+                            </span>
+                            <p class="text-xs text-gray-600 leading-relaxed">${countryData.description}</p>
+                        </div>`
+                                : ""
+                        }
+                        
+                        ${
+                            countryData.features.length > 0
+                                ? `
                         <div class="pt-3 border-t border-gray-100">
                             <span class="font-semibold text-gray-700 text-xs mb-2 flex items-center">
                                 <div class="w-2 h-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mr-2"></div>
@@ -182,7 +206,24 @@ const DigitalIDMap: React.FC = () => {
                             <div class="flex flex-wrap gap-1">
                                 ${featuresHTML}
                             </div>
-                        </div>
+                        </div>`
+                                : ""
+                        }
+                        
+                        ${
+                            countryData.links && countryData.links.length > 0
+                                ? `
+                        <div class="pt-3 border-t border-gray-100">
+                            <span class="font-semibold text-gray-700 text-xs mb-2 flex items-center">
+                                <div class="w-2 h-2 bg-gradient-to-r from-green-500 to-teal-500 rounded-full mr-2"></div>
+                                Additional Links
+                            </span>
+                            <div class="text-xs text-blue-600">
+                                ${countryData.links.length} reference(s) available
+                            </div>
+                        </div>`
+                                : ""
+                        }
                     </div>
                 </div>
             `);
@@ -208,20 +249,157 @@ const DigitalIDMap: React.FC = () => {
         setTooltipContent("");
     };
 
-    const getCountryStatus = (countryName: string): string => {
-        if (countryName in digitalIDData) {
-            return digitalIDData[countryName as keyof typeof digitalIDData].status;
+    // Helper function to determine system status from features and other data
+    const getSystemStatus = (countryData: any): string => {
+        if (!countryData.features || countryData.features.length === 0) {
+            return "No System";
         }
+
+        // Determine status based on features and coverage
+        const hasAdvancedFeatures = countryData.features.some(
+            (feature: string) =>
+                feature.toLowerCase().includes("biometric") ||
+                feature.toLowerCase().includes("digital") ||
+                feature.toLowerCase().includes("electronic")
+        );
+
+        const hasCoverage = countryData.coverage && countryData.coverage !== "0%";
+
+        if (hasAdvancedFeatures && hasCoverage) {
+            return "Implemented";
+        } else if (hasAdvancedFeatures || hasCoverage) {
+            return "Partial";
+        } else if (countryData.features.length > 0) {
+            return "Planning";
+        }
+
         return "Unknown";
+    };
+
+    const getCountryStatus = (countryName: string): string => {
+        const countryData = digitalIds.find((id) => id.country === countryName);
+        return countryData ? getSystemStatus(countryData) : "Unknown";
+    };
+
+    // Helper function to get color based on features (since we don't have explicit status)
+    const getColorFromFeatures = (features: string[]): string => {
+        if (!features || features.length === 0) {
+            return "#9CA3AF"; // gray-400 for no system
+        }
+
+        const hasAdvancedFeatures = features.some(
+            (feature) =>
+                feature.toLowerCase().includes("biometric") ||
+                feature.toLowerCase().includes("digital") ||
+                feature.toLowerCase().includes("electronic")
+        );
+
+        if (hasAdvancedFeatures) {
+            return "#10B981"; // emerald-500 for implemented
+        } else if (features.length > 2) {
+            return "#F59E0B"; // amber-500 for partial
+        } else if (features.length > 0) {
+            return "#3B82F6"; // blue-500 for planning
+        }
+
+        return "#9CA3AF"; // gray-400 for unknown
+    };
+
+    const getColor = (status: string): string => {
+        switch (status.toLowerCase()) {
+            case "implemented":
+                return "#10B981"; // emerald-500
+            case "partial":
+                return "#F59E0B"; // amber-500
+            case "planning":
+                return "#3B82F6"; // blue-500
+            case "no system":
+                return "#9CA3AF"; // gray-400
+            default:
+                return "#6B7280"; // gray-500
+        }
+    };
+
+    // Loading state
+    if (isLoading) {
+        return (
+            <div className="w-full">
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                    <div className="flex-1">
+                        <div className="w-full h-[300px] sm:h-[400px] lg:h-[500px] xl:h-[550px] rounded-xl bg-muted flex items-center justify-center">
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                                <Loader2 className="h-6 w-6 animate-spin" />
+                                <span>Loading digital ID data...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-full sm:w-72 lg:w-80 flex-shrink-0">
+                        <Card className="h-fit shadow-lg">
+                            <CardContent className="p-6">
+                                <div className="animate-pulse space-y-4">
+                                    <div className="h-4 bg-muted rounded w-3/4"></div>
+                                    <div className="h-8 bg-muted rounded"></div>
+                                    <div className="h-8 bg-muted rounded"></div>
+                                    <div className="h-8 bg-muted rounded"></div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Error state
+    if (error) {
+        return (
+            <div className="w-full">
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                    <div className="flex-1">
+                        <div className="w-full h-[300px] sm:h-[400px] lg:h-[500px] xl:h-[550px] rounded-xl bg-muted flex items-center justify-center">
+                            <div className="text-center">
+                                <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+                                <h3 className="text-lg font-semibold text-foreground mb-2">Failed to load data</h3>
+                                <p className="text-muted-foreground mb-4">
+                                    Unable to fetch digital ID data from the server
+                                </p>
+                                <Button variant="outline" onClick={() => window.location.reload()} className="gap-2">
+                                    <RefreshCw className="h-4 w-4" />
+                                    Retry
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-full sm:w-72 lg:w-80 flex-shrink-0">
+                        <Card className="h-fit shadow-lg">
+                            <CardContent className="p-6 text-center text-muted-foreground">
+                                Data unavailable
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Updated stats object to match new structure
+    const stats = {
+        totalCountries,
+        implementedSystems: digitalIds.filter((id) => getSystemStatus(id) === "Implemented").length,
+        partialSystems: digitalIds.filter((id) => getSystemStatus(id) === "Partial").length,
+        planningSystems: digitalIds.filter((id) => getSystemStatus(id) === "Planning").length,
+        noSystems: digitalIds.filter((id) => getSystemStatus(id) === "No System").length,
+        countriesWithSystems,
+        totalFeatures,
+        countriesWithBiometrics,
+        digitalIds,
     };
 
     return (
         <div className="w-full">
-            {/* Map and Legend Container - Side by side on all screens */}
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-                {/* Map Section - Takes most space */}
                 <div className="flex-1">
-                    <div className="w-full h-[300px] sm:h-[400px] lg:h-[500px] xl:h-[550px] rounded-xl overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/50 border border-border/50 shadow-sm relative group">
+                    <div className="w-full h-[300px] sm:h-[400px] lg:h-[500px] xl:h-[550px] rounded-xl overflow-hidden bg-gradient-to-br from-muted/20 to-accent/20 border relative group">
                         <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 pointer-events-none"></div>
                         <ComposableMap
                             projectionConfig={{
@@ -244,17 +422,15 @@ const DigitalIDMap: React.FC = () => {
                                                 geography={geo}
                                                 fill={fillColor}
                                                 stroke="#ffffff"
-                                                strokeWidth={0.8}
+                                                strokeWidth={0.5}
                                                 style={{
                                                     default: {
                                                         outline: "none",
-                                                        filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.1))",
                                                     },
                                                     hover: {
                                                         fill: "#6366f1",
                                                         outline: "none",
-                                                        filter: "drop-shadow(0 4px 12px rgba(99,102,241,0.3)) brightness(1.05)",
-                                                        transform: "scale(1.02)",
+                                                        filter: "brightness(1.1)",
                                                     },
                                                     pressed: {
                                                         outline: "none",
@@ -265,7 +441,7 @@ const DigitalIDMap: React.FC = () => {
                                                 onMouseLeave={handleMouseLeave}
                                                 data-tooltip-id="id-tooltip"
                                                 data-tooltip-html={tooltipContent}
-                                                className="cursor-pointer transition-all duration-300 ease-out"
+                                                className="cursor-pointer transition-all duration-200 ease-out"
                                             />
                                         );
                                     })
@@ -273,20 +449,17 @@ const DigitalIDMap: React.FC = () => {
                             </Geographies>
                         </ComposableMap>
 
-                        {/* Map watermark */}
                         <div className="absolute bottom-2 left-2 text-xs text-muted-foreground/60 font-medium">
                             Digital ID Implementation
                         </div>
                     </div>
                 </div>
 
-                {/* Legend Section - Fixed width, always beside map */}
                 <div className="w-full sm:w-72 lg:w-80 flex-shrink-0">
-                    <Legend />
+                    <Legend stats={stats} />
                 </div>
             </div>
 
-            {/* Tooltip */}
             <ReactTooltip
                 id="id-tooltip"
                 className="z-50 opacity-100 !bg-transparent"

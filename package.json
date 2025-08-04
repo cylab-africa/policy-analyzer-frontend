@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-dialog": "^1.1.13",
     "@radix-ui/react-navigation-menu": "^1.2.12",
     "@radix-ui/react-scroll-area": "^1.2.8",
@@ -16,6 +17,7 @@
     "@radix-ui/react-separator": "^1.1.6",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tabs": "^1.1.11",
+    "@reduxjs/toolkit": "^2.8.2",
     "@types/react-simple-maps": "^3.0.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -24,9 +26,11 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
+    "react-redux": "^9.2.0",
     "react-simple-maps": "^3.0.0",
     "react-tooltip": "^5.28.1",
     "remark-gfm": "^4.0.1",
+    "sonner": "^2.0.6",
     "tailwind-merge": "^3.2.0"
   },
   "devDependencies": {
