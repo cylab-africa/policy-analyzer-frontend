@@ -16,7 +16,7 @@ function page() {
             <div className="max-w-7xl container mx-auto px-6 mb-20">
                 <ChatPage />
             </div>
-        </>
+        </main>
     );
 }
 
