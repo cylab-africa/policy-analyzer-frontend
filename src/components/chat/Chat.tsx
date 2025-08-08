@@ -159,7 +159,7 @@ export default function ChatPage() {
         let finalSources: string[] = [];
 
         try {
-            const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001";
+            const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://172.29.108.116:8001";
 
             const response = await fetch(`${API_BASE_URL}/api/query_stream`, {
                 method: "POST",
