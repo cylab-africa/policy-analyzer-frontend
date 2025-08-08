@@ -8,7 +8,19 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Clock, MessageSquare, Send, Loader2, AlertCircle, Bot, User } from "lucide-react";
+import {
+    Clock,
+    MessageSquare,
+    Send,
+    Loader2,
+    AlertCircle,
+    Bot,
+    User,
+    X,
+    Menu,
+    ChevronLeft,
+    History,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -34,7 +46,6 @@ interface Message {
 // Generate session ID - client-side only
 const getSessionId = (): string => {
     if (typeof window === "undefined") {
-        // Return a temporary ID during SSR
         return `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
 
@@ -46,6 +57,468 @@ const getSessionId = (): string => {
     return sessionId;
 };
 
+// Chat History Sidebar Component
+function ChatHistorySidebar({
+    showChatHistory,
+    setShowChatHistory,
+    getChatHistory,
+    clearChatHistory,
+    formatTime,
+    isMobile,
+}: {
+    showChatHistory: boolean;
+    setShowChatHistory: (show: boolean) => void;
+    getChatHistory: () => [string, Message[]][];
+    clearChatHistory: () => void;
+    formatTime: (date: Date) => string;
+    isMobile: boolean;
+}) {
+    return (
+        <>
+            {/* Mobile overlay */}
+            {isMobile && showChatHistory && (
+                <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setShowChatHistory(false)} />
+            )}
+
+            {/* Sidebar */}
+            <div
+                className={cn(
+                    "bg-white border-r border-gray-200 flex flex-col transition-all duration-300 z-50",
+                    isMobile ? "fixed left-0 top-0 bottom-0 w-80 transform" : "w-64",
+                    showChatHistory ? "translate-x-0" : isMobile ? "-translate-x-full" : "hidden"
+                )}
+            >
+                <div className="p-4 border-b border-gray-200 flex items-center">
+                    {isMobile && (
+                        <Button variant="ghost" size="sm" className="mr-2" onClick={() => setShowChatHistory(false)}>
+                            <X size={16} />
+                        </Button>
+                    )}
+                    <h2 className="text-lg font-semibold flex items-center gap-2">
+                        <History size={18} />
+                        Chat History
+                    </h2>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="ml-auto flex items-center gap-1 text-xs h-8"
+                        onClick={clearChatHistory}
+                    >
+                        <Clock size={14} />
+                        Clear
+                    </Button>
+                </div>
+
+                <ScrollArea className="flex-1">
+                    {getChatHistory().length > 0 ? (
+                        getChatHistory().map(([date, dateMessages]) => (
+                            <div key={date} className="mb-4 px-2">
+                                <div className="px-2 py-1 text-xs font-semibold text-gray-500 flex items-center gap-2">
+                                    <div className="w-1/3 h-px bg-gray-200" />
+                                    {date}
+                                    <div className="flex-1 h-px bg-gray-200" />
+                                </div>
+                                {dateMessages.map((message) => (
+                                    <div
+                                        key={message.id}
+                                        className="px-3 py-2 mx-1 my-1 rounded-md hover:bg-gray-100 cursor-pointer border-l-2 border-transparent hover:border-primary transition-all"
+                                        onClick={() => {
+                                            const element = document.getElementById(`message-${message.id}`);
+                                            if (element) {
+                                                element.scrollIntoView({ behavior: "smooth" });
+                                            }
+                                            if (isMobile) {
+                                                setShowChatHistory(false);
+                                            }
+                                        }}
+                                    >
+                                        <div className="text-sm font-medium text-gray-800 truncate">
+                                            {message.user.length > 28
+                                                ? `${message.user.substring(0, 28)}...`
+                                                : message.user}
+                                        </div>
+                                        <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                                            <MessageSquare size={12} />
+                                            {formatTime(message.timestamp)}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ))
+                    ) : (
+                        <div className="p-6 text-center text-gray-400 text-sm">No chat history yet</div>
+                    )}
+                </ScrollArea>
+            </div>
+        </>
+    );
+}
+
+// Chat Header Component
+function ChatHeader({
+    activeTab,
+    handleTabChange,
+    showChatHistory,
+    setShowChatHistory,
+    isMobile,
+}: {
+    activeTab: ChatTab;
+    handleTabChange: (tab: ChatTab) => void;
+    showChatHistory: boolean;
+    setShowChatHistory: (show: boolean) => void;
+    isMobile: boolean;
+}) {
+    return (
+        <div className="bg-white border-b border-gray-200 p-3 lg:p-4 flex items-center gap-3">
+            {/* Mobile menu button */}
+            <Button
+                variant="outline"
+                size="sm"
+                className="lg:hidden flex items-center gap-1"
+                onClick={() => setShowChatHistory(!showChatHistory)}
+            >
+                {showChatHistory ? <ChevronLeft size={16} /> : <Menu size={16} />}
+                <span className="sr-only">Toggle menu</span>
+            </Button>
+
+            {/* Tabs */}
+            <Tabs value={activeTab} className="flex-1" onValueChange={(value) => handleTabChange(value as ChatTab)}>
+                <TabsList className="grid w-full max-w-md grid-cols-2 h-9">
+                    <TabsTrigger className="cursor-pointer text-xs sm:text-sm px-2" value={ChatTab.DATA_PROTECTION}>
+                        <span className="hidden sm:inline">Data Protection</span>
+                        <span className="sm:hidden">Data</span>
+                    </TabsTrigger>
+                    <TabsTrigger className="cursor-pointer text-xs sm:text-sm px-2" value={ChatTab.DIGITAL_ID}>
+                        <span className="hidden sm:inline">Digital ID</span>
+                        <span className="sm:hidden">ID</span>
+                    </TabsTrigger>
+                </TabsList>
+            </Tabs>
+
+            {/* Desktop history toggle */}
+            {!isMobile && (
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="hidden lg:flex items-center gap-1"
+                    onClick={() => setShowChatHistory(!showChatHistory)}
+                >
+                    <History size={14} />
+                    {showChatHistory ? "Hide History" : "Show History"}
+                </Button>
+            )}
+        </div>
+    );
+}
+
+// Message Component
+function MessageBubble({ message, formatTime }: { message: Message; formatTime: (date: Date) => string }) {
+    return (
+        <div id={`message-${message.id}`} className="mb-6 px-2 sm:px-4">
+            {/* User Message */}
+            <div className="flex justify-end mb-3">
+                <div className="flex items-start gap-2 max-w-full sm:max-w-3xl">
+                    <Card className="bg-blue-50 border-blue-100 py-3 px-4 shadow-none max-w-full">
+                        <div className="text-gray-800 text-sm sm:text-base break-words">{message.user}</div>
+                        <div className="text-gray-400 text-xs text-right mt-1">{formatTime(message.timestamp)}</div>
+                    </Card>
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+                        <User size={16} className="text-primary" />
+                    </div>
+                </div>
+            </div>
+
+            {/* Bot Message */}
+            {(message.bot || message.isStreaming) && (
+                <div className="flex mb-3">
+                    <div className="flex items-start gap-2 w-full">
+                        <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                            <Bot size={16} className="text-primary" />
+                        </div>
+
+                        <Card
+                            className={cn(
+                                "p-4 sm:p-6 shadow-none flex-1 min-w-0",
+                                message.error ? "bg-red-50 border-red-200" : "bg-white border-gray-200"
+                            )}
+                        >
+                            <div className="prose prose-sm sm:prose prose-gray max-w-none">
+                                <Markdown
+                                    remarkPlugins={[remarkGfm]}
+                                    components={{
+                                        // Responsive typography
+                                        h1: ({ ...props }) => (
+                                            <h1
+                                                className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 mt-4 sm:mt-6 first:mt-0 border-b border-gray-200 pb-2"
+                                                {...props}
+                                            />
+                                        ),
+                                        h2: ({ ...props }) => (
+                                            <h2
+                                                className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 mt-4 sm:mt-5 first:mt-0"
+                                                {...props}
+                                            />
+                                        ),
+                                        h3: ({ ...props }) => (
+                                            <h3
+                                                className="text-sm sm:text-base font-medium text-gray-900 mb-2 mt-3 sm:mt-4 first:mt-0"
+                                                {...props}
+                                            />
+                                        ),
+                                        p: ({ ...props }) => (
+                                            <p
+                                                className="mb-3 sm:mb-4 last:mb-0 text-gray-700 leading-relaxed text-sm sm:text-base"
+                                                {...props}
+                                            />
+                                        ),
+                                        ul: ({ ...props }) => (
+                                            <ul
+                                                className="mb-3 sm:mb-4 space-y-1 sm:space-y-2 pl-4 sm:pl-6 list-disc text-sm sm:text-base"
+                                                {...props}
+                                            />
+                                        ),
+                                        ol: ({ ...props }) => (
+                                            <ol
+                                                className="mb-3 sm:mb-4 space-y-1 sm:space-y-2 pl-4 sm:pl-6 list-decimal text-sm sm:text-base"
+                                                {...props}
+                                            />
+                                        ),
+                                        li: ({ ...props }) => (
+                                            <li className="text-gray-700 leading-relaxed" {...props} />
+                                        ),
+                                        code: ({ className, children, ...props }) => {
+                                            const isInline = !className;
+                                            return isInline ? (
+                                                <code
+                                                    className="bg-gray-100 text-gray-800 px-1 sm:px-1.5 py-0.5 rounded text-xs sm:text-sm font-mono"
+                                                    {...props}
+                                                >
+                                                    {children}
+                                                </code>
+                                            ) : (
+                                                <code
+                                                    className="block bg-gray-900 text-gray-100 p-2 sm:p-4 rounded-lg text-xs sm:text-sm font-mono overflow-x-auto"
+                                                    {...props}
+                                                >
+                                                    {children}
+                                                </code>
+                                            );
+                                        },
+                                        pre: ({ ...props }) => (
+                                            <pre className="mb-3 sm:mb-4 overflow-x-auto" {...props} />
+                                        ),
+                                        blockquote: ({ ...props }) => (
+                                            <blockquote
+                                                className="border-l-4 border-primary pl-3 sm:pl-4 py-2 mb-3 sm:mb-4 bg-blue-50 text-gray-700 italic text-sm sm:text-base"
+                                                {...props}
+                                            />
+                                        ),
+                                        table: ({ ...props }) => (
+                                            <div className="overflow-x-auto mb-3 sm:mb-4">
+                                                <table
+                                                    className="min-w-full border border-gray-300 rounded-lg text-sm"
+                                                    {...props}
+                                                />
+                                            </div>
+                                        ),
+                                        thead: ({ ...props }) => <thead className="bg-gray-50" {...props} />,
+                                        th: ({ ...props }) => (
+                                            <th
+                                                className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-300"
+                                                {...props}
+                                            />
+                                        ),
+                                        td: ({ ...props }) => (
+                                            <td
+                                                className="px-2 sm:px-4 py-2 sm:py-3 text-gray-700 border-b border-gray-200 text-sm"
+                                                {...props}
+                                            />
+                                        ),
+                                        a: ({ ...props }) => (
+                                            <a
+                                                className="text-primary hover:text-primary underline break-words"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                {...props}
+                                            />
+                                        ),
+                                        strong: ({ ...props }) => (
+                                            <strong className="font-semibold text-gray-900" {...props} />
+                                        ),
+                                        em: ({ ...props }) => <em className="italic text-gray-700" {...props} />,
+                                        hr: ({ ...props }) => (
+                                            <hr className="my-4 sm:my-6 border-gray-300" {...props} />
+                                        ),
+                                    }}
+                                >
+                                    {message.bot}
+                                </Markdown>
+
+                                {/* Streaming indicator */}
+                                {message.isStreaming && (
+                                    <div className="flex items-center gap-2 text-gray-600 text-sm mt-3 sm:mt-4 pt-3 border-t border-gray-100 animate-pulse">
+                                        <div className="flex gap-1">
+                                            <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                                            <div
+                                                className="w-2 h-2 bg-primary rounded-full animate-bounce"
+                                                style={{ animationDelay: "0.1s" }}
+                                            ></div>
+                                            <div
+                                                className="w-2 h-2 bg-primary rounded-full animate-bounce"
+                                                style={{ animationDelay: "0.2s" }}
+                                            ></div>
+                                        </div>
+                                        <span className="text-xs font-medium">AI is typing...</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Sources */}
+                            {message.sources && message.sources.length > 0 && (
+                                <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200">
+                                    <div className="text-xs font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
+                                        <div className="w-4 h-4 bg-gray-100 rounded-full flex items-center justify-center">
+                                            <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                                        </div>
+                                        Sources ({message.sources.length})
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-2">
+                                        {message.sources.map((source, index) => (
+                                            <div
+                                                key={index}
+                                                className="bg-gray-50 border border-gray-200 rounded-lg p-2 sm:p-3 text-xs"
+                                            >
+                                                <div className="flex items-start gap-2">
+                                                    <Badge variant="secondary" className="text-xs shrink-0">
+                                                        {index + 1}
+                                                    </Badge>
+                                                    <span className="text-gray-700 break-words text-xs sm:text-sm">
+                                                        {source}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="text-gray-400 text-xs mt-2 sm:mt-3 pt-2 border-t border-gray-100">
+                                {formatTime(message.timestamp)}
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// Welcome Screen Component
+function WelcomeScreen({
+    activeTab,
+    setInput,
+    suggestedQuestions,
+}: {
+    activeTab: ChatTab;
+    setInput: (input: string) => void;
+    suggestedQuestions: Record<ChatTab, string[]>;
+}) {
+    return (
+        <div className="h-full flex flex-col items-center justify-center text-center p-4 sm:p-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">
+                {activeTab === ChatTab.DATA_PROTECTION
+                    ? "Ask me about Data Protection policies in Africa"
+                    : "Ask me about Digital ID systems in Africa"}
+            </h2>
+            <p className="text-gray-600 mb-6 sm:mb-8 max-w-md text-sm sm:text-base">
+                Your AI-powered guide to understanding policies, privacy, and compliance.
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-2 max-w-2xl">
+                {suggestedQuestions[activeTab].map((question, index) => (
+                    <Button
+                        key={index}
+                        variant="outline"
+                        className="rounded-full bg-white text-xs sm:text-sm px-3 sm:px-4 py-2"
+                        onClick={() => setInput(question)}
+                    >
+                        {question}
+                    </Button>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+// Error Alert Component
+function ErrorAlert({
+    streamError,
+    setStreamError,
+}: {
+    streamError: string | null;
+    setStreamError: (error: string | null) => void;
+}) {
+    if (!streamError) return null;
+
+    return (
+        <div className="p-3 sm:p-4 bg-red-50 border-b border-red-200">
+            <div className="flex items-center gap-2 text-red-700">
+                <AlertCircle size={16} />
+                <span className="text-sm flex-1">Connection error: {streamError}</span>
+                <Button variant="outline" size="sm" onClick={() => setStreamError(null)} className="shrink-0">
+                    Dismiss
+                </Button>
+            </div>
+        </div>
+    );
+}
+
+// Input Area Component
+function ChatInput({
+    input,
+    setInput,
+    handleSend,
+    isStreaming,
+    activeTab,
+}: {
+    input: string;
+    setInput: (input: string) => void;
+    handleSend: (e?: React.FormEvent) => void;
+    isStreaming: boolean;
+    activeTab: ChatTab;
+}) {
+    return (
+        <div className="p-3 sm:p-4 border-t border-gray-200 bg-white">
+            <form onSubmit={handleSend} className="flex items-center max-w-4xl mx-auto">
+                <div className="flex-1 relative">
+                    <Input
+                        type="text"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        placeholder={
+                            activeTab === ChatTab.DATA_PROTECTION
+                                ? "Ask about data protection policies..."
+                                : "Ask about digital ID systems..."
+                        }
+                        className="pr-12 py-4 sm:py-6 border-gray-300 shadow-sm rounded-lg text-sm sm:text-base"
+                        disabled={isStreaming}
+                    />
+                    <Button
+                        type="submit"
+                        disabled={!input.trim() || isStreaming}
+                        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md h-8 w-8 p-0"
+                    >
+                        {isStreaming ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                    </Button>
+                </div>
+            </form>
+            <p className="text-center text-xs text-amber-600 mt-2 max-w-4xl mx-auto">
+                Note: The AI can make mistakes. Check important information
+            </p>
+        </div>
+    );
+}
+
 // Main Chat Page Component
 export default function ChatPage() {
     const [activeTab, setActiveTab] = useState<ChatTab>(ChatTab.DATA_PROTECTION);
@@ -55,10 +528,25 @@ export default function ChatPage() {
     const [showChatHistory, setShowChatHistory] = useState<boolean>(true);
     const [sessionId, setSessionId] = useState<string>("");
     const [streamError, setStreamError] = useState<string | null>(null);
+    const [isMobile, setIsMobile] = useState<boolean>(false);
 
     const chatBodyRef = useRef<HTMLDivElement>(null);
     const abortControllerRef = useRef<AbortController | null>(null);
     const accumulatedResponseRef = useRef<string>("");
+
+    // Check if mobile
+    useEffect(() => {
+        const checkIsMobile = () => {
+            setIsMobile(window.innerWidth < 1024);
+            if (window.innerWidth < 1024) {
+                setShowChatHistory(false);
+            }
+        };
+
+        checkIsMobile();
+        window.addEventListener("resize", checkIsMobile);
+        return () => window.removeEventListener("resize", checkIsMobile);
+    }, []);
 
     // Initialize session ID on client side
     useEffect(() => {
@@ -67,7 +555,7 @@ export default function ChatPage() {
 
     // Load chat history from session storage
     useEffect(() => {
-        if (!sessionId) return; // Wait for sessionId to be set
+        if (!sessionId) return;
 
         const savedChats = sessionStorage.getItem(`chatHistory_${sessionId}`);
         if (savedChats) {
@@ -128,7 +616,7 @@ export default function ChatPage() {
         return Object.entries(groupedMessages);
     };
 
-    // Stream handler for backend integration
+    // Stream handler for backend integration (keeping original functionality intact)
     const handleStreamResponse = async (query: string) => {
         // Prevent multiple simultaneous requests
         if (isStreaming) return;
@@ -187,7 +675,6 @@ export default function ChatPage() {
 
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
-            // let finalSources: string[] = []; // <-- removed from here
 
             // Read the stream
             let streamCompleted = false;
@@ -373,414 +860,61 @@ export default function ChatPage() {
     };
 
     return (
-        <Card className="p-4 shadow-md">
-            <div className="flex min-h-[80vh] bg-gray-50">
+        <Card className="p-0 shadow-md overflow-hidden">
+            <div className="flex min-h-[80vh] lg:min-h-[85vh] bg-gray-50 relative">
                 {/* Chat History Sidebar */}
-                <div
-                    className={cn(
-                        "w-64 bg-white border-r border-gray-200 flex flex-col transition-all duration-300",
-                        showChatHistory ? "block" : "hidden"
-                    )}
-                >
-                    <div className="p-4 border-b border-gray-200 flex items-center">
-                        <h2 className="text-lg font-semibold">Chat History</h2>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="ml-auto flex items-center gap-1 text-xs h-8"
-                            onClick={clearChatHistory}
-                        >
-                            <Clock size={14} />
-                            Clear
-                        </Button>
-                    </div>
-
-                    <ScrollArea className="flex-1">
-                        {getChatHistory().length > 0 ? (
-                            getChatHistory().map(([date, dateMessages]) => (
-                                <div key={date} className="mb-4 px-2">
-                                    <div className="px-2 py-1 text-xs font-semibold text-gray-500 flex items-center gap-2">
-                                        <div className="w-1/3 h-px bg-gray-200" />
-                                        {date}
-                                        <div className="flex-1 h-px bg-gray-200" />
-                                    </div>
-                                    {dateMessages.map((message) => (
-                                        <div
-                                            key={message.id}
-                                            className="px-3 py-2 mx-1 my-1 rounded-md hover:bg-gray-100 cursor-pointer border-l-2 border-transparent hover:border-primary transition-all"
-                                            onClick={() => {
-                                                const element = document.getElementById(`message-${message.id}`);
-                                                if (element) {
-                                                    element.scrollIntoView({ behavior: "smooth" });
-                                                }
-                                            }}
-                                        >
-                                            <div className="text-sm font-medium text-gray-800 truncate">
-                                                {message.user.length > 32
-                                                    ? `${message.user.substring(0, 32)}...`
-                                                    : message.user}
-                                            </div>
-                                            <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                                                <MessageSquare size={12} />
-                                                {formatTime(message.timestamp)}
-                                                {/* {message.sources && (
-                                                    <Badge variant="secondary" className="text-xs px-1">
-                                                        {message.sources.length}
-                                                    </Badge>
-                                                )} */}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ))
-                        ) : (
-                            <div className="p-6 text-center text-gray-400 text-sm">No chat history yet</div>
-                        )}
-                    </ScrollArea>
-                </div>
+                <ChatHistorySidebar
+                    showChatHistory={showChatHistory}
+                    setShowChatHistory={setShowChatHistory}
+                    getChatHistory={getChatHistory}
+                    clearChatHistory={clearChatHistory}
+                    formatTime={formatTime}
+                    isMobile={isMobile}
+                />
 
                 {/* Main Content */}
-                <div className="flex-1 flex flex-col">
+                <div className="flex-1 flex flex-col min-w-0">
                     {/* Header */}
-                    <div className="bg-white border-b border-gray-200 p-2 flex items-center">
-                        <Tabs
-                            value={activeTab}
-                            className="w-full"
-                            onValueChange={(value) => handleTabChange(value as ChatTab)}
-                        >
-                            <TabsList className="grid w-[400px] grid-cols-2">
-                                <TabsTrigger className="cursor-pointer" value={ChatTab.DATA_PROTECTION}>
-                                    Data Protection
-                                </TabsTrigger>
-                                <TabsTrigger className="cursor-pointer" value={ChatTab.DIGITAL_ID}>
-                                    Digital ID
-                                </TabsTrigger>
-                            </TabsList>
-                        </Tabs>
-
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="ml-auto mr-2"
-                            onClick={() => setShowChatHistory(!showChatHistory)}
-                        >
-                            {showChatHistory ? "Hide History" : "Show History"}
-                        </Button>
-                    </div>
+                    <ChatHeader
+                        activeTab={activeTab}
+                        handleTabChange={handleTabChange}
+                        showChatHistory={showChatHistory}
+                        setShowChatHistory={setShowChatHistory}
+                        isMobile={isMobile}
+                    />
 
                     {/* Error Alert */}
-                    {streamError && (
-                        <div className="p-4 bg-red-50 border-b border-red-200">
-                            <div className="flex items-center gap-2 text-red-700">
-                                <AlertCircle size={16} />
-                                <span className="text-sm">Connection error: {streamError}</span>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setStreamError(null)}
-                                    className="ml-auto"
-                                >
-                                    Dismiss
-                                </Button>
-                            </div>
-                        </div>
-                    )}
+                    <ErrorAlert streamError={streamError} setStreamError={setStreamError} />
 
                     {/* Chat Area */}
-                    <div ref={chatBodyRef} className="flex-1 overflow-y-auto p-4 bg-gray-50">
+                    <div
+                        ref={chatBodyRef}
+                        className="flex-1 overflow-y-auto bg-gray-50"
+                        style={{ maxHeight: "calc(100vh - 200px)" }}
+                    >
                         {getFilteredMessages().length === 0 ? (
-                            <div className="h-full flex flex-col items-center justify-center text-center p-6">
-                                <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                                    {activeTab === ChatTab.DATA_PROTECTION
-                                        ? "Ask me about Data Protection policies in Africa"
-                                        : "Ask me about Digital ID systems in Africa"}
-                                </h2>
-                                <p className="text-gray-600 mb-8 max-w-md">
-                                    Your AI-powered guide to understanding policies, privacy, and compliance.
-                                </p>
-
-                                <div className="flex flex-wrap justify-center gap-2 max-w-2xl">
-                                    {suggestedQuestions[activeTab].map((question, index) => (
-                                        <Button
-                                            key={index}
-                                            variant="outline"
-                                            className="rounded-full bg-white"
-                                            onClick={() => setInput(question)}
-                                        >
-                                            {question}
-                                        </Button>
-                                    ))}
-                                </div>
-                            </div>
+                            <WelcomeScreen
+                                activeTab={activeTab}
+                                setInput={setInput}
+                                suggestedQuestions={suggestedQuestions}
+                            />
                         ) : (
-                            <div className="w-full mx-auto">
+                            <div className="w-full mx-auto py-2 sm:py-4">
                                 {getFilteredMessages().map((message) => (
-                                    <div key={message.id} id={`message-${message.id}`} className="mb-6">
-                                        {/* User Message */}
-                                        <div className="flex justify-end mb-3">
-                                            <div className="flex items-start gap-2 max-w-3xl">
-                                                <Card className="bg-blue-50 border-blue-100 py-3 px-4 shadow-none">
-                                                    <div className="text-gray-800">{message.user}</div>
-                                                    <div className="text-gray-400 text-xs text-right">
-                                                        {formatTime(message.timestamp)}
-                                                    </div>
-                                                </Card>
-                                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                                    <User size={16} className="text-primary" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Bot Message */}
-                                        {(message.bot || message.isStreaming) && (
-                                            <div className="flex mb-3">
-                                                <div className="flex items-start gap-2">
-                                                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-                                                        <Bot size={16} className="text-primary" />
-                                                    </div>
-
-                                                    <Card
-                                                        className={cn(
-                                                            "p-8 shadow-none w-full",
-                                                            message.error
-                                                                ? "bg-red-50 border-red-200"
-                                                                : "bg-white border-gray-200"
-                                                        )}
-                                                    >
-                                                        <div className="prose prose-gray max-w-none">
-                                                            <Markdown
-                                                                remarkPlugins={[remarkGfm]}
-                                                                components={{
-                                                                    // Headings
-                                                                    h1: ({ ...props }) => (
-                                                                        <h1
-                                                                            className="text-xl font-bold text-gray-900 mb-4 mt-6 first:mt-0 border-b border-gray-200 pb-2"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    h2: ({ ...props }) => (
-                                                                        <h2
-                                                                            className="text-lg font-semibold text-gray-900 mb-3 mt-5 first:mt-0"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    h3: ({ ...props }) => (
-                                                                        <h3
-                                                                            className="text-md font-medium text-gray-900 mb-2 mt-4 first:mt-0"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    // Paragraphs
-                                                                    p: ({ ...props }) => (
-                                                                        <p
-                                                                            className="mb-4 last:mb-0 text-gray-700 leading-relaxed"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    // Lists
-                                                                    ul: ({ ...props }) => (
-                                                                        <ul
-                                                                            className="mb-4 space-y-2 pl-6 list-disc"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    ol: ({ ...props }) => (
-                                                                        <ol
-                                                                            className="mb-4 space-y-2 pl-6 list-decimal"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    li: ({ ...props }) => (
-                                                                        <li
-                                                                            className="text-gray-700 leading-relaxed"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    // Code blocks
-                                                                    code: ({ className, children, ...props }) => {
-                                                                        const isInline = !className;
-                                                                        return isInline ? (
-                                                                            <code
-                                                                                className="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono"
-                                                                                {...props}
-                                                                            >
-                                                                                {children}
-                                                                            </code>
-                                                                        ) : (
-                                                                            <code
-                                                                                className="block bg-gray-900 text-gray-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"
-                                                                                {...props}
-                                                                            >
-                                                                                {children}
-                                                                            </code>
-                                                                        );
-                                                                    },
-                                                                    pre: ({ ...props }) => (
-                                                                        <pre
-                                                                            className="mb-4 overflow-x-auto"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    // Blockquotes
-                                                                    blockquote: ({ ...props }) => (
-                                                                        <blockquote
-                                                                            className="border-l-4 border-primary pl-4 py-2 mb-4 bg-blue-50 text-gray-700 italic"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    // Tables
-                                                                    table: ({ ...props }) => (
-                                                                        <div className="overflow-x-auto mb-4">
-                                                                            <table
-                                                                                className="min-w-full border border-gray-300 rounded-lg"
-                                                                                {...props}
-                                                                            />
-                                                                        </div>
-                                                                    ),
-                                                                    thead: ({ ...props }) => (
-                                                                        <thead className="bg-gray-50" {...props} />
-                                                                    ),
-                                                                    th: ({ ...props }) => (
-                                                                        <th
-                                                                            className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-300"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    td: ({ ...props }) => (
-                                                                        <td
-                                                                            className="px-4 py-3 text-gray-700 border-b border-gray-200"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    // Links
-                                                                    a: ({ ...props }) => (
-                                                                        <a
-                                                                            className="text-primary over:text-primary underline"
-                                                                            target="_blank"
-                                                                            rel="noopener noreferrer"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    // Emphasis
-                                                                    strong: ({ ...props }) => (
-                                                                        <strong
-                                                                            className="font-semibold text-gray-900"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    em: ({ ...props }) => (
-                                                                        <em
-                                                                            className="italic text-gray-700"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                    // Horizontal rule
-                                                                    hr: ({ ...props }) => (
-                                                                        <hr
-                                                                            className="my-6 border-gray-300"
-                                                                            {...props}
-                                                                        />
-                                                                    ),
-                                                                }}
-                                                            >
-                                                                {message.bot}
-                                                            </Markdown>
-
-                                                            {/* Streaming indicator */}
-                                                            {message.isStreaming && (
-                                                                <div className="flex items-center gap-2 text-gray-600 text-sm mt-4 pt-3 border-t border-gray-100 animate-pulse">
-                                                                    <div className="flex gap-1">
-                                                                        <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                                                                        <div
-                                                                            className="w-2 h-2 bg-primary rounded-full animate-bounce"
-                                                                            style={{ animationDelay: "0.1s" }}
-                                                                        ></div>
-                                                                        <div
-                                                                            className="w-2 h-2 bg-primary rounded-full animate-bounce"
-                                                                            style={{ animationDelay: "0.2s" }}
-                                                                        ></div>
-                                                                    </div>
-                                                                    <span className="text-xs font-medium">
-                                                                        AI is typing...
-                                                                    </span>
-                                                                </div>
-                                                            )}
-                                                        </div>
-
-                                                        {/* Sources */}
-                                                        {message.sources && message.sources.length > 0 && (
-                                                            <div className="mt-4 pt-4 border-t border-gray-200">
-                                                                <div className="text-xs font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                                                                    <div className="w-4 h-4 bg-gray-100 rounded-full flex items-center justify-center">
-                                                                        <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                                                                    </div>
-                                                                    Sources ({message.sources.length})
-                                                                </div>
-                                                                <div className="grid grid-cols-1 gap-2">
-                                                                    {message.sources.map((source, index) => (
-                                                                        <div
-                                                                            key={index}
-                                                                            className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-xs"
-                                                                        >
-                                                                            <div className="flex items-start gap-2">
-                                                                                <Badge
-                                                                                    variant="secondary"
-                                                                                    className="text-xs shrink-0"
-                                                                                >
-                                                                                    {index + 1}
-                                                                                </Badge>
-                                                                                <span className="text-gray-700 break-words">
-                                                                                    {source}
-                                                                                </span>
-                                                                            </div>
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        <div className="text-gray-400 text-xs mt-3 pt-2 border-t border-gray-100">
-                                                            {formatTime(message.timestamp)}
-                                                        </div>
-                                                    </Card>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
+                                    <MessageBubble key={message.id} message={message} formatTime={formatTime} />
                                 ))}
                             </div>
                         )}
                     </div>
 
                     {/* Input Area */}
-                    <div className="p-4 border-t border-gray-200 bg-white">
-                        <form onSubmit={handleSend} className="flex items-center max-w-4xl mx-auto">
-                            <div className="flex-1 relative">
-                                <Input
-                                    type="text"
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    placeholder={
-                                        activeTab === ChatTab.DATA_PROTECTION
-                                            ? "Ask about data protection policies..."
-                                            : "Ask about digital ID systems..."
-                                    }
-                                    className="pr-12 py-6 border-gray-300 shadow-sm rounded-lg"
-                                    disabled={isStreaming}
-                                />
-                                <Button
-                                    type="submit"
-                                    disabled={!input.trim() || isStreaming}
-                                    className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md h-8 w-8 p-0"
-                                >
-                                    {isStreaming ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
-                                </Button>
-                            </div>
-                        </form>
-                        <p className="text-center text-xs text-amber-600 mt-2 max-w-4xl mx-auto">
-                            Note: The AI can make mistakes. Check important information
-                        </p>
-                    </div>
+                    <ChatInput
+                        input={input}
+                        setInput={setInput}
+                        handleSend={handleSend}
+                        isStreaming={isStreaming}
+                        activeTab={activeTab}
+                    />
                 </div>
             </div>
         </Card>
