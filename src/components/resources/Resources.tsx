@@ -148,9 +148,6 @@ export default function ResourcesPage() {
         refetch: refetchDigitalIds,
     } = useGetDigitalIdsQuery({ page: 1, limit: 100 });
 
-    console.log("Digital IDs:", digitalIds);
-    console.log("Policy Laws:", policyLaws);
-
     // Helper functions
     const getCountryCode = (countryName: string): string => {
         const countryMap: Record<string, string> = {
