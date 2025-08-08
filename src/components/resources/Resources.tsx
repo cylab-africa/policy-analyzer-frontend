@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -21,16 +22,13 @@ import {
     Search,
     Shield,
 } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 
-// Import API hooks
+// Import API hooks - you'll need to update these based on your actual API setup
 import {
-    useGetDigitalIdFilesQuery,
     useGetDigitalIdsQuery,
-    useGetPolicyLawFilesQuery,
     useGetPolicyLawsQuery,
-    type DigitalId,
-    type PolicyLaw,
+    // Remove the file-specific queries since they're now included in the main data
 } from "@/redux/api/apiSlice";
 
 // Enum for resource type
@@ -132,11 +130,10 @@ const FLAG_EMOJIS: Record<string, string> = {
 
 export default function ResourcesPage() {
     const [activeTab, setActiveTab] = useState<ResourceType>(ResourceType.DATA_PROTECTION);
-    const [filteredResources, setFilteredResources] = useState<Resource[]>([]);
     const [selectedRegion, setSelectedRegion] = useState<string>("all");
     const [searchQuery, setSearchQuery] = useState<string>("");
 
-    // API queries
+    // API queries - simplified to use only the two main endpoints
     const {
         data: policyLaws = [],
         isLoading: policyLawsLoading,
@@ -145,29 +142,17 @@ export default function ResourcesPage() {
     } = useGetPolicyLawsQuery({ page: 1, limit: 100 });
 
     const {
-        data: policyLawFiles = [],
-        isLoading: policyFilesLoading,
-        error: policyFilesError,
-        refetch: refetchPolicyFiles,
-    } = useGetPolicyLawFilesQuery({ page: 1, limit: 100 });
-
-    const {
         data: digitalIds = [],
         isLoading: digitalIdsLoading,
         error: digitalIdsError,
         refetch: refetchDigitalIds,
     } = useGetDigitalIdsQuery({ page: 1, limit: 100 });
 
-    const {
-        data: digitalIdFiles = [],
-        isLoading: digitalFilesLoading,
-        error: digitalFilesError,
-        refetch: refetchDigitalFiles,
-    } = useGetDigitalIdFilesQuery({ page: 1, limit: 100 });
+    console.log("Digital IDs:", digitalIds);
+    console.log("Policy Laws:", policyLaws);
 
-    // Helper functions - moved before useMemo to avoid initialization errors
+    // Helper functions
     const getCountryCode = (countryName: string): string => {
-        // Create reverse mapping from country name to code
         const countryMap: Record<string, string> = {
             Algeria: "DZ",
             Angola: "AO",
@@ -177,12 +162,16 @@ export default function ResourcesPage() {
             Burundi: "BI",
             Cameroon: "CM",
             "Cape Verde": "CV",
+            "Cabo Verde": "CV",
             "Central African Republic": "CF",
             Chad: "TD",
             Comoros: "KM",
             Congo: "CG",
+            "Republic of Congo": "CG",
             "Democratic Republic of the Congo": "CD",
+            "Democratic Republic of Congo": "CD",
             "Ivory Coast": "CI",
+            "Cote d'Ivoire": "CI",
             Djibouti: "DJ",
             Egypt: "EG",
             "Equatorial Guinea": "GQ",
@@ -191,6 +180,7 @@ export default function ResourcesPage() {
             Ethiopia: "ET",
             Gabon: "GA",
             Gambia: "GM",
+            "The Gambia": "GM",
             Ghana: "GH",
             Guinea: "GN",
             "Guinea-Bissau": "GW",
@@ -210,6 +200,8 @@ export default function ResourcesPage() {
             Nigeria: "NG",
             Rwanda: "RW",
             "São Tomé and Príncipe": "ST",
+            "Sao Tome & Principe": "ST",
+            "Sao Tome and Principe": "ST",
             Senegal: "SN",
             Seychelles: "SC",
             "Sierra Leone": "SL",
@@ -244,21 +236,21 @@ export default function ResourcesPage() {
             "Tanzania",
             "Uganda",
         ];
-
         const centralAfrica = [
             "Angola",
             "Cameroon",
             "Central African Republic",
             "Chad",
             "Republic of the Congo",
+            "Congo",
             "Democratic Republic of the Congo",
+            "Democratic Republic of Congo",
             "Equatorial Guinea",
             "Gabon",
             "São Tomé and Príncipe",
             "Sao Tome and Principe",
             "Sao Tome & Principe",
         ];
-
         const southernAfrica = [
             "Botswana",
             "Eswatini",
@@ -270,7 +262,6 @@ export default function ResourcesPage() {
             "Zambia",
             "Zimbabwe",
         ];
-
         const westAfrica = [
             "Benin",
             "Burkina Faso",
@@ -278,7 +269,9 @@ export default function ResourcesPage() {
             "Cabo Verde",
             "Côte d'Ivoire",
             "Ivory Coast",
+            "Cote d'Ivoire",
             "Gambia",
+            "The Gambia",
             "Ghana",
             "Guinea",
             "Guinea-Bissau",
@@ -291,7 +284,7 @@ export default function ResourcesPage() {
             "Sierra Leone",
             "Togo",
         ];
-        const northAfrica = ["Algeria", "Egypt", "Libya", "Morocco", "Sudan", "Tunisia", "Western Sahara"];
+        const northAfrica = ["Algeria", "Egypt", "Libya", "Morocco", "Sudan", "Tunisia"];
 
         if (northAfrica.includes(countryName)) return "North Africa";
         if (westAfrica.includes(countryName)) return "West Africa";
@@ -311,11 +304,14 @@ export default function ResourcesPage() {
             "Chad",
             "Comoros",
             "Congo",
+            "Republic of Congo",
             "Democratic Republic of the Congo",
+            "Democratic Republic of Congo",
             "Djibouti",
             "Gabon",
             "Guinea",
             "Ivory Coast",
+            "Cote d'Ivoire",
             "Madagascar",
             "Mali",
             "Niger",
@@ -325,7 +321,16 @@ export default function ResourcesPage() {
             "Togo",
         ];
         const arabicCountries = ["Algeria", "Egypt", "Libya", "Mauritania", "Morocco", "Sudan", "Tunisia"];
-        const portugueseCountries = ["Angola", "Cape Verde", "Guinea-Bissau", "Mozambique", "São Tomé and Príncipe"];
+        const portugueseCountries = [
+            "Angola",
+            "Cape Verde",
+            "Cabo Verde",
+            "Guinea-Bissau",
+            "Mozambique",
+            "São Tomé and Príncipe",
+            "Sao Tome and Principe",
+            "Sao Tome & Principe",
+        ];
 
         if (francophoneCountries.includes(countryName)) return "French";
         if (arabicCountries.includes(countryName)) return "Arabic/French";
@@ -363,55 +368,19 @@ export default function ResourcesPage() {
         }
     };
 
-    const getDigitalIdDescription = (docType: string, digitalId: DigitalId): string => {
-        const baseDesc = digitalId.description || "Digital identity system documentation";
-        const features = digitalId.features?.join(", ") || "";
-        const coverage = digitalId.coverage ? ` with ${digitalId.coverage} coverage` : "";
-        const authority = digitalId.authority ? ` managed by ${digitalId.authority}` : "";
-
-        return `${baseDesc}${coverage}${authority}. Features: ${features}`;
-    };
-
-    const getEstimatedYear = (countryCode: string, docType: string): string => {
-        // You can expand this based on actual data or estimates
-        const yearMapping: Record<string, Record<string, string>> = {
-            NG: { digitalIdNational: "2014", digitalIdOther: "2019" },
-            KE: { digitalIdRegistration: "2015" },
-            GH: { digitalIdRegistration: "2012", digitalIdNational: "2017" },
-            // Add more mappings as needed
-        };
-        return yearMapping[countryCode]?.[docType] || "2020";
-    };
-
     // Transform API data into unified resources
     const resources = useMemo(() => {
-        if (!policyLaws || !digitalIds) {
-            return [];
-        }
-
         const allResources: Resource[] = [];
 
         // Process Data Protection Resources
         try {
-            // Create a map of files by country code for quick lookup
-            const filesMap = new Map();
-            if (policyLawFiles && Array.isArray(policyLawFiles)) {
-                policyLawFiles.forEach((file) => {
-                    if (file.isoAlpha2) {
-                        filesMap.set(file.isoAlpha2, file);
-                    }
-                });
-            }
-
             if (Array.isArray(policyLaws)) {
-                policyLaws.forEach((law: PolicyLaw) => {
-                    // Check if we have enacted legislation
+                policyLaws.forEach((law: any) => {
+                    // Only include resources with enacted legislation
                     if (law.dataProtectionLegislationStatus === "Enacted") {
-                        const countryCode = getCountryCode(law.country);
-                        const file = filesMap.get(countryCode);
-
-                        // For now, let's include resources even without files to see if the logic works
+                        const countryCode = law.isoAlpha2 || getCountryCode(law.country);
                         const region = getRegion(law.country);
+
                         const resource: Resource = {
                             id: `dp-${countryCode || law.country.replace(/\s+/g, "")}`,
                             countryCode: countryCode || "",
@@ -421,7 +390,7 @@ export default function ResourcesPage() {
                             title: `${law.country} Data Protection Act`,
                             description: `The official data protection legislation of ${law.country}, enacted in ${law.yearLegislationEnacted}.`,
                             type: ResourceType.DATA_PROTECTION,
-                            documentUrl: file?.link || "#",
+                            documentUrl: law.link || "#",
                             year: law.yearLegislationEnacted || "Unknown",
                             language: getDocumentLanguage(law.country),
                             fileType: "PDF",
@@ -442,16 +411,15 @@ export default function ResourcesPage() {
         // Process Digital ID Resources
         try {
             if (Array.isArray(digitalIds)) {
-                digitalIds.forEach((digitalId: DigitalId) => {
-                    const countryCode = digitalId.isoAlpha2;
+                digitalIds.forEach((digitalId: any) => {
+                    const countryCode = digitalId.isoAlpha2 || getCountryCode(digitalId.country);
                     const region = getRegion(digitalId.country);
 
                     // Process each link in the digital ID record
                     if (digitalId.links && Array.isArray(digitalId.links) && digitalId.links.length > 0) {
-                        digitalId.links.forEach((linkObj, index) => {
-                            if (linkObj.link) {
+                        digitalId.links.forEach((linkObj: any, index: number) => {
+                            if (linkObj.link && linkObj.link.trim() !== "") {
                                 const { icon, title } = getDigitalIdInfo(linkObj.name, digitalId.country);
-                                const description = getDigitalIdDescription(linkObj.name, digitalId);
 
                                 const resource: Resource = {
                                     id: `id-${countryCode}-${linkObj.name}-${index}`,
@@ -460,10 +428,12 @@ export default function ResourcesPage() {
                                     flagEmoji: FLAG_EMOJIS[countryCode] || "🏳️",
                                     region,
                                     title,
-                                    description,
+                                    description:
+                                        digitalId.description ||
+                                        `Digital identity system documentation for ${digitalId.country}`,
                                     type: ResourceType.DIGITAL_ID,
                                     documentUrl: linkObj.link,
-                                    year: getEstimatedYear(countryCode, linkObj.name),
+                                    year: "2020", // You can improve this with actual data
                                     language: getDocumentLanguage(digitalId.country),
                                     fileType: "PDF",
                                     isOfficial: true,
@@ -478,28 +448,30 @@ export default function ResourcesPage() {
                             }
                         });
                     } else {
-                        // Add a resource even without links for debugging
-                        const resource: Resource = {
-                            id: `id-${countryCode}-basic`,
-                            countryCode,
-                            countryName: digitalId.country,
-                            flagEmoji: FLAG_EMOJIS[countryCode] || "🏳️",
-                            region,
-                            title: `${digitalId.country} Digital ID System`,
-                            description: digitalId.description || `Digital identity system in ${digitalId.country}`,
-                            type: ResourceType.DIGITAL_ID,
-                            documentUrl: "#",
-                            year: "2020",
-                            language: getDocumentLanguage(digitalId.country),
-                            fileType: "PDF",
-                            isOfficial: true,
-                            icon: <FileDigit className="h-[18px] w-[18px]" />,
-                            coverage: digitalId.coverage,
-                            authority: digitalId.authority,
-                            features: digitalId.features,
-                        };
+                        // Create a basic resource even without links for countries with digital ID info
+                        if (digitalId.features && digitalId.features.length > 0) {
+                            const resource: Resource = {
+                                id: `id-${countryCode}-basic`,
+                                countryCode,
+                                countryName: digitalId.country,
+                                flagEmoji: FLAG_EMOJIS[countryCode] || "🏳️",
+                                region,
+                                title: `${digitalId.country} Digital ID System`,
+                                description: digitalId.description || `Digital identity system in ${digitalId.country}`,
+                                type: ResourceType.DIGITAL_ID,
+                                documentUrl: "#",
+                                year: "2020",
+                                language: getDocumentLanguage(digitalId.country),
+                                fileType: "System Info",
+                                isOfficial: true,
+                                icon: <FileDigit className="h-[18px] w-[18px]" />,
+                                coverage: digitalId.coverage,
+                                authority: digitalId.authority,
+                                features: digitalId.features,
+                            };
 
-                        allResources.push(resource);
+                            allResources.push(resource);
+                        }
                     }
                 });
             }
@@ -508,20 +480,14 @@ export default function ResourcesPage() {
         }
 
         return allResources;
-    }, [policyLaws?.length, policyLawFiles?.length, digitalIds?.length, digitalIdFiles?.length]);
+    }, [policyLaws, digitalIds]);
 
-    // Debug the filtering process
-    const filteredResourcesData = useMemo(() => {
-        let filtered = resources.filter((resource) => {
-            const matchesTab = resource.type === activeTab;
-            return matchesTab;
-        });
+    // Filter resources based on current tab, region, and search query
+    const filteredResources = useMemo(() => {
+        let filtered = resources.filter((resource) => resource.type === activeTab);
 
         if (selectedRegion !== "all") {
-            filtered = filtered.filter((resource) => {
-                const matchesRegion = resource.region === selectedRegion;
-                return matchesRegion;
-            });
+            filtered = filtered.filter((resource) => resource.region === selectedRegion);
         }
 
         if (searchQuery) {
@@ -539,28 +505,20 @@ export default function ResourcesPage() {
         return filtered;
     }, [resources, activeTab, selectedRegion, searchQuery]);
 
-    // Update filtered resources only when the computed data changes
-    useEffect(() => {
-        setFilteredResources(filteredResourcesData);
-    }, [filteredResourcesData]);
-
-    // Get unique regions from resources - memoized to prevent re-computation
+    // Get unique regions from resources
     const regions = useMemo(() => {
         const uniqueRegions = [...new Set(resources.map((resource) => resource.region))];
-
         const sorted = uniqueRegions
             .filter((region) => region.toLowerCase() !== "other")
             .sort((a, b) => a.localeCompare(b));
 
         const hasOther = uniqueRegions.some((region) => region.toLowerCase() === "other");
-        if (hasOther) {
-            sorted.push("Other");
-        }
+        if (hasOther) sorted.push("Other");
 
         return ["all", ...sorted];
     }, [resources]);
 
-    // Group resources by region - memoized to prevent re-computation
+    // Group resources by region
     const groupedResources = useMemo(() => {
         return filteredResources.reduce((groups, resource) => {
             const { region } = resource;
@@ -572,9 +530,7 @@ export default function ResourcesPage() {
         }, {} as Record<string, Resource[]>);
     }, [filteredResources]);
 
-    console.log("Grouped Resources:", groupedResources);
-
-    // Sort regions - memoized to prevent re-computation
+    // Sort regions
     const sortedRegions = useMemo(() => {
         return Object.keys(groupedResources).sort((a, b) => {
             if (a === "Continental") return -1;
@@ -583,7 +539,7 @@ export default function ResourcesPage() {
         });
     }, [groupedResources]);
 
-    // Resource counts - memoized to prevent re-computation
+    // Resource counts
     const resourceCounts = useMemo(() => {
         return {
             [ResourceType.DATA_PROTECTION]: resources.filter((r) => r.type === ResourceType.DATA_PROTECTION).length,
@@ -591,18 +547,14 @@ export default function ResourcesPage() {
         };
     }, [resources]);
 
-    // Loading state
-    const isLoading = policyLawsLoading || policyFilesLoading || digitalIdsLoading || digitalFilesLoading;
-
-    // Error state
-    const hasError = policyLawsError || policyFilesError || digitalIdsError || digitalFilesError;
+    // Loading and error states
+    const isLoading = policyLawsLoading || digitalIdsLoading;
+    const hasError = policyLawsError || digitalIdsError;
 
     // Retry function
     const handleRetry = () => {
         refetchPolicyLaws();
-        refetchPolicyFiles();
         refetchDigitalIds();
-        refetchDigitalFiles();
     };
 
     return (
@@ -679,8 +631,8 @@ export default function ResourcesPage() {
                                     <SelectItem value="all">All Regions</SelectItem>
                                     {regions
                                         .filter((r) => r !== "all")
-                                        .map((region, idx) => (
-                                            <SelectItem key={`region-${region}-${idx}`} value={region}>
+                                        .map((region, index) => (
+                                            <SelectItem key={index} value={region}>
                                                 {region}
                                             </SelectItem>
                                         ))}
@@ -719,10 +671,7 @@ export default function ResourcesPage() {
                             </div>
                         ) : (
                             sortedRegions.map((region, index) => (
-                                <div
-                                    key={`${index}-${region}-${groupedResources[region].map((r) => r.id).join("-")}`}
-                                    className="mb-10"
-                                >
+                                <div key={index} className="mb-10">
                                     <h2 className="text-2xl font-bold text-gray-800 mb-6 pl-3 border-l-4 border-primary flex items-center gap-2">
                                         {region === "Continental" ? (
                                             <>
@@ -734,8 +683,8 @@ export default function ResourcesPage() {
                                         )}
                                     </h2>
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {groupedResources[region].map((resource, index) => (
-                                            <ResourceCard key={`${index}-${region}`} resource={resource} />
+                                        {groupedResources[region].map((resource, resourceIndex) => (
+                                            <ResourceCard key={resourceIndex} resource={resource} />
                                         ))}
                                     </div>
                                 </div>
@@ -773,7 +722,11 @@ function ResourceCard({ resource }: { resource: Resource }) {
 
     const isSpecial = resource.region === "Continental";
 
-    // console.log("resource", resource);
+    const handleLinkClick = (url: string) => {
+        if (url && url !== "#") {
+            window.open(url, "_blank", "noopener,noreferrer");
+        }
+    };
 
     return (
         <Card
@@ -827,7 +780,7 @@ function ResourceCard({ resource }: { resource: Resource }) {
                                 <div className="flex flex-wrap gap-1 mt-1">
                                     {resource.features.slice(0, 3).map((feature, index) => (
                                         <span
-                                            key={`${resource.id}-feature-${feature}-${index}`}
+                                            key={`${resource.id}-feature-${index}`}
                                             className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-xs"
                                         >
                                             {feature}
@@ -863,22 +816,31 @@ function ResourceCard({ resource }: { resource: Resource }) {
 
                 {/* Actions */}
                 <div className="flex gap-3 mt-auto">
-                    {resource.documentUrl && (
-                        <Button className="flex-1 flex items-center gap-2" asChild>
-                            <a href={resource.documentUrl} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-4 w-4" />
-                                <span>View Document</span>
-                            </a>
+                    {resource.documentUrl && resource.documentUrl !== "#" && (
+                        <Button
+                            className="flex-1 flex items-center gap-2"
+                            onClick={() => handleLinkClick(resource.documentUrl!)}
+                        >
+                            <ExternalLink className="h-4 w-4" />
+                            <span>View Document</span>
                         </Button>
                     )}
                     {resource.websiteUrl && resource.websiteUrl !== "#" && (
-                        <Button variant="outline" className="flex-1 flex items-center gap-2" asChild>
-                            <a href={resource.websiteUrl} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-4 w-4" />
-                                <span>Visit Website</span>
-                            </a>
+                        <Button
+                            variant="outline"
+                            className="flex-1 flex items-center gap-2"
+                            onClick={() => handleLinkClick(resource.websiteUrl!)}
+                        >
+                            <ExternalLink className="h-4 w-4" />
+                            <span>Visit Website</span>
                         </Button>
                     )}
+                    {(!resource.documentUrl || resource.documentUrl === "#") &&
+                        (!resource.websiteUrl || resource.websiteUrl === "#") && (
+                            <Button variant="outline" className="flex-1" disabled>
+                                <span>No Document Available</span>
+                            </Button>
+                        )}
                 </div>
             </div>
         </Card>
