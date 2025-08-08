@@ -58,7 +58,7 @@ export interface ValidationError {
 }
 
 // API endpoints configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://172.29.108.116:8001";
 
 export const apiSlice = createApi({
     reducerPath: "api",
