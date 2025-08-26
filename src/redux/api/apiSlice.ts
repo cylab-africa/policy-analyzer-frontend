@@ -1,24 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Updated types based on your API documentation
+// Updated types based on your actual API data structures
 export interface PolicyLaw {
     country: string;
     yearLegislationEnacted: string;
     malaboConventionStatus: string;
-    name: string;
     dataProtectionLegislationStatus: string;
-    link: string;
+    isoAlpha2: string;
+    flagEmoji: string;
+    links: {
+        title: string;
+        url: string;
+        type: string;
+    }[];
 }
 
 export interface DigitalId {
     country: string;
+    status: string;
     isoAlpha2: string;
-    features: string[];
-    coverage: string;
+    flagEmoji: string;
     authority: string;
     description: string;
-    links: Record<string, any>[];
+    features: string[];
+    year_launched: string;
+    coverage: string;
+    links: {
+        title: string;
+        url: string;
+        type: string;
+    }[];
 }
 
 export interface PolicyLawFile {
@@ -267,25 +279,7 @@ export const {
     useGetRootQuery,
 } = apiSlice;
 
-// export const usePolicyLawData = (params?: { page?: number; limit?: number }) => {
-//     const { data, isLoading, error } = useGetPolicyLawsQuery(params ?? {});
-
-//     return {
-//         policyLaws: data || [],
-//         isLoading,
-//         error,
-//         totalCountries: data?.length || 0,
-//         enactedLaws: data?.filter((law) => law.dataProtectionLegislationStatus === "Enacted").length || 0,
-//         draftLaws: data?.filter((law) => law.dataProtectionLegislationStatus === "Draft").length || 0,
-//         noLaws: data?.filter((law) => law.dataProtectionLegislationStatus === "No Law").length || 0,
-//         malaboSigned:
-//             data?.filter((law) =>
-//                 ["signed", "ratified"].includes(law.malaboConventionStatus?.toLowerCase())
-//             ).length || 0,
-//     };
-// };
-
-// Updated custom hooks for common use cases
+// Updated custom hook for policy law data
 export const usePolicyLawData = (params?: { page?: number; limit?: number }) => {
     const { data, isLoading, error } = useGetPolicyLawsQuery(params ?? {});
 
@@ -293,62 +287,21 @@ export const usePolicyLawData = (params?: { page?: number; limit?: number }) => 
         policyLaws: data || [],
         isLoading,
         error,
-        // Corrected computed values based on actual API structure
         totalCountries: data?.length || 0,
-
-        // Fixed: Check for exact matches of "Enacted" status
         enactedLaws: data?.filter((law) => law.dataProtectionLegislationStatus === "Enacted").length || 0,
-
-        // Fixed: Check for exact matches of "Draft" status
         draftLaws: data?.filter((law) => law.dataProtectionLegislationStatus === "Draft").length || 0,
-
-        // Fixed: Check for exact matches of "No Law" status
         noLaws: data?.filter((law) => law.dataProtectionLegislationStatus === "No Law").length || 0,
-
-        // Added: Count for "Lite" legislation status
         liteLaws: data?.filter((law) => law.dataProtectionLegislationStatus === "Lite").length || 0,
-
-        // Fixed: Check for exact matches of "Ratified" status
         malaboRatified: data?.filter((law) => law.malaboConventionStatus === "Ratified").length || 0,
-
-        // Added: Check for exact matches of "Signed" status
         malaboSigned: data?.filter((law) => law.malaboConventionStatus === "Signed").length || 0,
-
-        // Added: Combined count for countries that have signed OR ratified Malabo Convention
         malaboSignedOrRatified:
             data?.filter((law) => law.malaboConventionStatus === "Signed" || law.malaboConventionStatus === "Ratified")
                 .length || 0,
-
-        // Added: Countries with no Malabo Convention involvement
         malaboNo: data?.filter((law) => law.malaboConventionStatus === "No").length || 0,
     };
 };
-// export const useDigitalIdData = (params?: { page?: number; limit?: number }) => {
-//     const { data, isLoading, error } = useGetDigitalIdsQuery(params ?? {});
 
-//     return {
-//         digitalIds: data || [],
-//         isLoading,
-//         error,
-//         // Computed values based on actual API structure
-//         totalCountries: data?.length || 0,
-//         // Note: Since the API doesn't have explicit status field like your original types,
-//         // you might need to derive status from other fields or update your API
-//         countriesWithSystems: data?.filter((id) => id.features && id.features.length > 0).length || 0,
-//         totalFeatures: data?.reduce((acc, id) => acc + (id.features?.length || 0), 0) || 0,
-//         countriesWithBiometrics:
-//             data?.filter((id) =>
-//                 id.features?.some(
-//                     (feature) =>
-//                         feature.toLowerCase().includes("biometric") ||
-//                         feature.toLowerCase().includes("fingerprint") ||
-//                         feature.toLowerCase().includes("facial")
-//                 )
-//             ).length || 0,
-//     };
-// };
-
-// Improved useDigitalIdData hook with additional computed values
+// Updated custom hook for digital ID data based on your actual data structure
 export const useDigitalIdData = (params?: { page?: number; limit?: number }) => {
     const { data, isLoading, error } = useGetDigitalIdsQuery(params ?? {});
 
@@ -360,13 +313,23 @@ export const useDigitalIdData = (params?: { page?: number; limit?: number }) => 
         // Basic counts
         totalCountries: data?.length || 0,
 
-        // Countries with any digital ID features
-        countriesWithSystems: data?.filter((id) => id.features && id.features.length > 0).length || 0,
+        // Status-based analysis using the exact status values from your color mapping
+        implementedSystems: data?.filter((id) => id.status?.toLowerCase() === "implemented").length || 0,
+        partialSystems: data?.filter((id) => id.status?.toLowerCase() === "partial").length || 0,
+        planningSystems: data?.filter((id) => id.status?.toLowerCase() === "planning").length || 0,
+        noDataSystems: data?.filter((id) => id.status?.toLowerCase() === "no data").length || 0,
 
-        // Total feature count across all countries
+        // Additional status categories that might exist in your data
+        ongoingSystems: data?.filter((id) => id.status === "Ongoing rollout").length || 0,
+        delayedSystems: data?.filter((id) => id.status === "Delayed transition").length || 0,
+        scalingUpSystems: data?.filter((id) => id.status === "Scaling up").length || 0,
+        noSystems: data?.filter((id) => id.status === "No System").length || 0,
+
+        // Feature analysis
         totalFeatures: data?.reduce((acc, id) => acc + (id.features?.length || 0), 0) || 0,
+        countriesWithFeatures: data?.filter((id) => id.features && id.features.length > 0).length || 0,
 
-        // IMPROVED: More comprehensive biometric detection
+        // Biometric capabilities
         countriesWithBiometrics:
             data?.filter((id) =>
                 id.features?.some(
@@ -375,62 +338,49 @@ export const useDigitalIdData = (params?: { page?: number; limit?: number }) => 
                         feature.toLowerCase().includes("fingerprint") ||
                         feature.toLowerCase().includes("facial") ||
                         feature.toLowerCase().includes("iris") ||
-                        feature.toLowerCase().includes("biometric")
+                        feature.toLowerCase().includes("palm")
                 )
             ).length || 0,
 
-        // ADDED: Countries by implementation status
-        implementedSystems:
-            data?.filter((id) => {
-                const coverage = id.coverage?.toLowerCase() || "";
-                const hasFeatures = id.features && id.features.length > 0;
-                const hasHighCoverage = coverage.includes("%") && parseInt(coverage.replace("%", "")) >= 70;
-                const hasAdvancedFeatures = id.features?.some(
+        // Smart card capabilities
+        countriesWithSmartCards:
+            data?.filter((id) =>
+                id.features?.some(
                     (feature) =>
-                        feature.toLowerCase().includes("digital") ||
-                        feature.toLowerCase().includes("biometric") ||
                         feature.toLowerCase().includes("smart") ||
-                        feature.toLowerCase().includes("electronic")
-                );
+                        feature.toLowerCase().includes("chip") ||
+                        feature.toLowerCase().includes("electronic") ||
+                        feature.toLowerCase().includes("microchip")
+                )
+            ).length || 0,
 
-                return (
-                    hasFeatures &&
-                    (hasHighCoverage || hasAdvancedFeatures) &&
-                    coverage !== "none" &&
-                    coverage !== "pilot" &&
-                    coverage !== "planning"
-                );
-            }).length || 0,
+        // Digital services integration
+        countriesWithDigitalServices:
+            data?.filter((id) =>
+                id.features?.some(
+                    (feature) =>
+                        feature.toLowerCase().includes("digital services") ||
+                        feature.toLowerCase().includes("e-services") ||
+                        feature.toLowerCase().includes("online") ||
+                        feature.toLowerCase().includes("mobile") ||
+                        feature.toLowerCase().includes("digital government")
+                )
+            ).length || 0,
 
-        // ADDED: Countries in pilot/partial implementation
-        partialSystems:
-            data?.filter((id) => {
-                const coverage = id.coverage?.toLowerCase() || "";
-                const hasFeatures = id.features && id.features.length > 0;
-                const hasLowCoverage =
-                    coverage.includes("%") &&
-                    parseInt(coverage.replace("%", "")) < 70 &&
-                    parseInt(coverage.replace("%", "")) > 0;
+        // Banking and financial integration
+        countriesWithBankingIntegration:
+            data?.filter((id) =>
+                id.features?.some(
+                    (feature) =>
+                        feature.toLowerCase().includes("banking") ||
+                        feature.toLowerCase().includes("financial") ||
+                        feature.toLowerCase().includes("payment") ||
+                        feature.toLowerCase().includes("sim") ||
+                        feature.toLowerCase().includes("mandatory for sim")
+                )
+            ).length || 0,
 
-                return hasFeatures && (coverage === "pilot" || hasLowCoverage || coverage.includes("limited"));
-            }).length || 0,
-
-        // ADDED: Countries in planning phase
-        planningSystems:
-            data?.filter((id) => {
-                const coverage = id.coverage?.toLowerCase() || "";
-                return coverage === "planning" || coverage === "design phase";
-            }).length || 0,
-
-        // ADDED: Countries with no digital ID system
-        noSystems:
-            data?.filter((id) => {
-                const coverage = id.coverage?.toLowerCase() || "";
-                const hasNoFeatures = !id.features || id.features.length === 0;
-                return coverage === "none" || hasNoFeatures;
-            }).length || 0,
-
-        // ADDED: Coverage analysis
+        // Coverage analysis (based on percentage values in coverage field)
         highCoverageCountries:
             data?.filter((id) => {
                 const coverage = id.coverage || "";
@@ -461,45 +411,40 @@ export const useDigitalIdData = (params?: { page?: number; limit?: number }) => 
                 return false;
             }).length || 0,
 
-        // ADDED: Feature analysis
-        countriesWithSmartCards:
-            data?.filter((id) =>
-                id.features?.some(
-                    (feature) =>
-                        feature.toLowerCase().includes("smart") ||
-                        feature.toLowerCase().includes("chip") ||
-                        feature.toLowerCase().includes("electronic")
-                )
-            ).length || 0,
+        // Countries with specific coverage descriptions
+        countriesWithEnrolledCoverage:
+            data?.filter((id) => {
+                const coverage = id.coverage?.toLowerCase() || "";
+                return coverage.includes("enrolled") || coverage.includes("registered");
+            }).length || 0,
 
-        countriesWithDigitalServices:
-            data?.filter((id) =>
-                id.features?.some(
-                    (feature) =>
-                        feature.toLowerCase().includes("digital services") ||
-                        feature.toLowerCase().includes("e-services") ||
-                        feature.toLowerCase().includes("online") ||
-                        feature.toLowerCase().includes("mobile app")
-                )
-            ).length || 0,
-
-        countriesWithAuthentication:
-            data?.filter((id) =>
-                id.features?.some(
-                    (feature) =>
-                        feature.toLowerCase().includes("authentication") ||
-                        feature.toLowerCase().includes("verification") ||
-                        feature.toLowerCase().includes("digital authentication")
-                )
-            ).length || 0,
-
-        // ADDED: Authority analysis
+        // Authority and governance analysis
         uniqueAuthorities: [...new Set(data?.map((id) => id.authority).filter(Boolean) || [])].length,
 
-        // ADDED: Countries with documentation links
-        countriesWithLinks: data?.filter((id) => id.links && id.links.length > 0).length || 0,
+        // Launch year analysis
+        recentLaunches:
+            data?.filter((id) => {
+                const yearLaunched = id.year_launched || "";
+                const currentYear = new Date().getFullYear();
+                const launchYear = parseInt(yearLaunched.match(/\d{4}/)?.[0] || "0");
+                return launchYear >= currentYear - 5; // Last 5 years
+            }).length || 0,
 
-        // ADDED: Average coverage calculation
+        // Link and documentation analysis
+        countriesWithLinks: data?.filter((id) => id.links && id.links.length > 0).length || 0,
+        totalLinks: data?.reduce((acc, id) => acc + (id.links?.length || 0), 0) || 0,
+
+        // Link type analysis
+        countriesWithAcademicResearch:
+            data?.filter((id) => id.links?.some((link) => link.type === "Academic Research")).length || 0,
+
+        countriesWithPolicyResearch:
+            data?.filter((id) => id.links?.some((link) => link.type === "Policy Research")).length || 0,
+
+        countriesWithDevelopmentPartnerLinks:
+            data?.filter((id) => id.links?.some((link) => link.type === "Development Partner")).length || 0,
+
+        // Average coverage calculation
         averageCoverage: (() => {
             const coverageValues =
                 data
@@ -515,6 +460,28 @@ export const useDigitalIdData = (params?: { page?: number; limit?: number }) => 
             if (coverageValues.length === 0) return 0;
             return Math.round(coverageValues.reduce((sum, val) => sum + val, 0) / coverageValues.length);
         })(),
+
+        // Countries by launch decade
+        launched2020s:
+            data?.filter((id) => {
+                const yearLaunched = id.year_launched || "";
+                const launchYear = parseInt(yearLaunched.match(/\d{4}/)?.[0] || "0");
+                return launchYear >= 2020;
+            }).length || 0,
+
+        launched2010s:
+            data?.filter((id) => {
+                const yearLaunched = id.year_launched || "";
+                const launchYear = parseInt(yearLaunched.match(/\d{4}/)?.[0] || "0");
+                return launchYear >= 2010 && launchYear < 2020;
+            }).length || 0,
+
+        launched2000s:
+            data?.filter((id) => {
+                const yearLaunched = id.year_launched || "";
+                const launchYear = parseInt(yearLaunched.match(/\d{4}/)?.[0] || "0");
+                return launchYear >= 2000 && launchYear < 2010;
+            }).length || 0,
     };
 };
 
