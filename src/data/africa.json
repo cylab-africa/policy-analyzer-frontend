@@ -38319,11 +38319,6 @@
                     "properties": { "type": "Sovereign country", "geounit": "Burkina Faso" }
                 },
                 {
-                    "arcs": [[21]],
-                    "type": "Polygon",
-                    "properties": { "type": "Geo subunit", "geounit": "French Southern and Antarctic Lands" }
-                },
-                {
                     "arcs": [[22, 23, 24]],
                     "type": "Polygon",
                     "properties": { "type": "Sovereign country", "geounit": "Botswana" }
@@ -38336,7 +38331,7 @@
                 {
                     "arcs": [[[31, 32]], [[-20, 33, 34, 35, 36, 37]]],
                     "type": "MultiPolygon",
-                    "properties": { "type": "Sovereign country", "geounit": "Ivory Coast" }
+                    "properties": { "type": "Sovereign country", "geounit": "Côte d'Ivoire" }
                 },
                 {
                     "arcs": [[-30, 38, 39, 40, 41, 42, 43]],
@@ -38361,7 +38356,7 @@
                 {
                     "arcs": [[[57]], [[58]], [[59]], [[60]], [[61]], [[62]], [[63]], [[64]], [[65]]],
                     "type": "MultiPolygon",
-                    "properties": { "type": "Sovereign country", "geounit": "Cape Verde" }
+                    "properties": { "type": "Sovereign country", "geounit": "Cabo Verde" }
                 },
                 {
                     "arcs": [[66, 67, 68, 69]],
@@ -38384,19 +38379,9 @@
                     "properties": { "type": "Sovereign country", "geounit": "Eritrea" }
                 },
                 {
-                    "arcs": [[[93]], [[94]], [[95]], [[96]], [[97]], [[98]], [[99]], [[100]]],
-                    "type": "MultiPolygon",
-                    "properties": { "type": "Geo subunit", "geounit": "Spain" }
-                },
-                {
                     "arcs": [[-68, 101, 102, 103, 104, 105, 106, -91]],
                     "type": "Polygon",
                     "properties": { "type": "Sovereign country", "geounit": "Ethiopia" }
-                },
-                {
-                    "arcs": [[107]],
-                    "type": "Polygon",
-                    "properties": { "type": "Geo subunit", "geounit": "French Southern and Antarctic Lands" }
                 },
                 {
                     "arcs": [[[108]], [[109]], [[-54, 110, 111, -40]]],
@@ -38421,7 +38406,7 @@
                 {
                     "arcs": [[123]],
                     "type": "Polygon",
-                    "properties": { "type": "Geo subunit", "geounit": "Equatorial Guinea" }
+                    "properties": { "type": "Sovereign country", "geounit": "Equatorial Guinea" }
                 },
                 {
                     "arcs": [
@@ -38440,22 +38425,17 @@
                         [[136, 137, -120]]
                     ],
                     "type": "MultiPolygon",
-                    "properties": { "type": "Sovereign country", "geounit": "Guinea Bissau" }
+                    "properties": { "type": "Sovereign country", "geounit": "Guinea-Bissau" }
                 },
                 {
                     "arcs": [[138]],
                     "type": "Polygon",
-                    "properties": { "type": "Geo subunit", "geounit": "Equatorial Guinea" }
+                    "properties": { "type": "Sovereign country", "geounit": "Equatorial Guinea" }
                 },
                 {
                     "arcs": [[-112, 139, -41]],
                     "type": "Polygon",
-                    "properties": { "type": "Geo subunit", "geounit": "Equatorial Guinea" }
-                },
-                {
-                    "arcs": [[140]],
-                    "type": "Polygon",
-                    "properties": { "type": "Geo subunit", "geounit": "French Southern and Antarctic Lands" }
+                    "properties": { "type": "Sovereign country", "geounit": "Equatorial Guinea" }
                 },
                 {
                     "arcs": [[[141]], [[-105, 142, 143, 144, 145, 146]]],
@@ -38508,11 +38488,6 @@
                     "properties": { "type": "Sovereign country", "geounit": "Malawi" }
                 },
                 {
-                    "arcs": [[[189]], [[190]]],
-                    "type": "MultiPolygon",
-                    "properties": { "type": "Geo unit", "geounit": "Mayotte" }
-                },
-                {
                     "arcs": [[191, -25, 192, 193, -3]],
                     "type": "Polygon",
                     "properties": { "type": "Sovereign country", "geounit": "Namibia" }
@@ -38528,11 +38503,6 @@
                     "properties": { "type": "Sovereign country", "geounit": "Nigeria" }
                 },
                 {
-                    "arcs": [[[200]], [[201]], [[202]], [[203]], [[204]]],
-                    "type": "MultiPolygon",
-                    "properties": { "type": "Geo unit", "geounit": "Madeira" }
-                },
-                {
                     "arcs": [[205, -11, -48, 206]],
                     "type": "Polygon",
                     "properties": { "type": "Sovereign country", "geounit": "Rwanda" }
@@ -38540,7 +38510,7 @@
                 {
                     "arcs": [[-76, -187, 207, -160]],
                     "type": "Polygon",
-                    "properties": { "type": "Indeterminate", "geounit": "Western Sahara" }
+                    "properties": { "type": "Sovereign country", "geounit": "Sahrawi Arab Democratic Republic" }
                 },
                 {
                     "arcs": [[[208]], [[209, -92, -107, 210, -26, 211, -150, -86]]],
@@ -38553,16 +38523,6 @@
                     "properties": { "type": "Sovereign country", "geounit": "South Sudan" }
                 },
                 {
-                    "arcs": [[-156, 213]],
-                    "type": "Polygon",
-                    "properties": { "type": "Geo subunit", "geounit": "Spain" }
-                },
-                {
-                    "arcs": [[-158, 214]],
-                    "type": "Polygon",
-                    "properties": { "type": "Geo subunit", "geounit": "Spain" }
-                },
-                {
                     "arcs": [[-166, -121, -138, 215, -123, 216, -185]],
                     "type": "Polygon",
                     "properties": { "type": "Sovereign country", "geounit": "Senegal" }
@@ -38573,34 +38533,24 @@
                     "properties": { "type": "Sovereign country", "geounit": "Sierra Leone" }
                 },
                 {
-                    "arcs": [[219, -102, -67, 220]],
-                    "type": "Polygon",
-                    "properties": { "type": "Indeterminate", "geounit": "Somaliland" }
-                },
-                {
                     "arcs": [[221, -103, -220, 222]],
                     "type": "Polygon",
-                    "properties": { "type": "Geo unit", "geounit": "Puntland" }
-                },
-                {
-                    "arcs": [[223, -143, -104, -222]],
-                    "type": "Polygon",
-                    "properties": { "type": "Geo unit", "geounit": "Somalia" }
+                    "properties": { "type": "Sovereign country", "geounit": "Somalia" }
                 },
                 {
                     "arcs": [[224]],
                     "type": "Polygon",
-                    "properties": { "type": "Geo subunit", "geounit": "Sao Tome and Principe" }
+                    "properties": { "type": "Sovereign country", "geounit": "São Tomé and Príncipe" }
                 },
                 {
                     "arcs": [[225]],
                     "type": "Polygon",
-                    "properties": { "type": "Geo subunit", "geounit": "Sao Tome and Principe" }
+                    "properties": { "type": "Sovereign country", "geounit": "São Tomé and Príncipe" }
                 },
                 {
                     "arcs": [[-172, 226]],
                     "type": "Polygon",
-                    "properties": { "type": "Sovereign country", "geounit": "Swaziland" }
+                    "properties": { "type": "Sovereign country", "geounit": "Eswatini" }
                 },
                 {
                     "arcs": [[-212, -31, -44, -199, -195, -151]],
@@ -38623,11 +38573,6 @@
                     "properties": { "type": "Sovereign country", "geounit": "Tanzania" }
                 },
                 {
-                    "arcs": [[[237]], [[238]], [[239]], [[240]]],
-                    "type": "MultiPolygon",
-                    "properties": { "type": "Geo unit", "geounit": "Zanzibar" }
-                },
-                {
                     "arcs": [[-237, -207, -47, -213, -146]],
                     "type": "Polygon",
                     "properties": { "type": "Sovereign country", "geounit": "Uganda" }
@@ -38635,7 +38580,7 @@
                 {
                     "arcs": [[-173, -227, -171, 241, -193, -24, 242], [-155]],
                     "type": "Polygon",
-                    "properties": { "type": "Geo subunit", "geounit": "South Africa" }
+                    "properties": { "type": "Sovereign country", "geounit": "South Africa" }
                 },
                 {
                     "arcs": [[-188, -175, 243, -192, -2, -50, -236]],

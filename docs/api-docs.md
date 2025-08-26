@@ -94,7 +94,7 @@ type ImplementationStatus =
   | "Implemented"    // Fully operational
   | "Partial"        // Limited deployment
   | "Planning"       // In development phase
-  | "None"          // No system
+  | "None"          // No Data
   | "Unknown";      // Status unclear
 
 type BiometricType = 
