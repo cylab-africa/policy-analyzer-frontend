@@ -860,8 +860,8 @@ export default function ChatPage() {
     };
 
     return (
-        <Card className="p-0 shadow-md overflow-hidden">
-            <div className="flex max-h-[80vh] lg:max-h-[70vh] bg-gray-50 relative">
+        <Card className="p-0 border-0 overflow-hidden bg-white">
+            <div className="flex h-[80vh] relative">
                 {/* Chat History Sidebar */}
                 <ChatHistorySidebar
                     showChatHistory={showChatHistory}
@@ -871,7 +871,6 @@ export default function ChatPage() {
                     formatTime={formatTime}
                     isMobile={isMobile}
                 />
-
                 {/* Main Content */}
                 <div className="flex-1 flex flex-col min-w-0 relative">
                     {/* Header */}
