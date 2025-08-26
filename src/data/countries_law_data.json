@@ -1,442 +1,897 @@
-{
-    "Algeria": {
+[
+    {
+        "country": "Algeria",
         "yearLegislationEnacted": "2018",
-        "dataProtectionLegislationStatus": "Enacted",
         "malaboConventionStatus": "No",
-        "flagEmoji": "🇩🇿",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "DZ",
-        "name": "Algeria"
+        "flagEmoji": "🇩🇿",
+        "links": [
+            {
+                "title": "Algeria Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/algeria/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Algeria Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=DZ",
+                "type": "Data Protection"
+            }
+        ]
     },
-    "Angola": {
-        "flagEmoji": "\ud83c\udde6\ud83c\uddf4",
+    {
+        "country": "Angola",
+        "yearLegislationEnacted": "2011",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "AO",
-        "name": "Angola",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2011",
-        "malaboConventionStatus": "Ratified"
+        "flagEmoji": "🇦🇴",
+        "links": [
+            {
+                "title": "Angola Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/angola/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Angola Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=AO",
+                "type": "Data Protection"
+            }
+        ]
     },
-    "Benin": {
-        "flagEmoji": "\ud83c\udde7\ud83c\uddef",
+    {
+        "country": "Benin",
+        "yearLegislationEnacted": "2009",
+        "malaboConventionStatus": "Signed",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "BJ",
-        "name": "Benin",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2009",
-        "malaboConventionStatus": "Signed"
+        "flagEmoji": "🇧🇯",
+        "links": [
+            {
+                "title": "Benin Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/benin/",
+                "type": "Data Protection"
+            }
+        ]
     },
-    "Botswana": {
-        "flagEmoji": "\ud83c\udde7\ud83c\uddfc",
-        "isoAlpha2": "BW",
-        "name": "Botswana",
-        "dataProtectionLegislationStatus": "Enacted",
+    {
+        "country": "Botswana",
         "yearLegislationEnacted": "2018",
-        "malaboConventionStatus": "No"
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "BW",
+        "flagEmoji": "🇧🇼",
+        "links": [
+            {
+                "title": "Botswana Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/botswana/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Botswana Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=BW",
+                "type": "Data Protection"
+            }
+        ]
     },
-    "Cameroon": {
-        "flagEmoji": "\ud83c\udde8\ud83c\uddf2",
+    {
+        "country": "Burkina Faso",
+        "yearLegislationEnacted": "2021",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "BF",
+        "flagEmoji": "🇧🇫",
+        "links": [
+            {
+                "title": "Burkina Faso Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/burkina-faso/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Burundi",
+        "yearLegislationEnacted": "-",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "No Law",
+        "isoAlpha2": "BI",
+        "flagEmoji": "🇧🇮",
+        "links": [
+            {
+                "title": "Burundi Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/burundi/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Cabo Verde",
+        "yearLegislationEnacted": "2021",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "CV",
+        "flagEmoji": "🇨🇻",
+        "links": [
+            {
+                "title": "Cabo Verde Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/cabo-verde/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Cameroon",
+        "yearLegislationEnacted": "2024",
+        "malaboConventionStatus": "Signed",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "CM",
-        "name": "Cameroon",
-        "dataProtectionLegislationStatus": "No Law",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "Signed"
+        "flagEmoji": "🇨🇲",
+        "links": [
+            {
+                "title": "Cameroon Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/cameroon/",
+                "type": "Data Protection"
+            }
+        ]
     },
-    "Chad": {
-        "flagEmoji": "\ud83c\uddf9\ud83c\udde9",
-        "isoAlpha2": "TD",
-        "name": "Chad",
-        "dataProtectionLegislationStatus": "Enacted",
+    {
+        "country": "Central African Republic",
+        "yearLegislationEnacted": "-",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "No Law",
+        "isoAlpha2": "CF",
+        "flagEmoji": "🇨🇫",
+        "links": [
+            {
+                "title": "Central African Republic Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/central-african-republic/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Chad",
         "yearLegislationEnacted": "2015",
-        "malaboConventionStatus": "Signed"
+        "malaboConventionStatus": "Signed",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "TD",
+        "flagEmoji": "🇹🇩",
+        "links": [
+            {
+                "title": "Chad Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/chad/",
+                "type": "Data Protection"
+            }
+        ]
     },
-    "Democratic Republic of the Congo": {
-        "flagEmoji": "\ud83c\udde8\ud83c\udde9",
+    {
+        "country": "Comoros",
+        "yearLegislationEnacted": "-",
+        "malaboConventionStatus": "Signed",
+        "dataProtectionLegislationStatus": "No Law",
+        "isoAlpha2": "KM",
+        "flagEmoji": "🇰🇲",
+        "links": [
+            {
+                "title": "Comoros Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/comoros/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Democratic Republic of the Congo",
+        "yearLegislationEnacted": "-",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "No Law",
         "isoAlpha2": "CD",
-        "name": "Democratic Republic of the Congo",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "Unknown",
-        "malaboConventionStatus": "Not Signed"
+        "flagEmoji": "🇨🇩",
+        "links": [
+            {
+                "title": "DRC Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/democratic-republic-of-congo/",
+                "type": "Data Protection"
+            }
+        ]
     },
-    "Equatorial Guinea": {
-        "flagEmoji": "\ud83c\uddec\ud83c\uddf6",
-        "isoAlpha2": "GQ",
-        "name": "Equatorial Guinea",
-        "dataProtectionLegislationStatus": "Lite",
-        "yearLegislationEnacted": "2016",
-        "malaboConventionStatus": "No"
-    },
-    "Eswatini": {
-        "flagEmoji": "\ud83c\uddf8\ud83c\uddff",
-        "isoAlpha2": "SZ",
-        "name": "Eswatini",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2022",
-        "malaboConventionStatus": "No"
-    },
-    "Ethiopia": {
-        "flagEmoji": "\ud83c\uddea\ud83c\uddf9",
-        "isoAlpha2": "ET",
-        "name": "Ethiopia",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "No"
-    },
-    "Gambia": {
-        "flagEmoji": "\ud83c\uddec\ud83c\uddf2",
-        "isoAlpha2": "GM",
-        "name": "Gambia",
-        "dataProtectionLegislationStatus": "Draft",
-        "yearLegislationEnacted": "Unknown",
-        "malaboConventionStatus": "Not Signed"
-    },
-    "Ghana": {
-        "flagEmoji": "\ud83c\uddec\ud83c\udded",
-        "isoAlpha2": "GH",
-        "name": "Ghana",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2012",
-        "malaboConventionStatus": "Ratified"
-    },
-    "Guinea": {
-        "flagEmoji": "\ud83c\uddec\ud83c\uddf3",
-        "isoAlpha2": "GN",
-        "name": "Guinea",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2016",
-        "malaboConventionStatus": "Ratified"
-    },
-    "Kenya": {
-        "flagEmoji": "\ud83c\uddf0\ud83c\uddea",
-        "isoAlpha2": "KE",
-        "name": "Kenya",
-        "dataProtectionLegislationStatus": "Enacted",
+    {
+        "country": "Republic of Congo",
         "yearLegislationEnacted": "2019",
-        "malaboConventionStatus": "No"
-    },
-    "Lesotho": {
-        "flagEmoji": "\ud83c\uddf1\ud83c\uddf8",
-        "isoAlpha2": "LS",
-        "name": "Lesotho",
+        "malaboConventionStatus": "Ratified",
         "dataProtectionLegislationStatus": "Lite",
-        "yearLegislationEnacted": "2011",
-        "malaboConventionStatus": "Signed"
+        "isoAlpha2": "CG",
+        "flagEmoji": "🇨🇬",
+        "links": [
+            {
+                "title": "Republic of Congo Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/republic-of-congo/",
+                "type": "Data Protection"
+            }
+        ]
     },
-    "Madagascar": {
-        "flagEmoji": "\ud83c\uddf2\ud83c\uddec",
-        "isoAlpha2": "MG",
-        "name": "Madagascar",
-        "dataProtectionLegislationStatus": "Lite",
-        "yearLegislationEnacted": "2014",
-        "malaboConventionStatus": "No"
-    },
-    "Malawi": {
-        "flagEmoji": "\ud83c\uddf2\ud83c\uddfc",
-        "isoAlpha2": "MW",
-        "name": "Malawi",
-        "dataProtectionLegislationStatus": "Draft",
-        "yearLegislationEnacted": "Draft",
-        "malaboConventionStatus": "No"
-    },
-    "Mali": {
-        "flagEmoji": "\ud83c\uddf2\ud83c\uddf1",
-        "isoAlpha2": "ML",
-        "name": "Mali",
-        "dataProtectionLegislationStatus": "Enacted",
+    {
+        "country": "Cote d'Ivoire",
         "yearLegislationEnacted": "2013",
-        "malaboConventionStatus": "No"
-    },
-    "Mauritania": {
-        "flagEmoji": "\ud83c\uddf2\ud83c\uddf7",
-        "isoAlpha2": "MR",
-        "name": "Mauritania",
+        "malaboConventionStatus": "Ratified",
         "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2017",
-        "malaboConventionStatus": "Ratified"
+        "isoAlpha2": "CI",
+        "flagEmoji": "🇨🇮",
+        "links": [
+            {
+                "title": "Cote d'Ivoire Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/cote-divoire/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Cote d'Ivoire Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=CI",
+                "type": "Data Protection"
+            }
+        ]
     },
-    "Mauritius": {
-        "flagEmoji": "\ud83c\uddf2\ud83c\uddfa",
-        "isoAlpha2": "MU",
-        "name": "Mauritius",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2017",
-        "malaboConventionStatus": "Ratified"
-    },
-    "Morocco": {
-        "flagEmoji": "\ud83c\uddf2\ud83c\udde6",
-        "isoAlpha2": "MA",
-        "name": "Morocco",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2009",
-        "malaboConventionStatus": "No"
-    },
-    "Namibia": {
-        "flagEmoji": "\ud83c\uddf3\ud83c\udde6",
-        "isoAlpha2": "NA",
-        "name": "Namibia",
-        "dataProtectionLegislationStatus": "Draft",
-        "yearLegislationEnacted": "Draft",
-        "malaboConventionStatus": "Ratified"
-    },
-    "Niger": {
-        "flagEmoji": "\ud83c\uddf3\ud83c\uddea",
-        "isoAlpha2": "NE",
-        "name": "Niger",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2017",
-        "malaboConventionStatus": "Ratified"
-    },
-    "Nigeria": {
-        "flagEmoji": "\ud83c\uddf3\ud83c\uddec",
-        "isoAlpha2": "NG",
-        "name": "Nigeria",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2023",
-        "malaboConventionStatus": "Signed"
-    },
-    "Rwanda": {
-        "flagEmoji": "\ud83c\uddf7\ud83c\uddfc",
-        "isoAlpha2": "RW",
-        "name": "Rwanda",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2021",
-        "malaboConventionStatus": "Ratified"
-    },
-    "Senegal": {
-        "flagEmoji": "\ud83c\uddf8\ud83c\uddf3",
-        "isoAlpha2": "SN",
-        "name": "Senegal",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2008",
-        "malaboConventionStatus": "Ratified"
-    },
-    "Seychelles": {
-        "flagEmoji": "\ud83c\uddf8\ud83c\udde8",
-        "isoAlpha2": "SC",
-        "name": "Seychelles",
-        "dataProtectionLegislationStatus": "Lite",
-        "yearLegislationEnacted": "2003",
-        "malaboConventionStatus": "No"
-    },
-    "Somalia": {
-        "flagEmoji": "\ud83c\uddf8\ud83c\uddf4",
-        "isoAlpha2": "SO",
-        "name": "Somalia",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2023",
-        "malaboConventionStatus": "No"
-    },
-    "South Africa": {
-        "flagEmoji": "\ud83c\uddff\ud83c\udde6",
-        "isoAlpha2": "ZA",
-        "name": "South Africa",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2013",
-        "malaboConventionStatus": "Signed"
-    },
-    "Tanzania": {
-        "flagEmoji": "\ud83c\uddf9\ud83c\uddff",
-        "isoAlpha2": "TZ",
-        "name": "Tanzania",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2022",
-        "malaboConventionStatus": "No"
-    },
-    "Tunisia": {
-        "flagEmoji": "\ud83c\uddf9\ud83c\uddf3",
-        "isoAlpha2": "TN",
-        "name": "Tunisia",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2004",
-        "malaboConventionStatus": "Signed"
-    },
-    "Uganda": {
-        "flagEmoji": "\ud83c\uddfa\ud83c\uddec",
-        "isoAlpha2": "UG",
-        "name": "Uganda",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2019",
-        "malaboConventionStatus": "No"
-    },
-    "Zambia": {
-        "flagEmoji": "\ud83c\uddff\ud83c\uddf2",
-        "isoAlpha2": "ZM",
-        "name": "Zambia",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2021",
-        "malaboConventionStatus": "Ratified"
-    },
-    "Zimbabwe": {
-        "flagEmoji": "\ud83c\uddff\ud83c\uddfc",
-        "isoAlpha2": "ZW",
-        "name": "Zimbabwe",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2021",
-        "malaboConventionStatus": "No"
-    },
-    "Burkina Faso": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Burkina Faso",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2004",
-        "malaboConventionStatus": "No"
-    },
-    "Burundi": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Burundi",
-        "dataProtectionLegislationStatus": "No Law",
+    {
+        "country": "Djibouti",
         "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "No"
-    },
-    "Cabo Verde": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Cabo Verde",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2001",
-        "malaboConventionStatus": "Ratified"
-    },
-    "Central African Republic": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Central African Republic",
+        "malaboConventionStatus": "Signed",
         "dataProtectionLegislationStatus": "No Law",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "No"
+        "isoAlpha2": "DJ",
+        "flagEmoji": "🇩🇯",
+        "links": [
+            {
+                "title": "Djibouti Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/djibouti/",
+                "type": "Data Protection"
+            }
+        ]
     },
-    "Ivory Coast": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Cote d'Ivoire",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2013",
-        "malaboConventionStatus": "Ratified"
-    },
-    "Democratic Republic of Congo": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Democratic Republic of Congo",
-        "dataProtectionLegislationStatus": "No Law",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "No"
-    },
-    "Djibouti": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Djibouti",
-        "dataProtectionLegislationStatus": "No Law",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "Signed"
-    },
-    "Egypt": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Egypt",
-        "dataProtectionLegislationStatus": "Lite",
+    {
+        "country": "Egypt",
         "yearLegislationEnacted": "2020",
-        "malaboConventionStatus": "No"
-    },
-    "Eritrea": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Eritrea",
-        "dataProtectionLegislationStatus": "No Law",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "No"
-    },
-    "Gabon": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Gabon",
-        "dataProtectionLegislationStatus": "Enacted",
-        "yearLegislationEnacted": "2011",
-        "malaboConventionStatus": "No"
-    },
-    "Guinea-Bissau": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Guinea-Bissau",
-        "dataProtectionLegislationStatus": "No Law",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "Signed"
-    },
-    "Liberia": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Liberia",
-        "dataProtectionLegislationStatus": "No Law",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "No"
-    },
-    "Libya": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Libya",
-        "dataProtectionLegislationStatus": "No Law",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "No"
-    },
-    "Mozambique": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Mozambique",
-        "dataProtectionLegislationStatus": "No Law",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "Ratified"
-    },
-    "Republic of Congo": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Republic of Congo",
+        "malaboConventionStatus": "No",
         "dataProtectionLegislationStatus": "Lite",
-        "yearLegislationEnacted": "2019",
-        "malaboConventionStatus": "Ratified"
+        "isoAlpha2": "EG",
+        "flagEmoji": "🇪🇬",
+        "links": [
+            {
+                "title": "Egypt Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/egypt/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Egypt Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=EG",
+                "type": "Data Protection"
+            }
+        ]
     },
-    "Sao Tome & Principe": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Sao Tome & Principe",
-        "dataProtectionLegislationStatus": "Enacted",
+    {
+        "country": "Equatorial Guinea",
         "yearLegislationEnacted": "2016",
-        "malaboConventionStatus": "Ratified"
-    },
-    "Sierra Leone": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Sierra Leone",
-        "dataProtectionLegislationStatus": "No Law",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "Signed"
-    },
-    "South Sudan": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "South Sudan",
-        "dataProtectionLegislationStatus": "No Law",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "No"
-    },
-    "Sudan": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Sudan",
-        "dataProtectionLegislationStatus": "No Law",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "Signed"
-    },
-    "The Gambia": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "The Gambia",
-        "dataProtectionLegislationStatus": "No Law",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "Signed"
-    },
-    "Togo": {
-        "flagEmoji": "",
-        "isoAlpha2": "",
-        "name": "Togo",
+        "malaboConventionStatus": "No",
         "dataProtectionLegislationStatus": "Lite",
+        "isoAlpha2": "GQ",
+        "flagEmoji": "🇬🇶",
+        "links": [
+            {
+                "title": "Equatorial Guinea Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/equatorial-guinea/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Eritrea",
+        "yearLegislationEnacted": "-",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "No Law",
+        "isoAlpha2": "ER",
+        "flagEmoji": "🇪🇷",
+        "links": [
+            {
+                "title": "Eritrea Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/eritrea/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Eswatini",
+        "yearLegislationEnacted": "2022",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "SZ",
+        "flagEmoji": "🇸🇿",
+        "links": [
+            {
+                "title": "Eswatini Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/eswatini/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Ethiopia",
+        "yearLegislationEnacted": "2024",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "ET",
+        "flagEmoji": "🇪🇹",
+        "links": [
+            {
+                "title": "Ethiopia Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/ethiopia/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Gabon",
+        "yearLegislationEnacted": "2011",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "GA",
+        "flagEmoji": "🇬🇦",
+        "links": [
+            {
+                "title": "Gabon Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/gabon/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Gambia",
+        "yearLegislationEnacted": "Draft",
+        "malaboConventionStatus": "Signed",
+        "dataProtectionLegislationStatus": "Draft",
+        "isoAlpha2": "GM",
+        "flagEmoji": "🇬🇲",
+        "links": [
+            {
+                "title": "Gambia Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/gambia/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Ghana",
+        "yearLegislationEnacted": "2012",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "GH",
+        "flagEmoji": "🇬🇭",
+        "links": [
+            {
+                "title": "Ghana Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/ghana/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Ghana Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=GH",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Guinea",
+        "yearLegislationEnacted": "2016",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "GN",
+        "flagEmoji": "🇬🇳",
+        "links": [
+            {
+                "title": "Guinea Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/guinea/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Guinea-Bissau",
+        "yearLegislationEnacted": "-",
+        "malaboConventionStatus": "Signed",
+        "dataProtectionLegislationStatus": "No Law",
+        "isoAlpha2": "GW",
+        "flagEmoji": "🇬🇼",
+        "links": [
+            {
+                "title": "Guinea-Bissau Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/guinea-bissau/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Kenya",
         "yearLegislationEnacted": "2019",
-        "malaboConventionStatus": "Ratified"
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "KE",
+        "flagEmoji": "🇰🇪",
+        "links": [
+            {
+                "title": "Kenya Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/kenya/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Kenya Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=KE",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Lesotho",
+        "yearLegislationEnacted": "2011",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Lite",
+        "isoAlpha2": "LS",
+        "flagEmoji": "🇱🇸",
+        "links": [
+            {
+                "title": "Lesotho Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/lesotho/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Liberia",
+        "yearLegislationEnacted": "-",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "No Law",
+        "isoAlpha2": "LR",
+        "flagEmoji": "🇱🇷",
+        "links": [
+            {
+                "title": "Liberia Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/liberia/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Libya",
+        "yearLegislationEnacted": "Draft",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Draft",
+        "isoAlpha2": "LY",
+        "flagEmoji": "🇱🇾",
+        "links": [
+            {
+                "title": "Libya Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/libya/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Madagascar",
+        "yearLegislationEnacted": "2014",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Lite",
+        "isoAlpha2": "MG",
+        "flagEmoji": "🇲🇬",
+        "links": [
+            {
+                "title": "Madagascar Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/madagascar/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Malawi",
+        "yearLegislationEnacted": "2024",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "MW",
+        "flagEmoji": "🇲🇼",
+        "links": [
+            {
+                "title": "Malawi Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/malawi/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Mali",
+        "yearLegislationEnacted": "2013",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "ML",
+        "flagEmoji": "🇲🇱",
+        "links": [
+            {
+                "title": "Mali Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/mali/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Mauritania",
+        "yearLegislationEnacted": "2017",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "MR",
+        "flagEmoji": "🇲🇷",
+        "links": [
+            {
+                "title": "Mauritania Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/mauritania/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Mauritius",
+        "yearLegislationEnacted": "2017",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "MU",
+        "flagEmoji": "🇲🇺",
+        "links": [
+            {
+                "title": "Mauritius Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/mauritius/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Mauritius Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=MU",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Morocco",
+        "yearLegislationEnacted": "2009",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "MA",
+        "flagEmoji": "🇲🇦",
+        "links": [
+            {
+                "title": "Morocco Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/morocco/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Morocco Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=MA",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Mozambique",
+        "yearLegislationEnacted": "-",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "No Law",
+        "isoAlpha2": "MZ",
+        "flagEmoji": "🇲🇿",
+        "links": [
+            {
+                "title": "Mozambique Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/mozambique/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Namibia",
+        "yearLegislationEnacted": "Draft",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Draft",
+        "isoAlpha2": "NA",
+        "flagEmoji": "🇳🇦",
+        "links": [
+            {
+                "title": "Namibia Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/namibia/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Niger",
+        "yearLegislationEnacted": "2017",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "NE",
+        "flagEmoji": "🇳🇪",
+        "links": [
+            {
+                "title": "Niger Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/niger/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Nigeria",
+        "yearLegislationEnacted": "2023",
+        "malaboConventionStatus": "Signed",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "NG",
+        "flagEmoji": "🇳🇬",
+        "links": [
+            {
+                "title": "Nigeria Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/nigeria/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Nigeria Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=NG",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Rwanda",
+        "yearLegislationEnacted": "2021",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "RW",
+        "flagEmoji": "🇷🇼",
+        "links": [
+            {
+                "title": "Rwanda Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/rwanda/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Rwanda Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=RW",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Sao Tome & Principe",
+        "yearLegislationEnacted": "2016",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "ST",
+        "flagEmoji": "🇸🇹",
+        "links": [
+            {
+                "title": "Sao Tome & Principe Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/sao-tome-and-principe/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Senegal",
+        "yearLegislationEnacted": "2008",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "SN",
+        "flagEmoji": "🇸🇳",
+        "links": [
+            {
+                "title": "Senegal Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/senegal/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Senegal Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=SN",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Seychelles",
+        "yearLegislationEnacted": "2003",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Lite",
+        "isoAlpha2": "SC",
+        "flagEmoji": "🇸🇨",
+        "links": [
+            {
+                "title": "Seychelles Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/seychelles/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Sierra Leone",
+        "yearLegislationEnacted": "Draft",
+        "malaboConventionStatus": "Signed",
+        "dataProtectionLegislationStatus": "Draft",
+        "isoAlpha2": "SL",
+        "flagEmoji": "🇸🇱",
+        "links": [
+            {
+                "title": "Sierra Leone Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/sierra-leone/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Somalia",
+        "yearLegislationEnacted": "2023",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "SO",
+        "flagEmoji": "🇸🇴",
+        "links": [
+            {
+                "title": "Somalia Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/somalia/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "South Africa",
+        "yearLegislationEnacted": "2013",
+        "malaboConventionStatus": "Signed",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "ZA",
+        "flagEmoji": "🇿🇦",
+        "links": [
+            {
+                "title": "South Africa Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/south-africa/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - South Africa Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=ZA",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "South Sudan",
+        "yearLegislationEnacted": "Draft",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Draft",
+        "isoAlpha2": "SS",
+        "flagEmoji": "🇸🇸",
+        "links": [
+            {
+                "title": "South Sudan Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/south-sudan/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Sudan",
+        "yearLegislationEnacted": "-",
+        "malaboConventionStatus": "Signed",
+        "dataProtectionLegislationStatus": "No Law",
+        "isoAlpha2": "SD",
+        "flagEmoji": "🇸🇩",
+        "links": [
+            {
+                "title": "Sudan Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/sudan/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Tanzania",
+        "yearLegislationEnacted": "2022",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "TZ",
+        "flagEmoji": "🇹🇿",
+        "links": [
+            {
+                "title": "Tanzania Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/tanzania/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Tanzania Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=TZ",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Togo",
+        "yearLegislationEnacted": "2019",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Lite",
+        "isoAlpha2": "TG",
+        "flagEmoji": "🇹🇬",
+        "links": [
+            {
+                "title": "Togo Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/togo/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Tunisia",
+        "yearLegislationEnacted": "2004",
+        "malaboConventionStatus": "Signed",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "TN",
+        "flagEmoji": "🇹🇳",
+        "links": [
+            {
+                "title": "Tunisia Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/tunisia/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Tunisia Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=TN",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Uganda",
+        "yearLegislationEnacted": "2019",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "UG",
+        "flagEmoji": "🇺🇬",
+        "links": [
+            {
+                "title": "Uganda Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/uganda/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Uganda Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=UG",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Zambia",
+        "yearLegislationEnacted": "2021",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "ZM",
+        "flagEmoji": "🇿🇲",
+        "links": [
+            {
+                "title": "Zambia Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/zambia/",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Zimbabwe",
+        "yearLegislationEnacted": "2021",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "Enacted",
+        "isoAlpha2": "ZW",
+        "flagEmoji": "🇿🇼",
+        "links": [
+            {
+                "title": "Zimbabwe Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/country-factsheet/zimbabwe/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "DLA Piper - Zimbabwe Data Protection Laws",
+                "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=ZW",
+                "type": "Data Protection"
+            }
+        ]
     }
-}
+]

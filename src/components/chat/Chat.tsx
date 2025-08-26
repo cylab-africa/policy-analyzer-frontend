@@ -861,7 +861,7 @@ export default function ChatPage() {
 
     return (
         <Card className="p-0 shadow-md overflow-hidden">
-            <div className="flex min-h-[80vh] lg:min-h-[85vh] bg-gray-50 relative">
+            <div className="flex max-h-[80vh] lg:max-h-[70vh] bg-gray-50 relative">
                 {/* Chat History Sidebar */}
                 <ChatHistorySidebar
                     showChatHistory={showChatHistory}
@@ -873,7 +873,7 @@ export default function ChatPage() {
                 />
 
                 {/* Main Content */}
-                <div className="flex-1 flex flex-col min-w-0">
+                <div className="flex-1 flex flex-col min-w-0 relative">
                     {/* Header */}
                     <ChatHeader
                         activeTab={activeTab}
@@ -886,11 +886,14 @@ export default function ChatPage() {
                     {/* Error Alert */}
                     <ErrorAlert streamError={streamError} setStreamError={setStreamError} />
 
-                    {/* Chat Area */}
+                    {/* Chat Area with proper padding for floating input */}
                     <div
                         ref={chatBodyRef}
-                        className="flex-1 overflow-y-auto bg-gray-50"
-                        style={{ maxHeight: "calc(100vh - 200px)" }}
+                        className="flex-1 overflow-y-auto bg-gray-50 pb-32" // Added bottom padding for input space
+                        style={{
+                            maxHeight: "calc(100vh - 200px)",
+                            scrollBehavior: "smooth",
+                        }}
                     >
                         {getFilteredMessages().length === 0 ? (
                             <WelcomeScreen
@@ -907,14 +910,18 @@ export default function ChatPage() {
                         )}
                     </div>
 
-                    {/* Input Area */}
-                    <ChatInput
-                        input={input}
-                        setInput={setInput}
-                        handleSend={handleSend}
-                        isStreaming={isStreaming}
-                        activeTab={activeTab}
-                    />
+                    {/* Floating Input Area - Absolute within chat container */}
+                    <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-white via-white/95 to-transparent">
+                        <div className="px-4 py-3">
+                            <ChatInput
+                                input={input}
+                                setInput={setInput}
+                                handleSend={handleSend}
+                                isStreaming={isStreaming}
+                                activeTab={activeTab}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         </Card>
