@@ -1,25 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
-    Clock,
-    MessageSquare,
-    Send,
-    Loader2,
     AlertCircle,
     Bot,
+    ChevronLeft,
+    Clock,
+    FileKey,
+    History,
+    Loader2,
+    Menu,
+    MessageSquare,
+    Send,
+    Shield,
     User,
     X,
-    Menu,
-    ChevronLeft,
-    History,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
@@ -169,7 +170,7 @@ function ChatHeader({
     isMobile: boolean;
 }) {
     return (
-        <div className="bg-white border-b border-gray-200 p-3 lg:p-4 flex items-center gap-3">
+        <div className="bg-white border-b border-gray-200 p-3 lg:p-4 flex items-center gap-3 shrink-0">
             {/* Mobile menu button */}
             <Button
                 variant="outline"
@@ -218,12 +219,12 @@ function MessageBubble({ message, formatTime }: { message: Message; formatTime: 
             {/* User Message */}
             <div className="flex justify-end mb-3">
                 <div className="flex items-start gap-2 max-w-full sm:max-w-3xl">
-                    <Card className="bg-blue-50 border-blue-100 py-3 px-4 shadow-none max-w-full">
+                    <Card className="bg-blue-50 border-blue-100 py-3 px-4 shadow-sm max-w-full">
                         <div className="text-gray-800 text-sm sm:text-base break-words">{message.user}</div>
                         <div className="text-gray-400 text-xs text-right mt-1">{formatTime(message.timestamp)}</div>
                     </Card>
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
-                        <User size={16} className="text-primary" />
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shrink-0">
+                        <User size={16} className="text-white" />
                     </div>
                 </div>
             </div>
@@ -232,13 +233,13 @@ function MessageBubble({ message, formatTime }: { message: Message; formatTime: 
             {(message.bot || message.isStreaming) && (
                 <div className="flex mb-3">
                     <div className="flex items-start gap-2 w-full">
-                        <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-                            <Bot size={16} className="text-primary" />
+                        <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                            <Bot size={16} className="text-white" />
                         </div>
 
                         <Card
                             className={cn(
-                                "p-4 sm:p-6 shadow-none flex-1 min-w-0",
+                                "p-4 sm:p-6 shadow-sm flex-1 min-w-0",
                                 message.error ? "bg-red-50 border-red-200" : "bg-white border-gray-200"
                             )}
                         >
@@ -246,7 +247,7 @@ function MessageBubble({ message, formatTime }: { message: Message; formatTime: 
                                 <Markdown
                                     remarkPlugins={[remarkGfm]}
                                     components={{
-                                        // Responsive typography
+                                        // Professional, responsive typography
                                         h1: ({ ...props }) => (
                                             <h1
                                                 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 mt-4 sm:mt-6 first:mt-0 border-b border-gray-200 pb-2"
@@ -336,7 +337,7 @@ function MessageBubble({ message, formatTime }: { message: Message; formatTime: 
                                         ),
                                         a: ({ ...props }) => (
                                             <a
-                                                className="text-primary hover:text-primary underline break-words"
+                                                className="text-primary hover:text-primary/80 underline break-words"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 {...props}
@@ -356,7 +357,7 @@ function MessageBubble({ message, formatTime }: { message: Message; formatTime: 
 
                                 {/* Streaming indicator */}
                                 {message.isStreaming && (
-                                    <div className="flex items-center gap-2 text-gray-600 text-sm mt-3 sm:mt-4 pt-3 border-t border-gray-100 animate-pulse">
+                                    <div className="flex items-center gap-2 text-gray-600 text-sm mt-3 sm:mt-4 pt-3 border-t border-gray-100">
                                         <div className="flex gap-1">
                                             <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
                                             <div
@@ -377,8 +378,8 @@ function MessageBubble({ message, formatTime }: { message: Message; formatTime: 
                             {message.sources && message.sources.length > 0 && (
                                 <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200">
                                     <div className="text-xs font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
-                                        <div className="w-4 h-4 bg-gray-100 rounded-full flex items-center justify-center">
-                                            <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                                        <div className="w-4 h-4 bg-emerald-100 rounded-full flex items-center justify-center">
+                                            <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
                                         </div>
                                         Sources ({message.sources.length})
                                     </div>
@@ -425,13 +426,16 @@ function WelcomeScreen({
 }) {
     return (
         <div className="h-full flex flex-col items-center justify-center text-center p-4 sm:p-6">
+            {/* <div className="w-16 h-16 bg-gradient-to-br from-primary to-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                <Bot size={32} className="text-white" />
+            </div> */}
             <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">
                 {activeTab === ChatTab.DATA_PROTECTION
                     ? "Ask me about Data Protection policies in Africa"
                     : "Ask me about Digital ID systems in Africa"}
             </h2>
             <p className="text-gray-600 mb-6 sm:mb-8 max-w-md text-sm sm:text-base">
-                Your AI-powered guide to understanding policies, privacy, and compliance.
+                Your AI-powered guide to understanding policies, privacy, and compliance across African countries.
             </p>
 
             <div className="flex flex-wrap justify-center gap-2 max-w-2xl">
@@ -439,7 +443,7 @@ function WelcomeScreen({
                     <Button
                         key={index}
                         variant="outline"
-                        className="rounded-full bg-white text-xs sm:text-sm px-3 sm:px-4 py-2"
+                        className="rounded-full bg-white hover:bg-gray-50 text-xs sm:text-sm px-3 sm:px-4 py-2 border-gray-200 hover:border-primary/30 transition-colors"
                         onClick={() => setInput(question)}
                     >
                         {question}
@@ -461,7 +465,7 @@ function ErrorAlert({
     if (!streamError) return null;
 
     return (
-        <div className="p-3 sm:p-4 bg-red-50 border-b border-red-200">
+        <div className="p-3 sm:p-4 bg-red-50 border-b border-red-200 shrink-0">
             <div className="flex items-center gap-2 text-red-700">
                 <AlertCircle size={16} />
                 <span className="text-sm flex-1">Connection error: {streamError}</span>
@@ -473,7 +477,7 @@ function ErrorAlert({
     );
 }
 
-// Input Area Component
+// Fixed Input Area Component - Always visible at bottom
 function ChatInput({
     input,
     setInput,
@@ -488,37 +492,83 @@ function ChatInput({
     activeTab: ChatTab;
 }) {
     return (
-        <div className="p-3 sm:p-4 border-t border-gray-200 bg-white">
-            <form onSubmit={handleSend} className="flex items-center max-w-4xl mx-auto">
-                <div className="flex-1 relative">
-                    <Input
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        placeholder={
-                            activeTab === ChatTab.DATA_PROTECTION
-                                ? "Ask about data protection policies..."
-                                : "Ask about digital ID systems..."
-                        }
-                        className="pr-12 py-4 sm:py-6 border-gray-300 shadow-sm rounded-lg text-sm sm:text-base"
-                        disabled={isStreaming}
-                    />
-                    <Button
-                        type="submit"
-                        disabled={!input.trim() || isStreaming}
-                        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md h-8 w-8 p-0"
-                    >
-                        {isStreaming ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
-                    </Button>
-                </div>
-            </form>
-            <p className="text-center text-xs text-amber-600 mt-2 max-w-4xl mx-auto">
-                Note: The AI can make mistakes. Check important information
-            </p>
+        <div className="bg-white/95 backdrop-blur-sm border-t border-slate-200/60 px-4 py-6 shrink-0">
+            <div className="max-w-4xl mx-auto">
+                <form onSubmit={handleSend} className="relative">
+                    {/* Main Input Container */}
+                    <div className="relative bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 focus-within:shadow-lg focus-within:border-slate-300">
+                        <div className="flex items-center gap-3 p-4">
+                            {/* Tab Icon */}
+                            <div className="flex-shrink-0">
+                                <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-200/60">
+                                    {activeTab === ChatTab.DATA_PROTECTION ? (
+                                        <Shield className="w-5 h-5 text-slate-600" />
+                                    ) : (
+                                        <FileKey className="w-5 h-5 text-slate-600" />
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Input Field */}
+                            <input
+                                type="text"
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                placeholder={
+                                    activeTab === ChatTab.DATA_PROTECTION
+                                        ? "Ask about data protection policies, legislation status..."
+                                        : "Ask about digital ID systems, implementation progress..."
+                                }
+                                className="flex-1 w-full border-0 bg-transparent text-base placeholder:text-slate-400 outline-none ring-0 focus:ring-0 focus:outline-none px-0 py-1 pl-1"
+                                disabled={isStreaming}
+                                style={{ border: "none", outline: "none", boxShadow: "none" }}
+                            />
+
+                            {/* Send Button */}
+                            <div className="flex-shrink-0">
+                                <Button
+                                    type="submit"
+                                    disabled={!input.trim() || isStreaming}
+                                    className="w-11 h-11 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md disabled:shadow-none p-0"
+                                >
+                                    {isStreaming ? (
+                                        <Loader2 size={18} className="animate-spin text-white" />
+                                    ) : (
+                                        <Send size={18} className="text-white" />
+                                    )}
+                                </Button>
+                            </div>
+                        </div>
+
+                        {/* Input Enhancement Line */}
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-slate-200 to-transparent opacity-0 transition-opacity duration-200 group-focus-within:opacity-100"></div>
+                    </div>
+
+                    {/* Context Indicators */}
+                    <div className="flex items-center justify-center mt-4">
+                        <div className="text-xs text-amber-600 flex items-center gap-1">
+                            Note: The AI can make mistakes. Please verify important information.
+                        </div>
+                    </div>
+                </form>
+
+                {/* Enhanced Status Bar */}
+                {isStreaming && (
+                    <div className="mt-4 flex items-center justify-center">
+                        <div className="flex items-center gap-3 bg-slate-50 rounded-full px-4 py-2 border border-slate-200">
+                            <div className="flex gap-1">
+                                <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                                <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                                <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                            </div>
+                            <span className="text-sm font-medium text-slate-600">Analyzing...</span>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
-
 // Main Chat Page Component
 export default function ChatPage() {
     const [activeTab, setActiveTab] = useState<ChatTab>(ChatTab.DATA_PROTECTION);
@@ -616,16 +666,14 @@ export default function ChatPage() {
         return Object.entries(groupedMessages);
     };
 
-    // Stream handler for backend integration (keeping original functionality intact)
+    // FIXED: Stream handler with better response handling
     const handleStreamResponse = async (query: string) => {
-        // Prevent multiple simultaneous requests
         if (isStreaming) return;
 
         setIsStreaming(true);
         setStreamError(null);
         accumulatedResponseRef.current = "";
 
-        // Create new message with unique ID
         const newMessageId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
         const newMessage: Message = {
@@ -637,14 +685,11 @@ export default function ChatPage() {
             isStreaming: true,
         };
 
-        // Add message to state immediately
         setMessages((prev) => [...prev, newMessage]);
-
-        // Create abort controller for this request
         abortControllerRef.current = new AbortController();
 
-        // Declare finalSources in the outer scope so it's accessible in finally
         let finalSources: string[] = [];
+        let hasReceivedContent = false; // Track if we received any content
 
         try {
             const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://172.29.108.116:8001";
@@ -676,8 +721,6 @@ export default function ChatPage() {
 
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
-
-            // Read the stream
             let streamCompleted = false;
 
             while (true) {
@@ -696,31 +739,73 @@ export default function ChatPage() {
 
                     const data = line.slice(6).trim();
 
-                    // Handle end of stream
                     if (data === "[DONE]") {
                         streamCompleted = true;
                         break;
                     }
 
                     try {
-                        // Parse the Python dict-like response
-                        const jsonString = data
-                            .replace(/'/g, '"')
-                            .replace(/True/g, "true")
-                            .replace(/False/g, "false")
-                            .replace(/None/g, "null");
+                        // Handle both JSON and Python dict-like responses
+                        let parsedData;
+                        try {
+                            // Try parsing as JSON first
+                            parsedData = JSON.parse(data);
+                        } catch {
+                            // Fall back to Python dict-like parsing
+                            const jsonString = data
+                                .replace(/'/g, '"')
+                                .replace(/True/g, "true")
+                                .replace(/False/g, "false")
+                                .replace(/None/g, "null");
+                            parsedData = JSON.parse(jsonString);
+                        }
 
-                        const parsedData = JSON.parse(jsonString);
+                        // Handle content streaming - be more flexible with data structure
+                        if (parsedData.type === "content" || parsedData.content) {
+                            let contentText = "";
 
-                        // Handle content streaming
-                        if (
-                            parsedData.type === "content" &&
-                            parsedData.content?.type === "content" &&
-                            parsedData.content?.content
-                        ) {
-                            accumulatedResponseRef.current += parsedData.content.content;
+                            // Try different ways to extract content
+                            if (parsedData.content?.content) {
+                                contentText = parsedData.content.content;
+                            } else if (parsedData.content) {
+                                contentText = parsedData.content;
+                            } else if (parsedData.text) {
+                                contentText = parsedData.text;
+                            } else if (typeof parsedData === "string") {
+                                contentText = parsedData;
+                            }
 
-                            // Update the message in real-time
+                            if (contentText && contentText.trim()) {
+                                hasReceivedContent = true;
+                                accumulatedResponseRef.current += contentText;
+
+                                // Update the message in real-time
+                                setMessages((prev) =>
+                                    prev.map((msg) =>
+                                        msg.id === newMessageId
+                                            ? { ...msg, bot: accumulatedResponseRef.current, isStreaming: true }
+                                            : msg
+                                    )
+                                );
+                            }
+                        }
+
+                        // Handle sources
+                        if (parsedData.type === "sources" && parsedData.sources) {
+                            finalSources = [...new Set([...finalSources, ...parsedData.sources])];
+
+                            setMessages((prev) =>
+                                prev.map((msg) => (msg.id === newMessageId ? { ...msg, sources: finalSources } : msg))
+                            );
+                        }
+                    } catch (parseError) {
+                        console.error("Error parsing SSE data:", parseError, "Raw data:", data);
+
+                        // If we can't parse the data, treat it as plain text content
+                        if (data && data.trim() && !data.includes("{") && !data.includes("[DONE]")) {
+                            hasReceivedContent = true;
+                            accumulatedResponseRef.current += data;
+
                             setMessages((prev) =>
                                 prev.map((msg) =>
                                     msg.id === newMessageId
@@ -729,37 +814,11 @@ export default function ChatPage() {
                                 )
                             );
                         }
-
-                        // Handle sources
-                        if (parsedData.type === "sources" && parsedData.sources) {
-                            finalSources = [...new Set([...finalSources, ...parsedData.sources])];
-
-                            // Update sources in message
-                            setMessages((prev) =>
-                                prev.map((msg) => (msg.id === newMessageId ? { ...msg, sources: finalSources } : msg))
-                            );
-                        }
-                    } catch (parseError) {
-                        console.error("Error parsing SSE data:", parseError, "Raw data:", data);
                     }
                 }
 
-                // Break out of outer loop if we got [DONE]
                 if (streamCompleted) break;
             }
-
-            setMessages((prev) =>
-                prev.map((msg) =>
-                    msg.id === newMessageId
-                        ? {
-                              ...msg,
-                              bot: accumulatedResponseRef.current,
-                              isStreaming: false,
-                              sources: finalSources,
-                          }
-                        : msg
-                )
-            );
         } catch (error: any) {
             if (error.name === "AbortError") {
                 return;
@@ -768,40 +827,47 @@ export default function ChatPage() {
             console.error("Stream error:", error);
             setStreamError(error.message);
 
-            // Update message with error
-            setMessages((prev) =>
-                prev.map((msg) =>
-                    msg.id === newMessageId
-                        ? {
-                              ...msg,
-                              bot: "Sorry, I encountered an error processing your request. Please try again.",
-                              error: true,
-                              isStreaming: false,
-                          }
-                        : msg
-                )
-            );
-        } finally {
-            // Only clear the ref AFTER we've done the final update
-            const finalResponse = accumulatedResponseRef.current;
+            // Only show error if we didn't receive any content
+            const errorMessage = hasReceivedContent
+                ? accumulatedResponseRef.current
+                : "I apologize, but I encountered an issue processing your request. Please try rephrasing your question or try again.";
 
-            // Ensure the final message state is correct
             setMessages((prev) =>
                 prev.map((msg) =>
                     msg.id === newMessageId
                         ? {
                               ...msg,
-                              bot: finalResponse || "No response received",
+                              bot: errorMessage,
+                              error: !hasReceivedContent,
                               isStreaming: false,
                               sources: finalSources,
                           }
                         : msg
                 )
             );
-
+        } finally {
             setIsStreaming(false);
 
-            // Clear the ref only after all updates are done
+            // Final update to ensure message is complete
+            const finalResponse = accumulatedResponseRef.current;
+
+            setMessages((prev) =>
+                prev.map((msg) =>
+                    msg.id === newMessageId
+                        ? {
+                              ...msg,
+                              bot:
+                                  finalResponse ||
+                                  "I apologize, but I didn't receive a proper response. Please try again.",
+                              isStreaming: false,
+                              sources: finalSources,
+                              error: !finalResponse,
+                          }
+                        : msg
+                )
+            );
+
+            // Clear the ref after a short delay
             setTimeout(() => {
                 accumulatedResponseRef.current = "";
             }, 100);
@@ -817,17 +883,14 @@ export default function ChatPage() {
         const trimmedInput = input.trim();
         if (!trimmedInput || isStreaming || !sessionId) return;
 
-        // Clear input immediately to prevent double sending
         const query = trimmedInput;
         setInput("");
 
-        // Start streaming
         await handleStreamResponse(query);
     };
 
     // Handle tab change
     const handleTabChange = (tab: ChatTab) => {
-        // Abort any ongoing stream
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
         }
@@ -861,8 +924,14 @@ export default function ChatPage() {
     };
 
     return (
-        <Card className="p-0 border-0 overflow-hidden bg-white">
-            <div className="flex h-[80vh] relative">
+        <div
+            className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden"
+            style={{
+                height: "calc(100vh - 280px)", // Account for header (120px) + margins (160px)
+                minHeight: "600px", // Ensure minimum usable height
+            }}
+        >
+            <div className="flex h-full">
                 {/* Chat History Sidebar */}
                 <ChatHistorySidebar
                     showChatHistory={showChatHistory}
@@ -872,8 +941,9 @@ export default function ChatPage() {
                     formatTime={formatTime}
                     isMobile={isMobile}
                 />
+
                 {/* Main Content */}
-                <div className="flex-1 flex flex-col min-w-0 relative">
+                <div className="flex-1 flex flex-col min-w-0">
                     {/* Header */}
                     <ChatHeader
                         activeTab={activeTab}
@@ -886,12 +956,11 @@ export default function ChatPage() {
                     {/* Error Alert */}
                     <ErrorAlert streamError={streamError} setStreamError={setStreamError} />
 
-                    {/* Chat Area with proper padding for floating input */}
+                    {/* Chat Messages Area */}
                     <div
                         ref={chatBodyRef}
-                        className="flex-1 overflow-y-auto bg-gray-50 pb-32" // Added bottom padding for input space
+                        className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-white"
                         style={{
-                            maxHeight: "calc(100vh - 200px)",
                             scrollBehavior: "smooth",
                         }}
                     >
@@ -902,7 +971,7 @@ export default function ChatPage() {
                                 suggestedQuestions={suggestedQuestions}
                             />
                         ) : (
-                            <div className="w-full mx-auto py-2 sm:py-4">
+                            <div className="w-full mx-auto py-4">
                                 {getFilteredMessages().map((message) => (
                                     <MessageBubble key={message.id} message={message} formatTime={formatTime} />
                                 ))}
@@ -910,20 +979,16 @@ export default function ChatPage() {
                         )}
                     </div>
 
-                    {/* Floating Input Area - Absolute within chat container */}
-                    <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-white via-white/95 to-transparent">
-                        <div className="px-4 py-3">
-                            <ChatInput
-                                input={input}
-                                setInput={setInput}
-                                handleSend={handleSend}
-                                isStreaming={isStreaming}
-                                activeTab={activeTab}
-                            />
-                        </div>
-                    </div>
+                    {/* Fixed Input Area - Always at bottom */}
+                    <ChatInput
+                        input={input}
+                        setInput={setInput}
+                        handleSend={handleSend}
+                        isStreaming={isStreaming}
+                        activeTab={activeTab}
+                    />
                 </div>
             </div>
-        </Card>
+        </div>
     );
 }

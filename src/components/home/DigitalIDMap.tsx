@@ -9,19 +9,85 @@ import React, { useState } from "react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 
+// Country name mapping to handle inconsistencies between map data and API data
+const COUNTRY_NAME_MAPPING: Record<string, string> = {
+    // Map geounit -> API country name
+    "Cape Verde": "Cabo Verde",
+    "Cabo Verde": "Cape Verde",
+    "Democratic Republic of the Congo": "Democratic Republic of Congo",
+    "Republic of the Congo": "Republic of Congo",
+    eSwatini: "Eswatini",
+    Swaziland: "Eswatini",
+    "The Gambia": "Gambia",
+    "São Tomé and Príncipe": "Sao Tome & Principe",
+    "Sao Tome and Principe": "Sao Tome & Principe",
+    "Ivory Coast": "Cote d'Ivoire",
+    "Côte d'Ivoire": "Cote d'Ivoire",
+};
+
+// Utility function to normalize country names
+const normalizeCountryName = (countryName: string): string => {
+    if (COUNTRY_NAME_MAPPING[countryName]) {
+        return COUNTRY_NAME_MAPPING[countryName];
+    }
+
+    return countryName
+        .trim()
+        .replace(/^The\s+/, "") // Remove "The" prefix
+        .replace(/\s+/g, " "); // Normalize spaces
+};
+
+// Enhanced country lookup function
+const findCountryData = <T extends { country: string }>(data: T[], mapCountryName: string): T | undefined => {
+    // Direct match first
+    let match = data.find((item) => item.country === mapCountryName);
+    if (match) return match;
+
+    // Try normalized name
+    const normalized = normalizeCountryName(mapCountryName);
+    match = data.find((item) => item.country === normalized);
+    if (match) return match;
+
+    // Try reverse mapping
+    const reversed = COUNTRY_NAME_MAPPING[mapCountryName];
+    if (reversed) {
+        match = data.find((item) => item.country === reversed);
+        if (match) return match;
+    }
+
+    // Fuzzy matching for common variations
+    return data.find((item) => {
+        const itemCountry = item.country.toLowerCase();
+        const searchCountry = mapCountryName.toLowerCase();
+
+        if (itemCountry.includes("republic") && searchCountry.includes("republic")) {
+            return itemCountry.replace(/republic\s+of\s+/g, "") === searchCountry.replace(/republic\s+of\s+/g, "");
+        }
+
+        if (itemCountry.includes("democratic") && searchCountry.includes("democratic")) {
+            return (
+                itemCountry.includes(searchCountry.split(" ").pop()!) ||
+                searchCountry.includes(itemCountry.split(" ").pop()!)
+            );
+        }
+
+        return false;
+    });
+};
+
 // Professional color palette for Digital ID status
 const getColor = (status: string): string => {
-    switch (status.toLowerCase()) {
-        case "implemented":
-            return "#95D69A";
-        case "partial":
-            return "#AAC8FC";
-        case "planning":
-            return "#61D8D6";
-        case "no data":
-            return "#FFB3B5";
+    switch (status) {
+        case "Implemented":
+            return "#10b981"; // Modern emerald - strong implementation
+        case "Partial":
+            return "#3b82f6"; // Professional blue - progress in development
+        case "Planning":
+            return "#f59e0b"; // Sophisticated amber - planning stage
+        case "No Data":
+            return "#64748b"; // Neutral slate - unknown status
         default:
-            return "#cbd5e1";
+            return "#cbd5e1"; // Light slate - default state
     }
 };
 
@@ -32,138 +98,132 @@ const DigitalIDMap: React.FC = () => {
     const { digitalIds, isLoading, error } = useDigitalIdData();
 
     const handleMouseEnter = (countryName: string) => {
-        const countryData = digitalIds.find((id) => id.country === countryName);
+        const countryData = findCountryData(digitalIds, countryName);
 
         if (countryData) {
-            const statusColor = getColorFromFeatures(countryData.features);
-            const featuresHTML = countryData.features
-                .map(
-                    (feature: string) =>
-                        `<span class="inline-block bg-slate-100/90 border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-medium text-slate-700 mr-1.5 mb-1.5 shadow-sm">${feature}</span>`
-                )
-                .join(" ");
+            const statusColor = getColor(countryData.status || "No Data");
+            const featuresHTML =
+                countryData.features
+                    ?.map(
+                        (feature: string) =>
+                            `<span class="inline-flex items-center px-3 py-1.5 text-xs font-medium bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-800 rounded-full border border-blue-100 hover:shadow-sm transition-all duration-200">${feature}</span>`
+                    )
+                    .join(" ") || "";
 
-            const systemStatus = getSystemStatus(countryData);
+            const systemStatus = countryData.status || "No Data";
 
             setTooltipContent(`
-                <div class="font-inter max-w-sm bg-white/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 overflow-hidden">
-                    <div class="relative p-5" style="background: linear-gradient(135deg, ${statusColor}15, ${statusColor}08); border-bottom: 1px solid ${statusColor}20;">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <h3 class="text-lg font-bold text-gray-800 mb-1 leading-tight">${
-                                    countryData.country
-                                }</h3>
-                                <div class="flex items-center gap-2">
-                                    <div class="w-2.5 h-2.5 rounded-full" style="background: ${statusColor};"></div>
-                                    <span class="text-sm font-medium text-gray-600">${systemStatus}</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-white/80 backdrop-blur-sm border border-white shadow-sm">
-                                <svg class="w-5 h-5" style="color: ${statusColor};" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M18 8A8 8 0 11 2 8a8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+            <div class="w-84 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl border border-gray-200/80 overflow-hidden font-inter relative">
+                <!-- Subtle top accent -->
+                <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                
+                <!-- Header -->
+                <div class="px-5 py-4 bg-gradient-to-br from-gray-50/80 to-white border-b border-gray-100/60">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
                             </div>
+                            <h3 class="text-lg font-bold text-gray-900 tracking-tight">${countryData.country}</h3>
                         </div>
-                    </div>
-                    <div class="p-5 space-y-4">
-                        <div class="space-y-3">
-                            ${
-                                countryData.authority
-                                    ? `
-                            <div class="flex items-center justify-between p-3 bg-gray-50/80 rounded-xl border border-gray-100">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                        </svg>
-                                    </div>
-                                    <span class="text-sm font-medium text-gray-700">Authority</span>
-                                </div>
-                                <span class="text-sm font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg max-w-24 text-right truncate">${countryData.authority}</span>
-                            </div>`
-                                    : ""
-                            }
-                            
-                            ${
-                                countryData.coverage
-                                    ? `
-                            <div class="flex items-center justify-between p-3 bg-gray-50/80 rounded-xl border border-gray-100">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                    </div>
-                                    <span class="text-sm font-medium text-gray-700">Coverage</span>
-                                </div>
-                                <span class="text-sm font-bold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg">${countryData.coverage}</span>
-                            </div>`
-                                    : ""
-                            }
+                        <div class="flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-3 py-1.5 border border-gray-200/60">
+                            <div class="w-2.5 h-2.5 rounded-full shadow-sm" style="background-color: ${statusColor}; box-shadow: 0 0 6px ${statusColor}40;"></div>
+                            <span class="text-sm font-medium text-gray-700">${systemStatus}</span>
                         </div>
-                        
-                        ${
-                            countryData.description
-                                ? `
-                        <div class="pt-2 border-t border-gray-100">
-                            <div class="flex items-center gap-2 mb-2">
-                                <div class="w-6 h-6 bg-indigo-100 rounded-md flex items-center justify-center">
-                                    <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
-                                </div>
-                                <span class="text-sm font-semibold text-gray-700">System Overview</span>
-                            </div>
-                            <p class="text-xs text-gray-600 leading-relaxed bg-gray-50/50 p-3 rounded-lg">${countryData.description}</p>
-                        </div>`
-                                : ""
-                        }
-                        
-                        ${
-                            countryData.features.length > 0
-                                ? `
-                        <div class="pt-2 border-t border-gray-100">
-                            <div class="flex items-center gap-2 mb-3">
-                                <div class="w-6 h-6 bg-orange-100 rounded-md flex items-center justify-center">
-                                    <svg class="w-3.5 h-3.5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h2m6 0h2a2 2 0 002-2V7a2 2 0 00-2-2h-2m-6 4h6m-5 4h4"></path>
-                                    </svg>
-                                </div>
-                                <span class="text-sm font-semibold text-gray-700">Key Features</span>
-                            </div>
-                            <div class="flex flex-wrap gap-1.5">
-                                ${featuresHTML}
-                            </div>
-                        </div>`
-                                : ""
-                        }
                     </div>
                 </div>
-            `);
+                
+                <!-- Content -->
+                <div class="p-5 space-y-5">
+                    ${
+                        countryData.coverage
+                            ? `
+                    <div class="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50/50 to-blue-50/50 rounded-lg border border-purple-100/60">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-7 h-7 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-sm font-medium text-gray-700">Coverage</span>
+                        </div>
+                        <span class="text-sm font-bold text-purple-700 bg-white/80 px-3 py-1.5 rounded-lg shadow-sm">${countryData.coverage}</span>
+                    </div>`
+                            : ""
+                    }
+                    
+                    ${
+                        countryData.description
+                            ? `
+                    <div class="space-y-2.5">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-md flex items-center justify-center">
+                                <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-800">System Overview</span>
+                        </div>
+                        <p class="text-sm text-gray-600 leading-relaxed bg-gray-50/60 p-3.5 rounded-lg border border-gray-100/60">${countryData.description}</p>
+                    </div>`
+                            : ""
+                    }
+                    
+                    ${
+                        countryData.features && countryData.features.length > 0
+                            ? `
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 bg-gradient-to-br from-amber-100 to-orange-100 rounded-md flex items-center justify-center">
+                                <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-sm font-semibold text-gray-800">Key Features</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            ${featuresHTML}
+                        </div>
+                    </div>`
+                            : ""
+                    }
+                </div>
+            </div>
+        `);
         } else {
             setTooltipContent(`
-                <div class="font-inter max-w-xs bg-white/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 overflow-hidden">
-                    <div class="p-5 bg-gradient-to-br from-slate-50 to-gray-100 border-b border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-bold text-gray-800">${countryName}</h3>
-                            <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-5 text-center">
-                        <div class="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 2v20M14 2v20M4 7h16M4 17h16"></path>
+            <div class="w-72 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl border border-gray-200/80 overflow-hidden font-inter relative">
+                <!-- Subtle top accent -->
+                <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-400 to-gray-500"></div>
+                
+                <!-- Header -->
+                <div class="px-5 py-4 bg-gradient-to-br from-gray-50/80 to-white border-b border-gray-100/60">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
-                        <p class="text-gray-600 text-sm font-medium mb-1">No Data Available</p>
-                        <p class="text-gray-500 text-xs">Digital ID information not currently available</p>
+                        <h3 class="text-lg font-bold text-gray-900 tracking-tight">${countryName}</h3>
                     </div>
                 </div>
-            `);
+                
+                <!-- Content -->
+                <div class="p-5 text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-gray-100/80 to-gray-200/80 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-gray-200/60">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-sm font-semibold text-gray-900">No Data Available</p>
+                        <p class="text-xs text-gray-500 leading-relaxed">Digital ID information is not currently available for this country</p>
+                    </div>
+                </div>
+            </div>
+        `);
         }
     };
 
@@ -171,60 +231,9 @@ const DigitalIDMap: React.FC = () => {
         setTooltipContent("");
     };
 
-    // Helper function to determine system status from features and other data
-    const getSystemStatus = (countryData: any): string => {
-        if (!countryData.features || countryData.features.length === 0) {
-            return "No Data";
-        }
-
-        // Determine status based on features and coverage
-        const hasAdvancedFeatures = countryData.features.some(
-            (feature: string) =>
-                feature.toLowerCase().includes("biometric") ||
-                feature.toLowerCase().includes("digital") ||
-                feature.toLowerCase().includes("electronic")
-        );
-
-        const hasCoverage = countryData.coverage && countryData.coverage !== "0%";
-
-        if (hasAdvancedFeatures && hasCoverage) {
-            return "Implemented";
-        } else if (hasAdvancedFeatures || hasCoverage) {
-            return "Partial";
-        } else if (countryData.features.length > 0) {
-            return "Planning";
-        }
-
-        return "Unknown";
-    };
-
     const getCountryStatus = (countryName: string): string => {
-        const countryData = digitalIds.find((id) => id.country === countryName);
-        return countryData ? getSystemStatus(countryData) : "Unknown";
-    };
-
-    // Helper function to get color based on features (since we don't have explicit status)
-    const getColorFromFeatures = (features: string[]): string => {
-        if (!features || features.length === 0) {
-            return "#94a3b8"; // Professional slate for no data
-        }
-
-        const hasAdvancedFeatures = features.some(
-            (feature) =>
-                feature.toLowerCase().includes("biometric") ||
-                feature.toLowerCase().includes("digital") ||
-                feature.toLowerCase().includes("electronic")
-        );
-
-        if (hasAdvancedFeatures) {
-            return "#95D69A"; // Professional blue for implemented
-        } else if (features.length > 2) {
-            return "#dc2626"; // Professional red for partial
-        } else if (features.length > 0) {
-            return "#16a085"; // Professional teal for planning
-        }
-
-        return "#cbd5e1"; // Light slate for unknown
+        const countryData = findCountryData(digitalIds, countryName);
+        return countryData?.status || "Unknown";
     };
 
     if (isLoading) {
@@ -269,7 +278,7 @@ const DigitalIDMap: React.FC = () => {
     const legendData = [
         { status: "Implemented", color: getColor("Implemented"), label: "Fully Operational" },
         { status: "Partial", color: getColor("Partial"), label: "Partially Implemented" },
-        { status: "Planning", color: getColor("Planning"), label: "In Development" },
+        { status: "Planning", color: getColor("Planning"), label: "Planning" },
         { status: "No Data", color: getColor("No Data"), label: "No Information" },
     ];
 
@@ -277,7 +286,7 @@ const DigitalIDMap: React.FC = () => {
         <div className="w-full space-y-6">
             {/* Map Container */}
             <div className="relative">
-                <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50 border border-gray-200 relative">
+                <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden relative">
                     {/* Professional background pattern */}
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,rgba(99,102,241,0.05)_0%,transparent_70%)] pointer-events-none"></div>
                     <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
@@ -323,7 +332,7 @@ const DigitalIDMap: React.FC = () => {
                                                     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                                                 },
                                                 hover: {
-                                                    fill: "#95D69A",
+                                                    fill: "#10b981",
                                                     outline: "none",
                                                     filter: "url(#digitalIdFilter) drop-shadow(0 8px 25px rgba(99,102,241,0.2)) brightness(1.05)",
                                                     transform: "scale(1.02)",
@@ -349,7 +358,7 @@ const DigitalIDMap: React.FC = () => {
                     </ComposableMap>
 
                     {/* Legend */}
-                    <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-xl max-w-xs">
+                    <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-lg max-w-xs">
                         <h4 className="text-md font-bold text-gray-800 mb-3 flex items-center gap-2">Digital ID</h4>
                         <div className="space-y-2">
                             {legendData.map((item) => (
