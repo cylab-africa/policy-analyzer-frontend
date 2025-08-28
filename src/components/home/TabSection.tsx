@@ -8,72 +8,95 @@ import DigitalIDMap from "./DigitalIDMap";
 
 const TabSection = () => {
     return (
-        <section className="py-8 lg:py-16 bg-gradient-to-b from-slate-50/50 to-white">
-            <div className="max-w-7xl mx-auto px-4 lg:px-6">
-                <div className="text-center mb-8 lg:mb-12">
-                    <Badge variant="outline" className="mb-4 bg-blue-50 text-blue-700 border-blue-200">
-                        Interactive Maps
+        <section className="py-12 lg:py-20 bg-white">
+            <div className="max-w-7xl mx-auto px-6 lg:px-8">
+                {/* Header */}
+                <div className="text-center mb-12 lg:mb-16">
+                    <Badge
+                        variant="outline"
+                        className="mb-6 bg-slate-50 text-slate-700 border-slate-200 font-medium px-4 py-1.5"
+                    >
+                        Interactive Analysis
                     </Badge>
-                    <h2 className="text-2xl lg:text-4xl font-bold text-slate-900 mb-4">
-                        African Digital Governance Landscape
+                    <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-6 tracking-tight">
+                        Digital Governance in Africa
                     </h2>
-                    <p className="text-slate-600 max-w-3xl mx-auto text-sm lg:text-base">
-                        Explore comprehensive data on digital identity systems and data protection legislation across
-                        Africa
+                    <p className="text-slate-600 max-w-2xl mx-auto text-lg leading-relaxed">
+                        Comprehensive analysis of digital identity systems and data protection legislation across
+                        African nations
                     </p>
                 </div>
 
                 <Tabs defaultValue="digital-id" className="w-full">
-                    <TabsList className="grid grid-cols-2 mb-8 h-auto border border-gray-300 p-0 bg-white rounded-xl max-w-md mx-auto">
-                        <TabsTrigger
-                            value="digital-id"
-                            className="flex p-0 items-center justify-center gap-3 text-sm py-4 px-6 font-semibold rounded-lg transition-all duration-300 data-[state=active]:bg-blue-400 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-blue-50"
-                        >
-                            <FileKey className="w-4 h-4" />
-                            Digital ID
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="data-protection"
-                            className="flex p-0 items-center justify-center gap-3 text-sm py-4 px-6 font-semibold rounded-lg transition-all duration-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-emerald-50"
-                        >
-                            <Shield className="w-4 h-4" />
-                            Data Protection
-                        </TabsTrigger>
-                    </TabsList>
+                    {/* Tab Navigation */}
+                    <div className="flex justify-center mb-4">
+                        <TabsList className="grid grid-cols-2 bg-slate-100 rounded-xl p-1 border-0 h-auto">
+                            <TabsTrigger
+                                value="digital-id"
+                                className="flex items-center gap-3 px-8 py-3 text-md font-bold rounded-lg transition-all duration-200 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-600 hover:text-slate-800"
+                            >
+                                <FileKey className="w-4 h-4" />
+                                Digital Identity
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="data-protection"
+                                className="flex items-center gap-3 px-8 py-3 text-md font-bold rounded-lg transition-all duration-200 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-600 hover:text-slate-800"
+                            >
+                                <Shield className="w-4 h-4" />
+                                Data Protection
+                            </TabsTrigger>
+                        </TabsList>
+                    </div>
 
-                    <TabsContent value="digital-id" className="space-y-6">
-                        <div className="bg-gradient-to-br from-white to-blue-50/30 backdrop-blur-sm">
-                            <div className="pb-6 border-b border-slate-100">
-                                <div className="flex items-center gap-3 text-xl lg:text-2xl font-bold text-slate-900">
-                                    <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                                        <FileKey className="w-5 h-5 text-blue-400" />
+                    {/* Digital ID Tab Content */}
+                    <TabsContent value="digital-id" className="focus:outline-none">
+                        <div className="bg-white rounded-2xl overflow-hidden">
+                            <div className="py-6 border-b border-slate-100">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                                        <FileKey className="w-6 h-6 text-primary" />
                                     </div>
-                                    Digital ID Implementation Status
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="text-2xl font-bold text-slate-900 mb-3">
+                                            Digital Identity Implementation
+                                        </h3>
+                                        <p className="text-slate-600 leading-relaxed">
+                                            Track the deployment and progress of digital identity systems across Africa.
+                                            Hover over countries to explore implementation status, coverage data, and
+                                            key features.
+                                        </p>
+                                    </div>
                                 </div>
-                                <p className="text-slate-600 text-sm lg:text-base mt-2 leading-relaxed">
-                                    Comprehensive overview of digital identity systems deployment across African
-                                    nations. Hover over countries to explore implementation details and progress.
-                                </p>
                             </div>
-                            <DigitalIDMap />
+                            <div>
+                                <DigitalIDMap />
+                            </div>
                         </div>
                     </TabsContent>
 
-                    <TabsContent value="data-protection" className="space-y-6">
-                        <div className="bg-gradient-to-br from-white to-emerald-50/30 backdrop-blur-sm">
-                            <div className="pb-6 border-b border-slate-100">
-                                <div className="flex items-center gap-3 text-xl lg:text-2xl font-bold text-slate-900">
-                                    <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-                                        <Shield className="w-5 h-5 text-emerald-600" />
+                    {/* Data Protection Tab Content */}
+                    <TabsContent value="data-protection" className="focus:outline-none">
+                        <div className="bg-white rounded-2xl overflow-hidden">
+                            <div className="py-6 border-b border-slate-100">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                                        <Shield className="w-6 h-6 text-primary" />
                                     </div>
-                                    Data Protection Legislation Status
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="text-2xl font-bold text-slate-900 mb-3">
+                                            Data Protection Legislation
+                                        </h3>
+                                        <p className="text-slate-600 leading-relaxed">
+                                            Monitor privacy laws and data protection regulations across African
+                                            countries. Explore legislative status, enactment dates, and Malabo
+                                            Convention adoption.
+                                        </p>
+                                    </div>
                                 </div>
-                                <p className="text-slate-600 text-sm lg:text-base mt-2 leading-relaxed">
-                                    Interactive visualization of data protection laws and privacy regulations across
-                                    Africa. Discover legislative progress and Malabo Convention adoption.
-                                </p>
                             </div>
-                            <DataProtectionMap />
+                            <div>
+                                <DataProtectionMap />
+                            </div>
                         </div>
                     </TabsContent>
                 </Tabs>

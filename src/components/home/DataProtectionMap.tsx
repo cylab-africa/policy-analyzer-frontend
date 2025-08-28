@@ -9,46 +9,111 @@ import React, { useState } from "react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 
-// Professional color palette for data protection legislation status
-const getColor = (status: string): string => {
-    switch (status) {
-        case "Enacted":
-            return "#059669"; // Emerald-600
-        case "Draft":
-            return "#3b82f6"; // Blue-500
-        case "Lite":
-            return "#8b5cf6"; // Violet-500
-        case "No Law":
-            return "#ef4444"; // Red-500
-        default:
-            return "#cbd5e1"; // Gray-400
-    }
+// Country name mapping to handle inconsistencies between map data and API data
+const COUNTRY_NAME_MAPPING: Record<string, string> = {
+    // Map geounit -> API country name
+    "Cape Verde": "Cabo Verde",
+    "Cabo Verde": "Cape Verde",
+    "Democratic Republic of the Congo": "Democratic Republic of Congo",
+    "Republic of the Congo": "Republic of Congo",
+    eSwatini: "Eswatini",
+    Swaziland: "Eswatini",
+    "The Gambia": "Gambia",
+    "São Tomé and Príncipe": "Sao Tome & Principe",
+    "Sao Tome and Principe": "Sao Tome & Principe",
+    "Ivory Coast": "Cote d'Ivoire",
+    "Côte d'Ivoire": "Cote d'Ivoire",
 };
 
-// Professional color mapping for Malabo Convention status
-const getMalaboColor = (status: string): string => {
-    switch (status) {
-        case "Ratified":
-            return "#059669"; // Emerald-600
-        case "Signed":
-            return "#f59e0b"; // Amber-500
-        case "No":
-        case "Not Signed":
-            return "#6b7280"; // Gray-500
-        default:
-            return "#9ca3af"; // Gray-400
+// Utility function to normalize country names
+const normalizeCountryName = (countryName: string): string => {
+    if (COUNTRY_NAME_MAPPING[countryName]) {
+        return COUNTRY_NAME_MAPPING[countryName];
     }
+
+    return countryName
+        .trim()
+        .replace(/^The\s+/, "") // Remove "The" prefix
+        .replace(/\s+/g, " "); // Normalize spaces
+};
+
+// Enhanced country lookup function
+const findCountryData = <T extends { country: string }>(data: T[], mapCountryName: string): T | undefined => {
+    // Direct match first
+    let match = data.find((item) => item.country === mapCountryName);
+    if (match) return match;
+
+    // Try normalized name
+    const normalized = normalizeCountryName(mapCountryName);
+    match = data.find((item) => item.country === normalized);
+    if (match) return match;
+
+    // Try reverse mapping
+    const reversed = COUNTRY_NAME_MAPPING[mapCountryName];
+    if (reversed) {
+        match = data.find((item) => item.country === reversed);
+        if (match) return match;
+    }
+
+    // Fuzzy matching for common variations
+    return data.find((item) => {
+        const itemCountry = item.country.toLowerCase();
+        const searchCountry = mapCountryName.toLowerCase();
+
+        if (itemCountry.includes("republic") && searchCountry.includes("republic")) {
+            return itemCountry.replace(/republic\s+of\s+/g, "") === searchCountry.replace(/republic\s+of\s+/g, "");
+        }
+
+        if (itemCountry.includes("democratic") && searchCountry.includes("democratic")) {
+            return (
+                itemCountry.includes(searchCountry.split(" ").pop()!) ||
+                searchCountry.includes(itemCountry.split(" ").pop()!)
+            );
+        }
+
+        return false;
+    });
 };
 
 const DataProtectionMap: React.FC = () => {
     const [tooltipContent, setTooltipContent] = useState<string>("");
     const [hoveredCountry, setHoveredCountry] = useState<string>("");
-
     const { policyLaws, isLoading, error } = usePolicyLawData();
+
+    // Professional color palette for data protection legislation status
+    const getColor = (status: string): string => {
+        switch (status) {
+            case "Enacted":
+                return "#10b981"; // Modern emerald - full legislation
+            case "Draft":
+                return "#3b82f6"; // Professional blue - in development
+            case "Lite":
+                return "#f59e0b"; // Sophisticated amber - basic protection
+            case "No Law":
+                return "#64748b"; // Neutral slate - no legislation
+            default:
+                return "#cbd5e1"; // Light slate - default state
+        }
+    };
+
+    // Professional color mapping for Malabo Convention status
+    const getMalaboColor = (status: string): string => {
+        switch (status) {
+            case "Ratified":
+                return "#059669"; // Emerald-600
+            case "Signed":
+                return "#f59e0b"; // Amber-500
+            case "No":
+            case "Not Signed":
+                return "#6b7280"; // Gray-500
+            default:
+                return "#9ca3af"; // Gray-400
+        }
+    };
 
     const handleMouseEnter = (countryName: string) => {
         setHoveredCountry(countryName);
-        const countryData = policyLaws.find((law) => law.country === countryName);
+        const countryData = findCountryData(policyLaws, countryName);
 
         if (countryData) {
             const statusColor = getColor(countryData.dataProtectionLegislationStatus);
@@ -160,46 +225,39 @@ const DataProtectionMap: React.FC = () => {
     };
 
     const getCountryStatus = (countryName: string): string => {
-        const countryData = policyLaws.find((law) => law.country === countryName);
+        const countryData = findCountryData(policyLaws, countryName);
         return countryData?.dataProtectionLegislationStatus || "Unknown";
     };
 
-    // Loading state
     if (isLoading) {
         return (
-            <div className="w-full">
-                <div className="w-full h-[400px] sm:h-[500px] lg:h-[600px] xl:h-[800px] rounded-xl bg-muted flex items-center justify-center">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                        <Loader2 className="h-6 w-6 animate-spin" />
-                        <span className="font-medium">Loading data protection data...</span>
-                    </div>
+            <div className="w-full h-[600px] lg:h-[700px] rounded-xl bg-muted flex items-center justify-center">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                    <span className="font-medium">Loading data protection data...</span>
                 </div>
             </div>
         );
     }
 
-    // Error state
     if (error) {
         return (
-            <div className="w-full">
-                <div className="w-full h-[500px] rounded-xl bg-gray-50 flex items-center justify-center">
-                    <div className="text-center">
-                        <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to load data</h3>
-                        <p className="text-gray-600 mb-4 max-w-md">
-                            Unable to fetch data protection legislation data from the server
-                        </p>
-                        <Button variant="outline" onClick={() => window.location.reload()} className="gap-2">
-                            <RefreshCw className="h-4 w-4" />
-                            Retry
-                        </Button>
-                    </div>
+            <div className="w-full h-[600px] lg:h-[700px] rounded-xl bg-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                    <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to load data</h3>
+                    <p className="text-gray-600 mb-4 max-w-md">
+                        Unable to fetch data protection legislation data from the server
+                    </p>
+                    <Button variant="outline" onClick={() => window.location.reload()} className="gap-2">
+                        <RefreshCw className="h-4 w-4" />
+                        Retry
+                    </Button>
                 </div>
             </div>
         );
     }
 
-    // Legend data
     const legendData = [
         { status: "Enacted", color: getColor("Enacted"), label: "Comprehensive Law" },
         { status: "Draft", color: getColor("Draft"), label: "Draft Legislation" },
@@ -209,9 +267,8 @@ const DataProtectionMap: React.FC = () => {
 
     return (
         <div className="w-full space-y-6">
-            {/* Map Container */}
             <div className="relative">
-                <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50 border border-gray-200 relative">
+                <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden relative">
                     <ComposableMap
                         projectionConfig={{
                             scale: 220,
@@ -261,8 +318,9 @@ const DataProtectionMap: React.FC = () => {
                             }
                         </Geographies>
                     </ComposableMap>
+
                     {/* Legend */}
-                    <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-xl max-w-xs">
+                    <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-lg max-w-xs">
                         <h4 className="text-md font-bold text-gray-800 mb-3 flex items-center gap-2">
                             Data Protection
                         </h4>

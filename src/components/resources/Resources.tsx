@@ -24,25 +24,13 @@ import {
 } from "lucide-react";
 import React, { useMemo, useState } from "react";
 
-// Import API hooks - you'll need to update these based on your actual API setup
-import {
-    useGetDigitalIdsQuery,
-    useGetPolicyLawsQuery,
-    // Remove the file-specific queries since they're now included in the main data
-} from "@/redux/api/apiSlice";
+// Import API hooks
+import { useGetDigitalIdsQuery, useGetPolicyLawsQuery } from "@/redux/api/apiSlice";
 
 // Enum for resource type
 enum ResourceType {
     DATA_PROTECTION = "data-protection",
     DIGITAL_ID = "digital-id",
-}
-
-// Enum for digital ID document types
-enum DigitalIdDocType {
-    REGISTRATION = "digitalIdRegistration",
-    NATIONAL_ID = "digitalIdNational",
-    IMMIGRATION = "digitalIdImmigration",
-    OTHER = "digitalIdOther",
 }
 
 // Interface for unified resource data
@@ -68,6 +56,8 @@ interface Resource {
     features?: string[];
     malaboStatus?: string;
     legislationStatus?: string;
+    yearLaunched?: string;
+    linkType?: string;
 }
 
 // Country code to emoji mapping
@@ -133,7 +123,7 @@ export default function ResourcesPage() {
     const [selectedRegion, setSelectedRegion] = useState<string>("all");
     const [searchQuery, setSearchQuery] = useState<string>("");
 
-    // API queries - simplified to use only the two main endpoints
+    // API queries
     const {
         data: policyLaws = [],
         isLoading: policyLawsLoading,
@@ -149,73 +139,6 @@ export default function ResourcesPage() {
     } = useGetDigitalIdsQuery({ page: 1, limit: 100 });
 
     // Helper functions
-    const getCountryCode = (countryName: string): string => {
-        const countryMap: Record<string, string> = {
-            Algeria: "DZ",
-            Angola: "AO",
-            Benin: "BJ",
-            Botswana: "BW",
-            "Burkina Faso": "BF",
-            Burundi: "BI",
-            Cameroon: "CM",
-            "Cape Verde": "CV",
-            "Cabo Verde": "CV",
-            "Central African Republic": "CF",
-            Chad: "TD",
-            Comoros: "KM",
-            Congo: "CG",
-            "Republic of Congo": "CG",
-            "Democratic Republic of the Congo": "CD",
-            "Democratic Republic of Congo": "CD",
-            "Ivory Coast": "CI",
-            "Cote d'Ivoire": "CI",
-            Djibouti: "DJ",
-            Egypt: "EG",
-            "Equatorial Guinea": "GQ",
-            Eritrea: "ER",
-            Eswatini: "SZ",
-            Ethiopia: "ET",
-            Gabon: "GA",
-            Gambia: "GM",
-            "The Gambia": "GM",
-            Ghana: "GH",
-            Guinea: "GN",
-            "Guinea-Bissau": "GW",
-            Kenya: "KE",
-            Lesotho: "LS",
-            Liberia: "LR",
-            Libya: "LY",
-            Madagascar: "MG",
-            Malawi: "MW",
-            Mali: "ML",
-            Mauritania: "MR",
-            Mauritius: "MU",
-            Morocco: "MA",
-            Mozambique: "MZ",
-            Namibia: "NA",
-            Niger: "NE",
-            Nigeria: "NG",
-            Rwanda: "RW",
-            "São Tomé and Príncipe": "ST",
-            "Sao Tome & Principe": "ST",
-            "Sao Tome and Principe": "ST",
-            Senegal: "SN",
-            Seychelles: "SC",
-            "Sierra Leone": "SL",
-            Somalia: "SO",
-            "South Africa": "ZA",
-            "South Sudan": "SS",
-            Sudan: "SD",
-            Tanzania: "TZ",
-            Togo: "TG",
-            Tunisia: "TN",
-            Uganda: "UG",
-            Zambia: "ZM",
-            Zimbabwe: "ZW",
-        };
-        return countryMap[countryName] || "";
-    };
-
     const getRegion = (countryName: string): string => {
         const eastAfrica = [
             "Burundi",
@@ -239,7 +162,7 @@ export default function ResourcesPage() {
             "Central African Republic",
             "Chad",
             "Republic of the Congo",
-            "Congo",
+            "Republic of Congo",
             "Democratic Republic of the Congo",
             "Democratic Republic of Congo",
             "Equatorial Guinea",
@@ -335,33 +258,26 @@ export default function ResourcesPage() {
         return "English";
     };
 
-    const getDigitalIdInfo = (docType: string, countryName: string) => {
-        switch (docType) {
-            case DigitalIdDocType.REGISTRATION:
-                return {
-                    icon: <Book className="h-[18px] w-[18px]" />,
-                    title: `${countryName} Civil Registration Law`,
-                };
-            case DigitalIdDocType.NATIONAL_ID:
-                return {
-                    icon: <CreditCard className="h-[18px] w-[18px]" />,
-                    title: `${countryName} National ID System`,
-                };
-            case DigitalIdDocType.IMMIGRATION:
-                return {
-                    icon: <Globe className="h-[18px] w-[18px]" />,
-                    title: `${countryName} Immigration & Citizenship`,
-                };
-            case DigitalIdDocType.OTHER:
-                return {
-                    icon: <File className="h-[18px] w-[18px]" />,
-                    title: `${countryName} Digital ID Framework`,
-                };
+    const getResourceIcon = (type: string, linkType?: string) => {
+        if (type === ResourceType.DATA_PROTECTION) {
+            return <Shield className="h-[18px] w-[18px]" />;
+        }
+
+        // For Digital ID, use link type or default
+        switch (linkType) {
+            case "Academic Research":
+                return <Book className="h-[18px] w-[18px]" />;
+            case "Policy Research":
+                return <File className="h-[18px] w-[18px]" />;
+            case "Development Partner":
+                return <Globe className="h-[18px] w-[18px]" />;
+            case "Research Institute":
+                return <CreditCard className="h-[18px] w-[18px]" />;
+            case "Government":
+            case "Official":
+                return <Shield className="h-[18px] w-[18px]" />;
             default:
-                return {
-                    icon: <FileDigit className="h-[18px] w-[18px]" />,
-                    title: `${countryName} Digital ID Document`,
-                };
+                return <FileDigit className="h-[18px] w-[18px]" />;
         }
     };
 
@@ -375,29 +291,57 @@ export default function ResourcesPage() {
                 policyLaws.forEach((law: any) => {
                     // Only include resources with enacted legislation
                     if (law.dataProtectionLegislationStatus === "Enacted") {
-                        const countryCode = law.isoAlpha2 || getCountryCode(law.country);
+                        const countryCode = law.isoAlpha2;
                         const region = getRegion(law.country);
 
-                        const resource: Resource = {
-                            id: `dp-${countryCode || law.country.replace(/\s+/g, "")}`,
-                            countryCode: countryCode || "",
-                            countryName: law.country,
-                            flagEmoji: FLAG_EMOJIS[countryCode] || "🏳️",
-                            region,
-                            title: `${law.country} Data Protection Act`,
-                            description: `The official data protection legislation of ${law.country}, enacted in ${law.yearLegislationEnacted}.`,
-                            type: ResourceType.DATA_PROTECTION,
-                            documentUrl: law.link || "#",
-                            year: law.yearLegislationEnacted || "Unknown",
-                            language: getDocumentLanguage(law.country),
-                            fileType: "PDF",
-                            isOfficial: true,
-                            icon: <Shield className="h-[18px] w-[18px]" />,
-                            malaboStatus: law.malaboConventionStatus,
-                            legislationStatus: law.dataProtectionLegislationStatus,
-                        };
-
-                        allResources.push(resource);
+                        // Process each link in the policy law record
+                        if (law.links && Array.isArray(law.links) && law.links.length > 0) {
+                            law.links.forEach((linkObj: any, index: number) => {
+                                if (linkObj.url && linkObj.url.trim() !== "") {
+                                    const resource: Resource = {
+                                        id: `dp-${countryCode}-${index}`,
+                                        countryCode: countryCode || "",
+                                        countryName: law.country,
+                                        flagEmoji: law.flagEmoji || FLAG_EMOJIS[countryCode] || "🏳️",
+                                        region,
+                                        title: linkObj.title || `${law.country} Data Protection Resources`,
+                                        description: `Data protection legislation resource for ${law.country}, enacted in ${law.yearLegislationEnacted}.`,
+                                        type: ResourceType.DATA_PROTECTION,
+                                        documentUrl: linkObj.url,
+                                        year: law.yearLegislationEnacted || "Unknown",
+                                        language: getDocumentLanguage(law.country),
+                                        fileType: linkObj.type || "PDF",
+                                        isOfficial: true,
+                                        icon: getResourceIcon(ResourceType.DATA_PROTECTION),
+                                        malaboStatus: law.malaboConventionStatus,
+                                        legislationStatus: law.dataProtectionLegislationStatus,
+                                        linkType: linkObj.type,
+                                    };
+                                    allResources.push(resource);
+                                }
+                            });
+                        } else {
+                            // Create a basic resource even without links for countries with enacted legislation
+                            const resource: Resource = {
+                                id: `dp-${countryCode}-basic`,
+                                countryCode: countryCode || "",
+                                countryName: law.country,
+                                flagEmoji: law.flagEmoji || FLAG_EMOJIS[countryCode] || "🏳️",
+                                region,
+                                title: `${law.country} Data Protection Act`,
+                                description: `Data protection legislation for ${law.country}, enacted in ${law.yearLegislationEnacted}.`,
+                                type: ResourceType.DATA_PROTECTION,
+                                documentUrl: "#",
+                                year: law.yearLegislationEnacted || "Unknown",
+                                language: getDocumentLanguage(law.country),
+                                fileType: "Legislation",
+                                isOfficial: true,
+                                icon: getResourceIcon(ResourceType.DATA_PROTECTION),
+                                malaboStatus: law.malaboConventionStatus,
+                                legislationStatus: law.dataProtectionLegislationStatus,
+                            };
+                            allResources.push(resource);
+                        }
                     }
                 });
             }
@@ -409,66 +353,62 @@ export default function ResourcesPage() {
         try {
             if (Array.isArray(digitalIds)) {
                 digitalIds.forEach((digitalId: any) => {
-                    const countryCode = digitalId.isoAlpha2 || getCountryCode(digitalId.country);
+                    const countryCode = digitalId.isoAlpha2;
                     const region = getRegion(digitalId.country);
 
                     // Process each link in the digital ID record
                     if (digitalId.links && Array.isArray(digitalId.links) && digitalId.links.length > 0) {
                         digitalId.links.forEach((linkObj: any, index: number) => {
-                            if (linkObj.link && linkObj.link.trim() !== "") {
-                                const { icon, title } = getDigitalIdInfo(linkObj.name, digitalId.country);
-
+                            if (linkObj.url && linkObj.url.trim() !== "") {
                                 const resource: Resource = {
-                                    id: `id-${countryCode}-${linkObj.name}-${index}`,
+                                    id: `id-${countryCode}-${index}`,
                                     countryCode,
                                     countryName: digitalId.country,
-                                    flagEmoji: FLAG_EMOJIS[countryCode] || "🏳️",
+                                    flagEmoji: digitalId.flagEmoji || FLAG_EMOJIS[countryCode] || "🏳️",
                                     region,
-                                    title,
+                                    title: linkObj.title || `${digitalId.country} Digital ID Resources`,
                                     description:
                                         digitalId.description ||
                                         `Digital identity system documentation for ${digitalId.country}`,
                                     type: ResourceType.DIGITAL_ID,
-                                    documentUrl: linkObj.link,
-                                    year: "2020", // You can improve this with actual data
+                                    documentUrl: linkObj.url,
+                                    year: digitalId.year_launched || "2020",
                                     language: getDocumentLanguage(digitalId.country),
-                                    fileType: "PDF",
-                                    isOfficial: true,
-                                    docType: linkObj.name,
-                                    icon,
+                                    fileType: linkObj.type || "Research",
+                                    isOfficial: linkObj.type === "Government" || linkObj.type === "Official",
+                                    icon: getResourceIcon(ResourceType.DIGITAL_ID, linkObj.type),
                                     coverage: digitalId.coverage,
                                     authority: digitalId.authority,
                                     features: digitalId.features,
+                                    yearLaunched: digitalId.year_launched,
+                                    linkType: linkObj.type,
                                 };
-
                                 allResources.push(resource);
                             }
                         });
-                    } else {
-                        // Create a basic resource even without links for countries with digital ID info
-                        if (digitalId.features && digitalId.features.length > 0) {
-                            const resource: Resource = {
-                                id: `id-${countryCode}-basic`,
-                                countryCode,
-                                countryName: digitalId.country,
-                                flagEmoji: FLAG_EMOJIS[countryCode] || "🏳️",
-                                region,
-                                title: `${digitalId.country} Digital ID System`,
-                                description: digitalId.description || `Digital identity system in ${digitalId.country}`,
-                                type: ResourceType.DIGITAL_ID,
-                                documentUrl: "#",
-                                year: "2020",
-                                language: getDocumentLanguage(digitalId.country),
-                                fileType: "System Info",
-                                isOfficial: true,
-                                icon: <FileDigit className="h-[18px] w-[18px]" />,
-                                coverage: digitalId.coverage,
-                                authority: digitalId.authority,
-                                features: digitalId.features,
-                            };
-
-                            allResources.push(resource);
-                        }
+                    } else if (digitalId.status && digitalId.status !== "No Data") {
+                        // Create a basic resource for countries with digital ID info but no links
+                        const resource: Resource = {
+                            id: `id-${countryCode}-basic`,
+                            countryCode,
+                            countryName: digitalId.country,
+                            flagEmoji: digitalId.flagEmoji || FLAG_EMOJIS[countryCode] || "🏳️",
+                            region,
+                            title: `${digitalId.country} Digital ID System`,
+                            description: digitalId.description || `Digital identity system in ${digitalId.country}`,
+                            type: ResourceType.DIGITAL_ID,
+                            documentUrl: "#",
+                            year: digitalId.year_launched || "2020",
+                            language: getDocumentLanguage(digitalId.country),
+                            fileType: "System Info",
+                            isOfficial: true,
+                            icon: getResourceIcon(ResourceType.DIGITAL_ID),
+                            coverage: digitalId.coverage,
+                            authority: digitalId.authority,
+                            features: digitalId.features,
+                            yearLaunched: digitalId.year_launched,
+                        };
+                        allResources.push(resource);
                     }
                 });
             }
@@ -698,26 +638,26 @@ export default function ResourcesPage() {
 function ResourceCard({ resource }: { resource: Resource }) {
     const getBorderColor = () => {
         if (resource.type === ResourceType.DATA_PROTECTION) {
-            return "border-t-primary";
+            return "border-t-emerald-500";
         }
-        if (resource.type === ResourceType.DIGITAL_ID) {
-            switch (resource.docType) {
-                case DigitalIdDocType.REGISTRATION:
-                    return "border-t-purple-600";
-                case DigitalIdDocType.NATIONAL_ID:
-                    return "border-t-blue-500";
-                case DigitalIdDocType.IMMIGRATION:
-                    return "border-t-amber-500";
-                case DigitalIdDocType.OTHER:
-                    return "border-t-orange-500";
-                default:
-                    return "border-t-blue-500";
-            }
-        }
-        return "border-t-primary";
-    };
 
-    const isSpecial = resource.region === "Continental";
+        // Different colors based on link type for Digital ID
+        switch (resource.linkType) {
+            case "Academic Research":
+                return "border-t-blue-600";
+            case "Policy Research":
+                return "border-t-purple-600";
+            case "Development Partner":
+                return "border-t-orange-500";
+            case "Research Institute":
+                return "border-t-indigo-500";
+            case "Government":
+            case "Official":
+                return "border-t-green-600";
+            default:
+                return "border-t-blue-500";
+        }
+    };
 
     const handleLinkClick = (url: string) => {
         if (url && url !== "#") {
@@ -729,14 +669,9 @@ function ResourceCard({ resource }: { resource: Resource }) {
         <Card
             className={cn(
                 "border border-gray-200 overflow-hidden h-full transition-all hover:-translate-y-1 hover:shadow-lg relative group border-t-4",
-                getBorderColor(),
-                isSpecial && "border-2 border-primary/10 shadow-md"
+                getBorderColor()
             )}
         >
-            {isSpecial && (
-                <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-blue-500 to-orange-500"></div>
-            )}
-
             <div className="p-6 flex flex-col h-full">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-4">
@@ -746,7 +681,7 @@ function ResourceCard({ resource }: { resource: Resource }) {
                         </div>
                         <span className="font-medium text-gray-700">{resource.countryName}</span>
                     </div>
-                    <span className="text-sm text-gray-500 px-2 py-1 bg-gray-100 rounded">{resource.year}</span>
+                    <span className="text-sm text-gray-500 px-2 py-1 bg-gray-100 rounded">{resource?.yearLaunched || resource?.year}</span>
                 </div>
 
                 {/* Title */}
@@ -791,6 +726,45 @@ function ResourceCard({ resource }: { resource: Resource }) {
                                 </div>
                             </div>
                         )}
+                        {resource.linkType && (
+                            <div className="text-xs text-gray-600">
+                                <span className="font-medium">Source:</span>
+                                <span className="px-1.5 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs ml-1">
+                                    {resource.linkType}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Additional info for Data Protection */}
+                {resource.type === ResourceType.DATA_PROTECTION && (
+                    <div className="mb-4 space-y-2">
+                        {resource.malaboStatus && (
+                            <div className="text-xs text-gray-600">
+                                <span className="font-medium">Malabo Convention:</span>
+                                <span
+                                    className={cn(
+                                        "px-1.5 py-0.5 rounded text-xs ml-1",
+                                        resource.malaboStatus === "Ratified"
+                                            ? "bg-green-100 text-green-700"
+                                            : resource.malaboStatus === "Signed"
+                                            ? "bg-yellow-100 text-yellow-700"
+                                            : "bg-gray-100 text-gray-700"
+                                    )}
+                                >
+                                    {resource.malaboStatus}
+                                </span>
+                            </div>
+                        )}
+                        {resource.linkType && (
+                            <div className="text-xs text-gray-600">
+                                <span className="font-medium">Source:</span>
+                                <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-xs ml-1">
+                                    {resource.linkType}
+                                </span>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -819,7 +793,7 @@ function ResourceCard({ resource }: { resource: Resource }) {
                             onClick={() => handleLinkClick(resource.documentUrl!)}
                         >
                             <ExternalLink className="h-4 w-4" />
-                            <span>View Document</span>
+                            <span>View Resource</span>
                         </Button>
                     )}
                     {resource.websiteUrl && resource.websiteUrl !== "#" && (
