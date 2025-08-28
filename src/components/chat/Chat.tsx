@@ -654,7 +654,7 @@ export default function ChatPage() {
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "text/event-stream",
-                    "X-API-Key": process.env.NEXT_PUBLIC_API_KEY || "",
+                    "X-API-Key": process.env.NEXT_PUBLIC_API_KEY || "HpOfOIDyNljM7LlC5QYxKGXSjn0ZRhidTUYW6bgh",
                 },
                 body: JSON.stringify({
                     query,

@@ -78,7 +78,7 @@ export const apiSlice = createApi({
         baseUrl: API_BASE_URL,
         prepareHeaders: (headers) => {
             headers.set("Content-Type", "application/json");
-            const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+            const apiKey = process.env.NEXT_PUBLIC_API_KEY || "HpOfOIDyNljM7LlC5QYxKGXSjn0ZRhidTUYW6bgh";
             if (apiKey) {
                 headers.set("X-API-Key", apiKey);
             }
