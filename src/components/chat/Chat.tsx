@@ -84,7 +84,7 @@ function ChatHistorySidebar({
             {/* Sidebar */}
             <div
                 className={cn(
-                    "bg-white border-r border-gray-200 flex flex-col transition-all duration-300 z-50",
+                    "bg-white border-r border-gray-200 flex flex-col transition-all duration-300",
                     isMobile ? "fixed left-0 top-0 bottom-0 w-80 transform" : "w-64",
                     showChatHistory ? "translate-x-0" : isMobile ? "-translate-x-full" : "hidden"
                 )}
@@ -477,7 +477,7 @@ function ErrorAlert({
     );
 }
 
-// Fixed Input Area Component - Always visible at bottom
+//  Input Area  - Always visible at bottom
 function ChatInput({
     input,
     setInput,
@@ -925,10 +925,10 @@ export default function ChatPage() {
 
     return (
         <div
-            className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
             style={{
                 height: "calc(100vh - 280px)", // Account for header (120px) + margins (160px)
-                minHeight: "600px", // Ensure minimum usable height
+                minHeight: "600px", 
             }}
         >
             <div className="flex h-full">
