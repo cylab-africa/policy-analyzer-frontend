@@ -19,11 +19,11 @@ const TabSection = () => {
                         Interactive Analysis
                     </Badge>
                     <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-6 tracking-tight">
-                        Digital Governance in Africa
+                        Africa&apos;s Digital Governance & Policy Landscape
                     </h2>
                     <p className="text-slate-600 max-w-2xl mx-auto text-lg leading-relaxed">
-                        Comprehensive analysis of digital identity systems and data protection legislation across
-                        African nations
+                        An interactive overview of digital identity frameworks and data protection laws across African
+                        countries.
                     </p>
                 </div>
 
@@ -50,20 +50,18 @@ const TabSection = () => {
 
                     {/* Digital ID Tab Content */}
                     <TabsContent value="digital-id" className="focus:outline-none">
-                        <div className="bg-white rounded-2xl overflow-hidden">
-                            <div className="py-6 border-b border-slate-100">
+                        <div className="bg-white overflow-hidden">
+                            <div className="px-6 py-8 border-b border-slate-100 bg-gradient-to-r from-blue-50/50 to-indigo-50/30">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                                        <FileKey className="w-6 h-6 text-primary" />
+                                    <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm border border-blue-200/50">
+                                        <FileKey className="w-7 h-7 text-primary" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="text-2xl font-bold text-slate-900 mb-3">
+                                        <h3 className="text-2xl font-bold text-slate-900 mb-3 tracking-tight">
                                             Digital Identity Implementation
                                         </h3>
-                                        <p className="text-slate-600 leading-relaxed">
+                                        <p className="text-slate-600 leading-relaxed text-base">
                                             Track the deployment and progress of digital identity systems across Africa.
-                                            Hover over countries to explore implementation status, coverage data, and
-                                            key features.
                                         </p>
                                     </div>
                                 </div>
@@ -76,20 +74,18 @@ const TabSection = () => {
 
                     {/* Data Protection Tab Content */}
                     <TabsContent value="data-protection" className="focus:outline-none">
-                        <div className="bg-white rounded-2xl overflow-hidden">
-                            <div className="py-6 border-b border-slate-100">
+                        <div className="bg-white overflow-hidden">
+                            <div className="px-6 py-8 border-b border-slate-100 bg-gradient-to-r from-emerald-50/50 to-green-50/30">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                                        <Shield className="w-6 h-6 text-primary" />
+                                    <div className="w-14 h-14 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm border border-emerald-200/50">
+                                        <Shield className="w-7 h-7 text-emerald-600" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="text-2xl font-bold text-slate-900 mb-3">
+                                        <h3 className="text-2xl font-bold text-slate-900 mb-3 tracking-tight">
                                             Data Protection Legislation
                                         </h3>
-                                        <p className="text-slate-600 leading-relaxed">
-                                            Monitor privacy laws and data protection regulations across African
-                                            countries. Explore legislative status, enactment dates, and Malabo
-                                            Convention adoption.
+                                        <p className="text-slate-600 leading-relaxed text-base">
+                                            Explore legislative status, enactment dates, and Malabo Convention adoption.
                                         </p>
                                     </div>
                                 </div>

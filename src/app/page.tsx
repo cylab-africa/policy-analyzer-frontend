@@ -1,10 +1,9 @@
 "use client";
 
+import HeroStatsSection from "@/components/home/HeroStatsSection";
 import PolicyHighlightsSection from "@/components/home/PolicyHighlightsSection";
 import TabSection from "@/components/home/TabSection";
-import HeroStatsSection from "@/components/home/HeroStatsSection";
 import Link from "next/link";
-import { MessageSquare } from "lucide-react";
 
 export default function Home() {
     return (
@@ -15,19 +14,18 @@ export default function Home() {
                         {/* Left side - Hero content */}
                         <div className="space-y-6">
                             <h1 className="text-4xl font-bold mb-2">
-                                Africa&apos;s Data Protection &amp; Digital ID Insights
+                                Insights on Data Protection & Digital Identity Across Africa
                             </h1>
                             <p className="text-white/90 text-lg">
-                                An AI-driven platform to track, compare, and understand digital identity and data
-                                protection policies shaping the future of governance across Africa.
+                                Leverage AI to explore, compare, and understand the evolving landscape of digital
+                                identity and data protection policies shaping governance across Africa.
                             </p>
 
                             <div className="flex gap-4 mt-8 md:flex-row flex-col">
                                 <Link
                                     href="/chat"
-                                    className="inline-flex items-center justify-center px-6 py-3 bg-white text-primary border-2 border-white rounded-lg hover:bg-white/90 hover:scale-105 transition-all duration-200 font-semibold text-base shadow-lg"
+                                    className="inline-flex items-center justify-center px-6 py-3 bg-white text-primary border-2 border-white rounded-lg hover:bg-white/90 hover:scale-105 transition-all duration-200 font-bold text-base shadow-lg"
                                 >
-                                    <MessageSquare className="w-5 h-5 mr-2" />
                                     Analyze Policies with AI
                                 </Link>
                                 <Link
