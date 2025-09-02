@@ -4,7 +4,7 @@
 import { Button } from "@/components/ui/button";
 import africanCountries from "@/data/world-map.json";
 import { useDigitalIdData } from "@/redux/api/apiSlice";
-import { AlertCircle, Loader2, RefreshCw } from "lucide-react";
+import { AlertCircle, FileKey, Loader2, RefreshCw } from "lucide-react";
 import React, { useState } from "react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Tooltip as ReactTooltip } from "react-tooltip";
@@ -21,8 +21,9 @@ const COUNTRY_NAME_MAPPING: Record<string, string> = {
     "The Gambia": "Gambia",
     "São Tomé and Príncipe": "Sao Tome & Principe",
     "Sao Tome and Principe": "Sao Tome & Principe",
-    "Ivory Coast": "Cote d'Ivoire",
-    "Côte d'Ivoire": "Cote d'Ivoire",
+    "Ivory Coast": "Côte d'Ivoire",
+    "Côte d'Ivoire": "Côte d'Ivoire",
+    "Cote d'Ivoire": "Côte d'Ivoire",
 };
 
 // Utility function to normalize country names
@@ -87,7 +88,7 @@ const getColor = (status: string): string => {
         case "No Data":
             return "#64748b"; // Neutral slate - unknown status
         default:
-            return "#cbd5e1"; // Light slate - default state
+            return "#B7BDBF"; // Light slate - default state
     }
 };
 
@@ -194,36 +195,36 @@ const DigitalIDMap: React.FC = () => {
         `);
         } else {
             setTooltipContent(`
-            <div class="w-72 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl border border-gray-200/80 overflow-hidden font-inter relative">
-                <!-- Subtle top accent -->
-                <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-400 to-gray-500"></div>
-                
-                <!-- Header -->
-                <div class="px-5 py-4 bg-gradient-to-br from-gray-50/80 to-white border-b border-gray-100/60">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <div class="w-72 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl border border-gray-200/80 overflow-hidden font-inter relative">
+                    <!-- Subtle top accent -->
+                    <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-400 to-gray-500"></div>
+                    
+                    <!-- Header -->
+                    <div class="px-5 py-4 bg-gradient-to-br from-gray-50/80 to-white border-b border-gray-100/60">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 tracking-tight">${countryName}</h3>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="p-5 text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-gray-100/80 to-gray-200/80 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-gray-200/60">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-900 tracking-tight">${countryName}</h3>
+                        <div class="space-y-2">
+                            <p class="text-sm font-semibold text-gray-900">No Data Available</p>
+                            <p class="text-xs text-gray-500 leading-relaxed">Digital identity information for this country is not currently available in our database</p>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- Content -->
-                <div class="p-5 text-center">
-                    <div class="w-16 h-16 bg-gradient-to-br from-gray-100/80 to-gray-200/80 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-gray-200/60">
-                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                    </div>
-                    <div class="space-y-2">
-                        <p class="text-sm font-semibold text-gray-900">No Data Available</p>
-                        <p class="text-xs text-gray-500 leading-relaxed">Digital ID information is not currently available for this country</p>
-                    </div>
-                </div>
-            </div>
-        `);
+            `);
         }
     };
 
@@ -238,12 +239,10 @@ const DigitalIDMap: React.FC = () => {
 
     if (isLoading) {
         return (
-            <div className="w-full">
-                <div className="w-full h-[400px] sm:h-[500px] lg:h-[600px] xl:h-[800px] rounded-xl bg-muted flex items-center justify-center">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                        <Loader2 className="h-6 w-6 animate-spin" />
-                        <span>Loading digital ID data...</span>
-                    </div>
+            <div className="w-full h-[600px] lg:h-[700px] rounded-xl bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center border border-slate-200">
+                <div className="flex items-center gap-3 text-slate-600 bg-white/80 backdrop-blur-sm rounded-xl px-6 py-4 shadow-sm border border-white/60">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span className="font-medium">Loading digital ID data...</span>
                 </div>
             </div>
         );
@@ -252,23 +251,23 @@ const DigitalIDMap: React.FC = () => {
     // Error state
     if (error) {
         return (
-            <div className="w-full">
-                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-                    <div className="flex-1">
-                        <div className="w-full h-[300px] sm:h-[400px] lg:h-[500px] xl:h-[550px] rounded-xl bg-muted flex items-center justify-center">
-                            <div className="text-center">
-                                <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
-                                <h3 className="text-lg font-semibold text-foreground mb-2">Failed to load data</h3>
-                                <p className="text-muted-foreground mb-4">
-                                    Unable to fetch digital ID data from the server
-                                </p>
-                                <Button variant="outline" onClick={() => window.location.reload()} className="gap-2">
-                                    <RefreshCw className="h-4 w-4" />
-                                    Retry
-                                </Button>
-                            </div>
-                        </div>
+            <div className="w-full h-[600px] lg:h-[700px] rounded-xl bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center border border-red-200">
+                <div className="text-center bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-sm border border-white/60 max-w-md mx-4">
+                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <AlertCircle className="h-8 w-8 text-red-600" />
                     </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Failed to load data</h3>
+                    <p className="text-gray-600 mb-6 leading-relaxed">
+                        Unable to fetch digital ID data from the server
+                    </p>
+                    <Button
+                        variant="outline"
+                        onClick={() => window.location.reload()}
+                        className="gap-2 hover:bg-red-50 border-red-200 text-red-700 hover:border-red-300"
+                    >
+                        <RefreshCw className="h-4 w-4" />
+                        Retry
+                    </Button>
                 </div>
             </div>
         );
@@ -282,19 +281,27 @@ const DigitalIDMap: React.FC = () => {
         { status: "No Data", color: getColor("No Data"), label: "No Information" },
     ];
 
+    const isAfricanCountry = (countryName: string): boolean => {
+        // Check if we have data for this country OR if it's in our mapping
+        const hasData = digitalIds.some((id) => id.country === countryName);
+        const hasMapping = COUNTRY_NAME_MAPPING[countryName] !== undefined;
+        const normalizedData = findCountryData(digitalIds, countryName);
+
+        return hasData || hasMapping || normalizedData !== undefined;
+    };
+
     return (
         <div className="w-full space-y-6">
             {/* Map Container */}
             <div className="relative">
                 <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden relative">
                     {/* Professional background pattern */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,rgba(99,102,241,0.05)_0%,transparent_70%)] pointer-events-none"></div>
-                    <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(99,102,241,0.05)_0%,transparent_70%)] pointer-events-none"></div>
 
                     <ComposableMap
                         projectionConfig={{
-                            scale: 220,
-                            center: [20, 5],
+                            scale: 350,
+                            center: [20, 0],
                         }}
                         style={{ width: "100%", height: "100%" }}
                         className="drop-shadow-lg"
@@ -330,26 +337,41 @@ const DigitalIDMap: React.FC = () => {
                                                     outline: "none",
                                                     filter: "url(#digitalIdFilter) drop-shadow(0 2px 4px rgba(0,0,0,0.06))",
                                                     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                                                    cursor: isAfricanCountry(countryName) ? "pointer" : "default",
                                                 },
-                                                hover: {
-                                                    fill: "#10b981",
-                                                    outline: "none",
-                                                    filter: "url(#digitalIdFilter) drop-shadow(0 8px 25px rgba(99,102,241,0.2)) brightness(1.05)",
-                                                    transform: "scale(1.02)",
-                                                    stroke: "rgba(255,255,255,0.9)",
-                                                    strokeWidth: 1,
-                                                },
-                                                pressed: {
-                                                    outline: "none",
-                                                    filter: "brightness(0.95)",
-                                                    transform: "scale(0.98)",
-                                                },
+                                                hover: isAfricanCountry(countryName)
+                                                    ? {
+                                                          fill: "#10b981",
+                                                          outline: "none",
+                                                          filter: "url(#digitalIdFilter) drop-shadow(0 8px 25px rgba(99,102,241,0.2)) brightness(1.05)",
+                                                          transform: "scale(1.02)",
+                                                          stroke: "rgba(255,255,255,0.9)",
+                                                          strokeWidth: 1,
+                                                      }
+                                                    : {},
+                                                pressed: isAfricanCountry(countryName)
+                                                    ? {
+                                                          outline: "none",
+                                                          filter: "brightness(0.95)",
+                                                          transform: "scale(0.98)",
+                                                      }
+                                                    : {},
                                             }}
-                                            onMouseEnter={() => handleMouseEnter(countryName)}
-                                            onMouseLeave={handleMouseLeave}
-                                            data-tooltip-id="id-tooltip"
-                                            data-tooltip-html={tooltipContent}
-                                            className="cursor-pointer transition-all duration-300 ease-out"
+                                            onMouseEnter={
+                                                isAfricanCountry(countryName)
+                                                    ? () => handleMouseEnter(countryName)
+                                                    : undefined
+                                            }
+                                            onMouseLeave={isAfricanCountry(countryName) ? handleMouseLeave : undefined}
+                                            data-tooltip-id={isAfricanCountry(countryName) ? "id-tooltip" : undefined}
+                                            data-tooltip-html={
+                                                isAfricanCountry(countryName) ? tooltipContent : undefined
+                                            }
+                                            className={
+                                                isAfricanCountry(countryName)
+                                                    ? "cursor-pointer transition-all duration-300 ease-out"
+                                                    : "cursor-default"
+                                            }
                                         />
                                     );
                                 })
@@ -357,14 +379,19 @@ const DigitalIDMap: React.FC = () => {
                         </Geographies>
                     </ComposableMap>
 
-                    {/* Legend */}
-                    <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-lg max-w-xs">
-                        <h4 className="text-md font-bold text-gray-800 mb-3 flex items-center gap-2">Digital ID</h4>
-                        <div className="space-y-2">
+                    {/* Enhanced Legend */}
+                    <div className="absolute bottom-6 right-0 bg-white/95 backdrop-blur-md rounded-2xl p-5 border border-white/60 shadow-xl max-w-xs">
+                        <div className="flex items-center gap-2.5 mb-4">
+                            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <FileKey className="w-4 h-4 text-blue-600" />
+                            </div>
+                            <h4 className="text-sm font-bold text-gray-800">Digital ID</h4>
+                        </div>
+                        <div className="space-y-3">
                             {legendData.map((item) => (
-                                <div key={item.status} className="flex items-center gap-2.5">
+                                <div key={item.status} className="flex items-center gap-3">
                                     <div
-                                        className="w-3 h-3 rounded-full border border-white/70 shadow-sm"
+                                        className="w-3 h-3 rounded-full border-2 border-white shadow-sm"
                                         style={{ backgroundColor: item.color }}
                                     ></div>
                                     <div className="flex-1">

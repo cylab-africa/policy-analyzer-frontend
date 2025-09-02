@@ -4,7 +4,7 @@
 import { Button } from "@/components/ui/button";
 import africanCountries from "@/data/world-map.json";
 import { usePolicyLawData } from "@/redux/api/apiSlice";
-import { AlertCircle, Loader2, RefreshCw } from "lucide-react";
+import { AlertCircle, Loader2, RefreshCw, Shield } from "lucide-react";
 import React, { useState } from "react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Tooltip as ReactTooltip } from "react-tooltip";
@@ -23,6 +23,7 @@ const COUNTRY_NAME_MAPPING: Record<string, string> = {
     "Sao Tome and Principe": "Sao Tome & Principe",
     "Ivory Coast": "Cote d'Ivoire",
     "Côte d'Ivoire": "Cote d'Ivoire",
+    "Cote d'Ivoire": "Côte d'Ivoire",
 };
 
 // Utility function to normalize country names
@@ -84,15 +85,15 @@ const DataProtectionMap: React.FC = () => {
     const getColor = (status: string): string => {
         switch (status) {
             case "Enacted":
-                return "#10b981"; // Modern emerald - full legislation
+                return "#059669"; // Emerald-600 - consistent with other components
             case "Draft":
-                return "#3b82f6"; // Professional blue - in development
+                return "#3b82f6"; // Blue-500 - professional blue
             case "Lite":
-                return "#f59e0b"; // Sophisticated amber - basic protection
+                return "#8b5cf6"; // Violet-500 - distinguishable purple
             case "No Law":
-                return "#64748b"; // Neutral slate - no legislation
+                return "#6b7280"; // Gray-500 - neutral
             default:
-                return "#cbd5e1"; // Light slate - default state
+                return "#B7BDBF"; // Gray-400 - default state
         }
     };
 
@@ -231,9 +232,9 @@ const DataProtectionMap: React.FC = () => {
 
     if (isLoading) {
         return (
-            <div className="w-full h-[600px] lg:h-[700px] rounded-xl bg-muted flex items-center justify-center">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                    <Loader2 className="h-6 w-6 animate-spin" />
+            <div className="w-full h-[600px] lg:h-[700px] rounded-xl bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center border border-slate-200">
+                <div className="flex items-center gap-3 text-slate-600 bg-white/80 backdrop-blur-sm rounded-xl px-6 py-4 shadow-sm border border-white/60">
+                    <Loader2 className="h-5 w-5 animate-spin" />
                     <span className="font-medium">Loading data protection data...</span>
                 </div>
             </div>
@@ -242,14 +243,20 @@ const DataProtectionMap: React.FC = () => {
 
     if (error) {
         return (
-            <div className="w-full h-[600px] lg:h-[700px] rounded-xl bg-gray-50 flex items-center justify-center">
-                <div className="text-center">
-                    <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to load data</h3>
-                    <p className="text-gray-600 mb-4 max-w-md">
+            <div className="w-full h-[600px] lg:h-[700px] rounded-xl bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center border border-red-200">
+                <div className="text-center bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-sm border border-white/60 max-w-md mx-4">
+                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <AlertCircle className="h-8 w-8 text-red-600" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Failed to load data</h3>
+                    <p className="text-gray-600 mb-6                ">
                         Unable to fetch data protection legislation data from the server
                     </p>
-                    <Button variant="outline" onClick={() => window.location.reload()} className="gap-2">
+                    <Button
+                        variant="outline"
+                        onClick={() => window.location.reload()}
+                        className="gap-2 hover:bg-red-50 border-red-200 text-red-700 hover:border-red-300"
+                    >
                         <RefreshCw className="h-4 w-4" />
                         Retry
                     </Button>
@@ -257,6 +264,16 @@ const DataProtectionMap: React.FC = () => {
             </div>
         );
     }
+
+    // Add this function to check if a country is African
+    const isAfricanCountry = (countryName: string): boolean => {
+        // Check if we have data for this country OR if it's in our mapping
+        const hasData = policyLaws.some((law) => law.country === countryName);
+        const hasMapping = COUNTRY_NAME_MAPPING[countryName] !== undefined;
+        const normalizedData = findCountryData(policyLaws, countryName);
+
+        return hasData || hasMapping || normalizedData !== undefined;
+    };
 
     const legendData = [
         { status: "Enacted", color: getColor("Enacted"), label: "Comprehensive Law" },
@@ -268,14 +285,30 @@ const DataProtectionMap: React.FC = () => {
     return (
         <div className="w-full space-y-6">
             <div className="relative">
-                <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden relative">
+                <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden relative bg-gradient-to-br from-slate-50/50 to-blue-50/30 border border-slate-200/60">
+                    {/* Professional background pattern */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(34,197,94,0.05)_0%,transparent_70%)] pointer-events-none"></div>
+
                     <ComposableMap
                         projectionConfig={{
-                            scale: 220,
-                            center: [20, 5],
+                            scale: 350,
+                            center: [20, 0],
                         }}
                         style={{ width: "100%", height: "100%" }}
+                        className="drop-shadow-sm"
                     >
+                        <defs>
+                            <filter id="dataProtectionFilter" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur in="SourceGraphic" stdDeviation="0" />
+                                <feOffset dx="0" dy="1" result="offset" />
+                                <feFlood floodColor="rgba(0,0,0,0.06)" />
+                                <feComposite in2="offset" operator="in" />
+                                <feMerge>
+                                    <feMergeNode />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
                         <Geographies geography={africanCountries}>
                             {({ geographies }) =>
                                 geographies.map((geo) => {
@@ -294,24 +327,42 @@ const DataProtectionMap: React.FC = () => {
                                             style={{
                                                 default: {
                                                     outline: "none",
-                                                    transition: "all 0.2s ease",
-                                                    filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.1))",
+                                                    filter: "url(#dataProtectionFilter) drop-shadow(0 2px 4px rgba(0,0,0,0.06))",
+                                                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                                                    cursor: isAfricanCountry(countryName) ? "pointer" : "default",
                                                 },
-                                                hover: {
-                                                    outline: "none",
-                                                    filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.15)) brightness(1.1)",
-                                                    stroke: "rgba(255,255,255,0.95)",
-                                                },
-                                                pressed: {
-                                                    outline: "none",
-                                                    filter: "brightness(0.95)",
-                                                },
+                                                hover: isAfricanCountry(countryName)
+                                                    ? {
+                                                          outline: "none",
+                                                          filter: "url(#dataProtectionFilter) drop-shadow(0 8px 25px rgba(34,197,94,0.15)) brightness(1.05)",
+                                                          transform: "scale(1.02)",
+                                                          stroke: "rgba(255,255,255,0.9)",
+                                                          strokeWidth: 1.2,
+                                                      }
+                                                    : {},
+                                                pressed: isAfricanCountry(countryName)
+                                                    ? {
+                                                          outline: "none",
+                                                          filter: "brightness(0.95)",
+                                                          transform: "scale(0.98)",
+                                                      }
+                                                    : {},
                                             }}
-                                            onMouseEnter={() => handleMouseEnter(countryName)}
-                                            onMouseLeave={handleMouseLeave}
-                                            data-tooltip-id="data-protection-tooltip"
-                                            data-tooltip-html={tooltipContent}
-                                            className="cursor-pointer"
+                                            onMouseEnter={
+                                                isAfricanCountry(countryName)
+                                                    ? () => handleMouseEnter(countryName)
+                                                    : undefined
+                                            }
+                                            onMouseLeave={isAfricanCountry(countryName) ? handleMouseLeave : undefined}
+                                            data-tooltip-id={
+                                                isAfricanCountry(countryName) ? "data-protection-tooltip" : undefined
+                                            }
+                                            data-tooltip-html={
+                                                isAfricanCountry(countryName) ? tooltipContent : undefined
+                                            }
+                                            className={
+                                                isAfricanCountry(countryName) ? "cursor-pointer" : "cursor-default"
+                                            }
                                         />
                                     );
                                 })
@@ -319,16 +370,19 @@ const DataProtectionMap: React.FC = () => {
                         </Geographies>
                     </ComposableMap>
 
-                    {/* Legend */}
-                    <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-md rounded-2xl p-4 border border-white/60 shadow-lg max-w-xs">
-                        <h4 className="text-md font-bold text-gray-800 mb-3 flex items-center gap-2">
-                            Data Protection
-                        </h4>
-                        <div className="space-y-2">
+                    {/* Enhanced Legend */}
+                    <div className="absolute bottom-6 right-0 bg-white/95 backdrop-blur-md rounded-2xl p-5 border border-white/60 shadow-xl max-w-xs">
+                        <div className="flex items-center gap-2.5 mb-4">
+                            <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                <Shield className="w-4 h-4 text-emerald-600" />
+                            </div>
+                            <h4 className="text-sm font-bold text-gray-800">Data Protection</h4>
+                        </div>
+                        <div className="space-y-3">
                             {legendData.map((item) => (
-                                <div key={item.status} className="flex items-center gap-2.5">
+                                <div key={item.status} className="flex items-center gap-3">
                                     <div
-                                        className="w-3 h-3 rounded-full border border-white/70 shadow-sm"
+                                        className="w-3 h-3 rounded-full border-2 border-white shadow-sm"
                                         style={{ backgroundColor: item.color }}
                                     ></div>
                                     <div className="flex-1">
