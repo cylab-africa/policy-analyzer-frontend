@@ -60,14 +60,6 @@ export default function Header() {
                             />
                             <div className="flex flex-col">
                                 <span className="text-lg font-bold leading-tight tracking-tight">Policy Analyzer</span>
-                                <span
-                                    className={cn(
-                                        "text-xs font-medium tracking-wide",
-                                        isScrolled ? "text-muted-foreground" : "text-primary-foreground/90"
-                                    )}
-                                >
-                                    Smart Policy Solutions
-                                </span>
                             </div>
                         </Link>
                     </div>
