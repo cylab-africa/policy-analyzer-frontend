@@ -19,7 +19,7 @@ const Footer = () => {
                         <h3 className="text-lg font-semibold text-white">Contact</h3>
                         <div>
                             <a
-                                href="mailto:africa-info@andrew.cmu.edu"
+                                href="mailto:upanzi@andrew.cmu.edu"
                                 className="flex items-center text-slate-300 hover:text-blue-400 transition-colors text-sm group"
                                 aria-label="Email Upanzi Network"
                             >
@@ -32,7 +32,7 @@ const Footer = () => {
                                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                                 </svg>
-                                <span>africa-info@andrew.cmu.edu</span>
+                                <span>upanzi@andrew.cmu.edu</span>
                             </a>
                         </div>
                     </div>
