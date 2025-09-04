@@ -47,19 +47,38 @@ export default function Header() {
                         <Link
                             href="/"
                             className={cn(
-                                "flex items-center transition-colors duration-300",
+                                "flex items-center transition-colors duration-300 group",
                                 isScrolled ? "text-foreground" : "text-primary-foreground"
                             )}
                         >
                             <Image
-                                src="/images/Designer.png"
-                                width={50}
-                                height={50}
+                                src={
+                                    isScrolled
+                                        ? "/images/Policy_Analyzer-primary.png"
+                                        : "/images/Policy_Analyzer-white.png"
+                                }
+                                width={35}
+                                height={35}
                                 alt="Policy Analyzer Logo"
-                                className="mr-3 transition-transform duration-300 hover:scale-105"
+                                className="mr-2 transition-transform duration-300 group-hover:scale-105"
                             />
-                            <div className="flex flex-col">
-                                <span className="text-lg font-bold leading-tight tracking-tight">Policy Analyzer</span>
+                            <div className="flex items-baseline space-x-1">
+                                <div
+                                    className={cn(
+                                        "text-xl uppercase tracking-tight transition-colors duration-300",
+                                        isScrolled ? "text-primary" : "text-primary-foreground"
+                                    )}
+                                >
+                                    Policy
+                                </div>
+                                <div
+                                    className={cn(
+                                        "text-xl font-bold tracking-tight uppercase transition-colors duration-300",
+                                        isScrolled ? "text-primary" : "text-primary-foreground"
+                                    )}
+                                >
+                                    Analyzer
+                                </div>
                             </div>
                         </Link>
                     </div>
