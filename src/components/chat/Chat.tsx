@@ -692,7 +692,7 @@ export default function ChatPage() {
         let hasReceivedContent = false; // Track if we received any content
 
         try {
-            const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://172.29.108.116:8001";
+            const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
             const response = await fetch(`${API_BASE_URL}/api/query_stream`, {
                 method: "POST",
