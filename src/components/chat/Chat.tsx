@@ -694,7 +694,7 @@ export default function ChatPage() {
         try {
             const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-            const response = await fetch(`${API_BASE_URL}/api/query_stream`, {
+            const response = await fetch(`${API_BASE_URL}/query_stream`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
