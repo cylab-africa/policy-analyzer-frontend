@@ -322,29 +322,29 @@ const DataProtectionMap: React.FC = () => {
                                             key={geo.rsmKey}
                                             geography={geo}
                                             fill={fillColor}
-                                            stroke="rgba(255,255,255,0.8)"
-                                            strokeWidth={isHovered ? 1.5 : 0.8}
+                                            stroke={isHovered ? "rgba(59, 130, 246, 0.8)" : "rgba(255,255,255,0.8)"}
+                                            strokeWidth={isHovered ? 2 : 0.8}
                                             style={{
                                                 default: {
                                                     outline: "none",
                                                     filter: "url(#dataProtectionFilter) drop-shadow(0 2px 4px rgba(0,0,0,0.06))",
-                                                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                                                    transition: "all 0.2s ease-in-out",
                                                     cursor: isAfricanCountry(countryName) ? "pointer" : "default",
                                                 },
                                                 hover: isAfricanCountry(countryName)
                                                     ? {
                                                           outline: "none",
-                                                          filter: "url(#dataProtectionFilter) drop-shadow(0 8px 25px rgba(34,197,94,0.15)) brightness(1.05)",
-                                                          transform: "scale(1.02)",
-                                                          stroke: "rgba(255,255,255,0.9)",
-                                                          strokeWidth: 1.2,
+                                                          fill: fillColor,
+                                                          filter: "url(#dataProtectionFilter) drop-shadow(0 4px 12px rgba(0,0,0,0.55)) brightness(1.1)",
+                                                          stroke: "rgba(59, 130, 246, 0.9)",
+                                                          strokeWidth: 2.5,
                                                       }
                                                     : {},
                                                 pressed: isAfricanCountry(countryName)
                                                     ? {
                                                           outline: "none",
+                                                          fill: fillColor,
                                                           filter: "brightness(0.95)",
-                                                          transform: "scale(0.98)",
                                                       }
                                                     : {},
                                             }}
