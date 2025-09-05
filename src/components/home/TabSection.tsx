@@ -19,7 +19,7 @@ const TabSection = () => {
                         Interactive Analysis
                     </Badge>
                     <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-6 tracking-tight">
-                        Africa&apos;s Digital Governance & Policy Landscape
+                        Digital Governance Framework Analysis
                     </h2>
                     <p className="text-slate-600 max-w-2xl mx-auto text-lg leading-relaxed">
                         An interactive overview of digital identity frameworks and data protection laws across African
