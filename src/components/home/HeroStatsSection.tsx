@@ -5,60 +5,104 @@ import { useDigitalIdData, usePolicyLawData } from "@/redux/api/apiSlice";
 import { AlertCircle, ChevronLeft, ChevronRight, FileKey, Loader2, Shield } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
-// Donut Chart Component
+// Enhanced Donut Chart Component
 const DonutChart: React.FC<{
     data: { label: string; value: number; color: string }[];
     centerText?: string;
     centerSubtext?: string;
 }> = ({ data, centerText, centerSubtext }) => {
+    const [hoveredSegment, setHoveredSegment] = useState<number | null>(null);
     const total = data.reduce((sum, item) => sum + item.value, 0);
+
+    const radius = 45;
+    const strokeWidth = 8;
+    const normalizedRadius = radius - strokeWidth * 2;
+    const circumference = normalizedRadius * 2 * Math.PI;
+
     let cumulativePercentage = 0;
 
-    const createPath = (percentage: number, cumulativePerc: number) => {
-        const startAngle = cumulativePerc * 3.6;
-        const endAngle = (cumulativePerc + percentage) * 3.6;
-
-        const start = polarToCartesian(50, 50, 40, endAngle);
-        const end = polarToCartesian(50, 50, 40, startAngle);
-        const largeArcFlag = percentage > 50 ? 1 : 0;
-
-        return `M 50,50 L ${start.x},${start.y} A 40,40 0 ${largeArcFlag},0 ${end.x},${end.y} Z`;
-    };
-
-    const polarToCartesian = (centerX: number, centerY: number, radius: number, angleInDegrees: number) => {
-        const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180;
-        return {
-            x: centerX + radius * Math.cos(angleInRadians),
-            y: centerY + radius * Math.sin(angleInRadians),
-        };
-    };
-
     return (
-        <div className="relative w-32 h-32 mx-auto">
-            <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
+        <div className="relative w-48 h-48 mx-auto group">
+            {/* SVG Donut Chart */}
+            <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90 drop-shadow-lg">
+                {/* Background circle */}
+                <circle
+                    cx="50"
+                    cy="50"
+                    r={normalizedRadius}
+                    fill="none"
+                    stroke="rgba(255, 255, 255, 0.1)"
+                    strokeWidth={strokeWidth}
+                />
+
+                {/* Data segments */}
                 {data.map((item, index) => {
                     if (item.value === 0) return null;
+
                     const percentage = (item.value / total) * 100;
-                    const path = createPath(percentage, cumulativePercentage);
+                    const strokeDasharray = `${(percentage / 100) * circumference} ${circumference}`;
+                    const strokeDashoffset = -((cumulativePercentage / 100) * circumference);
+
                     cumulativePercentage += percentage;
 
+                    const isHovered = hoveredSegment === index;
+
                     return (
-                        <path
+                        <circle
                             key={index}
-                            d={path}
-                            fill={item.color}
-                            className="transition-all duration-300 hover:brightness-110"
+                            cx="50"
+                            cy="50"
+                            r={normalizedRadius}
+                            fill="none"
+                            stroke={item.color}
+                            strokeWidth={isHovered ? strokeWidth + 2 : strokeWidth}
+                            strokeDasharray={strokeDasharray}
+                            strokeDashoffset={strokeDashoffset}
+                            strokeLinecap="round"
+                            className="transition-all duration-300 ease-out cursor-pointer"
+                            style={{
+                                filter: isHovered
+                                    ? "brightness(1.2) drop-shadow(0 0 8px rgba(255,255,255,0.3))"
+                                    : "none",
+                                transform: isHovered ? "scale(1.02)" : "scale(1)",
+                                transformOrigin: "50% 50%",
+                            }}
+                            onMouseEnter={() => setHoveredSegment(index)}
+                            onMouseLeave={() => setHoveredSegment(null)}
                         />
                     );
                 })}
-                <circle cx="50" cy="50" r="25" fill="white" />
             </svg>
 
-            {/* Center text */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-2xl font-bold text-slate-800">{centerText}</div>
-                {centerSubtext && <div className="text-xs text-slate-600 font-medium">{centerSubtext}</div>}
+            {/* Center content */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <div className="text-center">
+                    <div className="text-3xl font-bold text-white drop-shadow-sm">
+                        {hoveredSegment !== null ? data[hoveredSegment]?.value : centerText}
+                    </div>
+                    <div className="text-sm text-white/80 font-medium mt-1">
+                        {hoveredSegment !== null ? data[hoveredSegment]?.label : centerSubtext}
+                    </div>
+                    {hoveredSegment !== null && (
+                        <div className="text-xs text-white/60 mt-1">
+                            {((data[hoveredSegment]?.value / total) * 100).toFixed(1)}%
+                        </div>
+                    )}
+                </div>
             </div>
+
+            {/* Hover tooltip */}
+            {hoveredSegment !== null && (
+                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full pointer-events-none">
+                    <div className="bg-black/80 backdrop-blur-sm text-white text-xs px-3 py-2 rounded-lg shadow-lg border border-white/20">
+                        <div className="font-semibold">{data[hoveredSegment]?.label}</div>
+                        <div className="text-white/80">
+                            {data[hoveredSegment]?.value} countries (
+                            {((data[hoveredSegment]?.value / total) * 100).toFixed(1)}%)
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
@@ -194,14 +238,14 @@ const HeroStatsSection: React.FC = () => {
                 <div className="space-y-6">
                     {/* Data Protection Chart */}
                     <Card className="bg-white/15 backdrop-blur-md border-white/25 shadow-xl">
-                        <CardContent className="p-6">
+                        <CardContent className="py-2">
                             <div className="flex items-center justify-between">
                                 <DonutChart
                                     data={dataProtectionData}
                                     centerText={`${enactedLaws}`}
                                     centerSubtext="Enacted"
                                 />
-                                <div className="flex-1 ml-6">
+                                <div className="flex-1 ml-3">
                                     <MiniBarChart data={dataProtectionData} />
                                 </div>
                             </div>
@@ -219,14 +263,14 @@ const HeroStatsSection: React.FC = () => {
                 <div className="space-y-6">
                     {/* Digital ID Chart */}
                     <Card className="bg-white/15 backdrop-blur-md border-white/25 shadow-xl">
-                        <CardContent className="p-6">
+                        <CardContent className="py-2">
                             <div className="flex items-center justify-between">
                                 <DonutChart
                                     data={digitalIdData}
                                     centerText={`${implementedSystems}`}
                                     centerSubtext="Active"
                                 />
-                                <div className="flex-1 ml-6">
+                                <div className="flex-1 ml-3">
                                     <MiniBarChart data={digitalIdData} />
                                 </div>
                             </div>

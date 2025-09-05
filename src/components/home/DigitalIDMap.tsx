@@ -341,19 +341,19 @@ const DigitalIDMap: React.FC = () => {
                                                 },
                                                 hover: isAfricanCountry(countryName)
                                                     ? {
-                                                          fill: "#10b981",
+                                                          fill: fillColor, // Keep the original color
                                                           outline: "none",
-                                                          filter: "url(#digitalIdFilter) drop-shadow(0 8px 25px rgba(99,102,241,0.2)) brightness(1.05)",
-                                                          transform: "scale(1.02)",
-                                                          stroke: "rgba(255,255,255,0.9)",
-                                                          strokeWidth: 1,
+                                                          filter: "url(#digitalIdFilter) drop-shadow(0 8px 25px rgba(99,102,241,0.2)) brightness(1.08)",
+                                                          stroke: "rgba(59, 130, 246, 0.8)", // Blue border on hover
+                                                          strokeWidth: 2.5,
                                                       }
                                                     : {},
                                                 pressed: isAfricanCountry(countryName)
                                                     ? {
                                                           outline: "none",
                                                           filter: "brightness(0.95)",
-                                                          transform: "scale(0.98)",
+                                                          stroke: "rgba(99, 102, 241, 0.9)",
+                                                          strokeWidth: 2,
                                                       }
                                                     : {},
                                             }}
