@@ -70,7 +70,7 @@ export interface ValidationError {
 }
 
 // API endpoints configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://172.29.108.116:8001";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const apiSlice = createApi({
     reducerPath: "api",
@@ -90,7 +90,7 @@ export const apiSlice = createApi({
         // Policy Laws endpoints
         getPolicyLaws: builder.query<PolicyLaw[], { page?: number; limit?: number }>({
             query: ({ page = 1, limit = 55 } = {}) => ({
-                url: "/api/info/policy_laws",
+                url: "/info/policy_laws",
                 params: { page, limit },
             }),
             providesTags: ["PolicyLaw"],
@@ -98,7 +98,7 @@ export const apiSlice = createApi({
 
         createPolicyLaw: builder.mutation<PolicyLaw, Omit<PolicyLaw, "id">>({
             query: (body) => ({
-                url: "/api/info/policy_laws",
+                url: "/info/policy_laws",
                 method: "POST",
                 body,
             }),
@@ -106,13 +106,13 @@ export const apiSlice = createApi({
         }),
 
         getPolicyLawByCountry: builder.query<PolicyLaw, string>({
-            query: (countryCode) => `/api/info/policy_laws/country/${countryCode}`,
+            query: (countryCode) => `/info/policy_laws/country/${countryCode}`,
             providesTags: (result, error, countryCode) => [{ type: "PolicyLaw", id: countryCode }],
         }),
 
         updatePolicyLawByCountry: builder.mutation<PolicyLaw, { countryCode: string; data: Partial<PolicyLaw> }>({
             query: ({ countryCode, data }) => ({
-                url: `/api/info/policy_laws/country/${countryCode}`,
+                url: `/info/policy_laws/country/${countryCode}`,
                 method: "PATCH",
                 body: data,
             }),
@@ -121,7 +121,7 @@ export const apiSlice = createApi({
 
         deletePolicyLawByCountry: builder.mutation<Record<string, any>, string>({
             query: (countryCode) => ({
-                url: `/api/info/policy_laws/country/${countryCode}`,
+                url: `/info/policy_laws/country/${countryCode}`,
                 method: "DELETE",
             }),
             invalidatesTags: ["PolicyLaw"],
@@ -130,7 +130,7 @@ export const apiSlice = createApi({
         // Digital ID endpoints
         getDigitalIds: builder.query<DigitalId[], { page?: number; limit?: number }>({
             query: ({ page = 1, limit = 55 } = {}) => ({
-                url: "/api/info/digital_id",
+                url: "/info/digital_id",
                 params: { page, limit },
             }),
             providesTags: ["DigitalId"],
@@ -138,7 +138,7 @@ export const apiSlice = createApi({
 
         createDigitalId: builder.mutation<DigitalId, Omit<DigitalId, "id">>({
             query: (body) => ({
-                url: "/api/info/digital_id",
+                url: "/info/digital_id",
                 method: "POST",
                 body,
             }),
@@ -146,13 +146,13 @@ export const apiSlice = createApi({
         }),
 
         getDigitalIdByCountry: builder.query<DigitalId, string>({
-            query: (countryCode) => `/api/info/digital_id/country/${countryCode}`,
+            query: (countryCode) => `/info/digital_id/country/${countryCode}`,
             providesTags: (result, error, countryCode) => [{ type: "DigitalId", id: countryCode }],
         }),
 
         updateDigitalIdByCountry: builder.mutation<DigitalId, { countryCode: string; data: Partial<DigitalId> }>({
             query: ({ countryCode, data }) => ({
-                url: `/api/info/digital_id/country/${countryCode}`,
+                url: `/info/digital_id/country/${countryCode}`,
                 method: "PATCH",
                 body: data,
             }),
@@ -161,7 +161,7 @@ export const apiSlice = createApi({
 
         deleteDigitalIdByCountry: builder.mutation<Record<string, any>, string>({
             query: (countryCode) => ({
-                url: `/api/info/digital_id/country/${countryCode}`,
+                url: `/info/digital_id/country/${countryCode}`,
                 method: "DELETE",
             }),
             invalidatesTags: ["DigitalId"],
@@ -170,7 +170,7 @@ export const apiSlice = createApi({
         // File endpoints
         getPolicyLawFiles: builder.query<PolicyLawFile[], { page?: number; limit?: number }>({
             query: ({ page = 1, limit = 55 } = {}) => ({
-                url: "/api/info/policy_laws/files",
+                url: "/info/policy_laws/files",
                 params: { page, limit },
             }),
             providesTags: ["PolicyLawFile"],
@@ -178,7 +178,7 @@ export const apiSlice = createApi({
 
         getDigitalIdFiles: builder.query<DigitalIdFile[], { page?: number; limit?: number }>({
             query: ({ page = 1, limit = 55 } = {}) => ({
-                url: "/api/info/digital_id/files",
+                url: "/info/digital_id/files",
                 params: { page, limit },
             }),
             providesTags: ["DigitalIdFile"],
@@ -204,7 +204,7 @@ export const apiSlice = createApi({
                 max_tokens,
                 streaming = true,
             }) => ({
-                url: "/api/document_processing/process_documents",
+                url: "/document_processing/process_documents",
                 method: "POST",
                 body: documents,
                 params: {
@@ -219,24 +219,24 @@ export const apiSlice = createApi({
         }),
 
         getTasks: builder.query<string, void>({
-            query: () => "/api/document_processing/tasks",
+            query: () => "/document_processing/tasks",
             providesTags: ["Task"],
         }),
 
         getTaskStatus: builder.query<string, string>({
-            query: (taskId) => `/api/document_processing/task_status/${taskId}`,
+            query: (taskId) => `/document_processing/task_status/${taskId}`,
             providesTags: (result, error, taskId) => [{ type: "Task", id: taskId }],
         }),
 
         // Session and chat endpoints
         getSession: builder.query<string, string>({
-            query: (sessionId) => `/api/sessions/${sessionId}`,
+            query: (sessionId) => `/sessions/${sessionId}`,
             providesTags: (result, error, sessionId) => [{ type: "Session", id: sessionId }],
         }),
 
         queryStream: builder.mutation<string, QueryStreamRequest>({
             query: (body) => ({
-                url: "/api/query_stream",
+                url: "/query_stream",
                 method: "POST",
                 body,
             }),
