@@ -337,7 +337,7 @@ export default function ResourcesPage() {
 
     // Group resources by region
     const groupedResources = useMemo(() => {
-        return filteredResources.reduce((groups, resource) => {
+        return filteredResources?.reduce((groups, resource) => {
             const { region } = resource;
             if (!groups[region]) {
                 groups[region] = [];

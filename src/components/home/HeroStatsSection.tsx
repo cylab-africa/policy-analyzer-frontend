@@ -12,7 +12,7 @@ const DonutChart: React.FC<{
     centerSubtext?: string;
 }> = ({ data, centerText, centerSubtext }) => {
     const [hoveredSegment, setHoveredSegment] = useState<number | null>(null);
-    const total = data.reduce((sum, item) => sum + item.value, 0);
+    const total = data?.reduce((sum, item) => sum + item.value, 0);
 
     const radius = 45;
     const strokeWidth = 8;
