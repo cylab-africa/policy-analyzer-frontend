@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Button } from "@/components/ui/button";
 import africanCountries from "@/data/world-map.json";
 import { usePolicyLawData } from "@/redux/api/apiSlice";
-import { AlertCircle, Loader2, RefreshCw, Shield } from "lucide-react";
+import { AlertCircle, Loader2, Shield } from "lucide-react";
 import React, { useState } from "react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Tooltip as ReactTooltip } from "react-tooltip";
@@ -243,23 +242,15 @@ const DataProtectionMap: React.FC = () => {
 
     if (error) {
         return (
-            <div className="w-full h-[600px] lg:h-[700px] rounded-xl bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center border border-red-200">
+            <div className="w-full h-[500px] rounded-xl flex items-center justify-center border border-slate-200 bg-white">
                 <div className="text-center bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-sm border border-white/60 max-w-md mx-4">
                     <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <AlertCircle className="h-8 w-8 text-red-600" />
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2">Failed to load data</h3>
-                    <p className="text-gray-600 mb-6                ">
+                    <p className="text-gray-600 mb-6">
                         Unable to fetch data protection legislation data from the server
                     </p>
-                    <Button
-                        variant="outline"
-                        onClick={() => window.location.reload()}
-                        className="gap-2 hover:bg-red-50 border-red-200 text-red-700 hover:border-red-300"
-                    >
-                        <RefreshCw className="h-4 w-4" />
-                        Retry
-                    </Button>
                 </div>
             </div>
         );

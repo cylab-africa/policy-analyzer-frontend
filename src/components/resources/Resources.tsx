@@ -21,6 +21,7 @@ import {
     RefreshCw,
     Search,
     Shield,
+    X,
 } from "lucide-react";
 import React, { useMemo, useState } from "react";
 
@@ -496,7 +497,7 @@ export default function ResourcesPage() {
 
     return (
         <div className="w-full bg-gray-50 min-h-screen">
-            <div className="max-w-7xl mx-auto container px-6 pb-16">
+            <div className="max-w-7xl mx-auto container px-6 pt-5 pb-16">
                 {/* Error Alert */}
                 {hasError && (
                     <div className="mb-6">
@@ -504,7 +505,7 @@ export default function ResourcesPage() {
                             <AlertTriangle className="h-4 w-4" />
                             <AlertDescription className="flex items-center justify-between">
                                 <span>Failed to load resources. Please check your connection and try again.</span>
-                                <Button variant="outline" size="sm" onClick={handleRetry} className="ml-4">
+                                <Button variant="outline" size="sm" onClick={handleRetry} className="cursor-pointer">
                                     <RefreshCw className="h-3 w-3 mr-1" />
                                     Retry
                                 </Button>
@@ -557,8 +558,17 @@ export default function ResourcesPage() {
                                     placeholder="Search resources..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-9 h-11 border-gray-200 min-w-[350px]"
+                                    className="pl-9 pr-9 h-11 border-gray-200 min-w-[350px]"
                                 />
+                                {searchQuery && (
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => setSearchQuery("")}
+                                        className="cursor-pointer absolute right-0 top-1/2 transform -translate-y-1/2 text-red-500 hover:text-red-600 transition-colors"
+                                    >
+                                        <X className="h-4 w-4" />
+                                    </Button>
+                                )}
                             </div>
                             <Select value={selectedRegion} onValueChange={setSelectedRegion}>
                                 <SelectTrigger className="h-11 border-gray-200 min-w-[180px]">
@@ -581,7 +591,7 @@ export default function ResourcesPage() {
 
                 {/* Loading State */}
                 {isLoading && (
-                    <div className="bg-white rounded-lg shadow-md p-16 text-center">
+                    <div className="bg-white rounded-lg shadow-sm p-16 text-center">
                         <Loader2 className="h-12 w-12 text-primary mx-auto mb-4 animate-spin" />
                         <p className="text-xl text-gray-600">Loading resources...</p>
                     </div>
@@ -591,11 +601,9 @@ export default function ResourcesPage() {
                 {!isLoading && (
                     <div>
                         {filteredResources.length === 0 ? (
-                            <div className="bg-white rounded-lg shadow-md p-16 text-center">
+                            <div className="bg-white rounded-lg shadow-sm p-16 text-center">
                                 <AlertTriangle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
-                                <p className="text-xl text-gray-600 mb-6">
-                                    No resources found. Try adjusting your search or filters.
-                                </p>
+                                <p className="text-xl text-gray-600 mb-6">No resources found.</p>
                                 <Button
                                     variant="outline"
                                     onClick={() => {
@@ -681,7 +689,9 @@ function ResourceCard({ resource }: { resource: Resource }) {
                         </div>
                         <span className="font-medium text-gray-700">{resource.countryName}</span>
                     </div>
-                    <span className="text-sm text-gray-500 px-2 py-1 bg-gray-100 rounded">{resource?.yearLaunched || resource?.year}</span>
+                    <span className="text-sm text-gray-500 px-2 py-1 bg-gray-100 rounded">
+                        {resource?.yearLaunched || resource?.year}
+                    </span>
                 </div>
 
                 {/* Title */}

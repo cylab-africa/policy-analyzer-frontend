@@ -416,6 +416,8 @@ function MessageBubble({ message, formatTime }: { message: Message; formatTime: 
 }
 
 // Welcome Screen Component
+import { ArrowRight } from "lucide-react";
+
 function WelcomeScreen({
     activeTab,
     setInput,
@@ -426,30 +428,55 @@ function WelcomeScreen({
     suggestedQuestions: Record<ChatTab, string[]>;
 }) {
     return (
-        <div className="h-full flex flex-col items-center justify-center text-center p-4 sm:p-6">
-            {/* <div className="w-16 h-16 bg-gradient-to-br from-primary to-blue-600 rounded-2xl flex items-center justify-center mb-6">
-                <Bot size={32} className="text-white" />
-            </div> */}
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">
-                {activeTab === ChatTab.DATA_PROTECTION
-                    ? "Ask me about Data Protection policies in Africa"
-                    : "Ask me about Digital ID systems in Africa"}
-            </h2>
-            <p className="text-gray-600 mb-6 sm:mb-8 max-w-md text-sm sm:text-base">
-                Your AI-powered guide to understanding policies, privacy, and compliance across African countries.
-            </p>
+        <div className="h-full flex flex-col items-center justify-center text-center p-4 sm:p-6 max-w-4xl mx-auto">
+            {/* Title with better typography */}
+            <div className="mb-8 space-y-2">
+                <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                    {activeTab === ChatTab.DATA_PROTECTION
+                        ? "Explore Data Protection Policies"
+                        : "Discover Digital ID Systems"}
+                </h2>
+                <p className="text-gray-600 text-sm sm:text-base max-w-lg">
+                    {activeTab === ChatTab.DATA_PROTECTION
+                        ? "Get insights on privacy laws, compliance frameworks, and regulatory landscapes across African nations"
+                        : "Learn about identity verification systems, digital citizenship, and authentication frameworks in Africa"}
+                </p>
+            </div>
 
-            <div className="flex flex-wrap justify-center gap-2 max-w-2xl">
-                {suggestedQuestions[activeTab].map((question, index) => (
-                    <Button
-                        key={index}
-                        variant="outline"
-                        className="rounded-full bg-white hover:bg-gray-50 text-xs sm:text-sm px-3 sm:px-4 py-2 border-gray-200 hover:border-primary/30 transition-colors"
-                        onClick={() => setInput(question)}
-                    >
-                        {question}
-                    </Button>
-                ))}
+            {/* Enhanced suggestion tags */}
+            <div className="w-full max-w-3xl mt-10">
+                <div className="flex items-center gap-2 mb-4">
+                    <span className="text-sm font-medium text-gray-700">Try asking about:</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                    {suggestedQuestions[activeTab].map((question, index) => (
+                        <Button
+                            key={index}
+                            className="group cursor-pointer relative bg-gradient-to-r from-gray-50 to-gray-100/90 
+                            border border-gray-200 hover:border-primary/30 rounded-xl p-4 text-left transition-all duration-300 
+                            focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2"
+                            onClick={() => setInput(question)}
+                        >
+                            {/* Content */}
+                            <div className="flex items-center gap-3">
+                                <div className="flex-shrink-0 w-2 h-2 bg-primary/60 rounded-full transition-colors"></div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm text-gray-600 group-hover:text-gray-700 leading-relaxed">
+                                        {question}
+                                    </p>
+                                </div>
+                                <ArrowRight
+                                    size={16}
+                                    className="text-gray-400 group-hover:text-primary transition-colors opacity-0 group-hover:opacity-100 transform translate-x-1 group-hover:translate-x-0"
+                                />
+                            </div>
+
+                            {/* Hover effect border */}
+                            <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-primary/20 transition-all duration-300"></div>
+                        </Button>
+                    ))}
+                </div>
             </div>
         </div>
     );
@@ -520,7 +547,7 @@ function ChatInput({
                                         ? "Ask about data protection policies, legislation status..."
                                         : "Ask about digital ID systems, implementation progress..."
                                 }
-                                className="flex-1 w-full border-0 bg-transparent text-base placeholder:text-slate-400 outline-none ring-0 focus:ring-0 focus:outline-none px-0 py-1 pl-1"
+                                className="flex-1 w-full border-1 bg-transparent text-base placeholder:text-slate-400 outline-none ring-0 focus:ring-0 focus:outline-none px-0 py-1 pl-1"
                                 disabled={isStreaming}
                                 style={{ border: "none", outline: "none", boxShadow: "none" }}
                             />
@@ -530,7 +557,7 @@ function ChatInput({
                                 <Button
                                     type="submit"
                                     disabled={!input.trim() || isStreaming}
-                                    className="w-10 h-10 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md disabled:shadow-none p-0"
+                                    className="w-10 h-10 cursor-pointer rounded-xl bg-primary hover:bg-primary/90 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md disabled:shadow-none p-0"
                                 >
                                     {isStreaming ? (
                                         <Loader2 size={18} className="animate-spin text-white" />
@@ -551,29 +578,31 @@ function ChatInput({
                         <div className="flex items-end justify-between px-4 py-1 bg-gradient-to-r rounded-2x">
                             {/* Left Side - Feedback Link */}
                             <div className="flex items-center gap-2">
-                                <a
-                                    href="https://form.typeform.com/to/D7we4T7R"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="group flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium transition-all duration-200"
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    asChild
+                                    className="text-xs text-primary hover:text-primary/80 h-8 px-3 rounded-full flex items-center gap-1.5 
+        border-primary/40 hover:border-primary/60 hover:bg-transparent transition-all duration-300 relative overflow-hidden
+        shadow-[0_0_4px_rgba(var(--primary),0.2)] 
+        hover:shadow-[0_0_12px_rgba(var(--primary),0.4),0_0_24px_rgba(var(--primary),0.2)]
+        animate-[glow_3s_ease-in-out_infinite]
+        before:absolute before:inset-0 before:rounded-full 
+        before:bg-gradient-to-r before:from-transparent before:via-primary/15 before:to-transparent
+        before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-1000 before:ease-out"
                                 >
-                                    <span className="text-xs">Share feedback</span>
-                                    <div className="w-4 h-4 rounded-full bg-blue-100 group-hover:bg-blue-200 flex items-center justify-center transition-colors">
-                                        <svg
-                                            className="w-2.5 h-2.5 text-blue-600 group-hover:translate-x-0.5 transition-transform"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M9 5l7 7-7 7"
-                                            />
+                                    <a
+                                        href="https://form.typeform.com/to/D7we4T7R"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-1.5 relative z-10"
+                                    >
+                                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                                         </svg>
-                                    </div>
-                                </a>
+                                        Give Feedback
+                                    </a>
+                                </Button>
                             </div>
 
                             {/* Right Side - AI Disclaimer */}

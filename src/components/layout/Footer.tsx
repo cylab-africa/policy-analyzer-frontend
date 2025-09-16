@@ -1,13 +1,31 @@
+import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const Footer = () => {
     return (
-        <footer className="bg-gradient-to-r from-slate-900 to-slate-800 text-white">
+        <footer className="bg-slate-700 text-white border-t border-slate-200/10">
             <div className="max-w-7xl mx-auto px-6 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                     {/* Brand Section */}
                     <div className="space-y-4">
-                        <h2 className="text-2xl font-bold text-primary">Policy Analyzer</h2>
+                        <div className="flex items-center space-x-3">
+                            <Link href="/" className="flex items-center transition-colors duration-300 group">
+                                <Image
+                                    src="/images/Policy_Analyzer-white.png"
+                                    width={35}
+                                    height={35}
+                                    alt="Policy Analyzer Logo"
+                                    className="transition-transform duration-300 hover:scale-105"
+                                />
+                                <div className="flex items-baseline space-x-1">
+                                    <div className="text-xl uppercase tracking-tight text-white">Policy</div>
+                                    <div className="text-xl font-bold tracking-tight uppercase text-white">
+                                        Analyzer
+                                    </div>
+                                </div>
+                            </Link>
+                        </div>
                         <p className="text-slate-300 text-sm max-w-md leading-relaxed">
                             Upanzi Network is an Africa-based collaboration of engineering research labs working toward
                             a secure and resilient digital transformation on the continent.
