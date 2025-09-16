@@ -31,14 +31,14 @@ const TimelineComponent: React.FC<TimelineProps> = ({ events }) => {
                     >
                         {/* Enhanced Year Badge */}
                         <div className="relative z-10 flex-shrink-0">
-                            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-blue-500/25 transition-all duration-300 group-hover:scale-110">
-                                <span className="text-white font-bold text-sm">{event.year}</span>
+                            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-md transition-all duration-300">
+                                <span className="text-white font-medium text-sm">{event.year}</span>
                             </div>
                         </div>
 
                         {/* Enhanced Content Card */}
                         <div className="flex-1 min-w-0">
-                            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 group-hover:border-blue-200 group-hover:-translate-y-1">
+                            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 group-hover:border-primary/30 group-hover:-translate-y-1">
                                 {/* Year indicator for mobile */}
                                 <div className="flex items-center gap-2 mb-3 md:hidden">
                                     <Clock className="w-4 h-4 text-blue-500" />
@@ -51,21 +51,21 @@ const TimelineComponent: React.FC<TimelineProps> = ({ events }) => {
                                 </p>
 
                                 {/* Countries section */}
-                                {event.countries && event.countries.length > 0 && (
+                                {event.countries && event.countries?.length > 0 && (
                                     <div className="space-y-3">
                                         <div className="flex items-center gap-2">
                                             <MapPin className="w-4 h-4 text-slate-400" />
                                             <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                                Countries ({event.countries.length})
+                                                Countries ({event.countries?.length})
                                             </span>
                                         </div>
 
                                         <div className="flex flex-wrap gap-2">
-                                            {event.countries.map((country, i) => (
+                                            {event.countries?.map((country, i) => (
                                                 <Badge
                                                     key={i}
                                                     variant="secondary"
-                                                    className="bg-slate-100 hover:bg-blue-100 text-slate-700 hover:text-blue-700 border-0 px-3 py-1 text-xs font-medium transition-colors duration-200 hover:scale-105"
+                                                    className="bg-slate-100 hover:bg-blue-100 text-slate-700 hover:text-primary border-0 px-3 py-1 text-xs font-medium transition-colors duration-200 hover:scale-105"
                                                 >
                                                     {country}
                                                 </Badge>

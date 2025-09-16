@@ -51,7 +51,7 @@
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.627 0.156 134.775); /* #4CAF50 converted to OKLCH */
+  --primary: oklch(0.5888 0.1592 150.78); /* #009647  converted to OKLCH */
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.694 0.199 47.957); /* #FF6D00 converted to OKLCH */
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -70,7 +70,7 @@
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-primary: oklch(0.627 0.156 134.775); /* #4CAF50 converted to OKLCH */
+  --sidebar-primary: oklch(0.5888 0.1592 150.78); /* #009647  converted to OKLCH */
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.967 0.001 286.375);
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
@@ -120,3 +120,197 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Professional Scroll UI/UX Enhancements */
+@layer utilities {
+  /* Smooth scrolling behavior */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 2rem;
+  }
+
+  /* Custom Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.3) 100%);
+  }
+
+  /* Firefox scrollbar styling */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.05);
+  }
+
+  /* Light theme scrollbar */
+  @media (prefers-color-scheme: light) {
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.08) 100%);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.15) 100%);
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    ::-webkit-scrollbar-thumb:active {
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.25) 100%);
+    }
+
+    * {
+      scrollbar-color: rgba(0, 0, 0, 0.12) rgba(0, 0, 0, 0.03);
+    }
+  }
+
+  /* Smooth scroll utilities */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+
+  .scroll-auto {
+    scroll-behavior: auto;
+  }
+
+  /* Custom scroll snap utilities */
+  .scroll-snap-y {
+    scroll-snap-type: y mandatory;
+  }
+
+  .scroll-snap-start {
+    scroll-snap-align: start;
+  }
+
+  .scroll-snap-center {
+    scroll-snap-align: center;
+  }
+
+  /* Hide scrollbar while maintaining functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Custom thin scrollbar */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Scroll Reveal Animations */
+  .scroll-reveal {
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .scroll-reveal-hidden {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+
+  .scroll-reveal-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* Enhanced scroll animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInFromLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInFromRight {
+    from {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInFromLeft 0.8s ease-out forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInFromRight 0.8s ease-out forwards;
+  }
+
+  /* Smooth hover transitions for interactive elements */
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Enhanced focus styles for accessibility */
+  .focus-ring {
+    transition: all 0.2s ease;
+  }
+
+  .focus-ring:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  }
+}
+

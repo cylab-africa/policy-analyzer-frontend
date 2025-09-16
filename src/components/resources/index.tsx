@@ -3,38 +3,38 @@
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
 import {
     AlertTriangle,
     Book,
-    Check,
     CreditCard,
-    ExternalLink,
     File,
     FileDigit,
+    Fingerprint,
     Globe,
     Loader2,
     RefreshCw,
     Search,
     Shield,
+    X,
 } from "lucide-react";
 import React, { useMemo, useState } from "react";
 
 // Import API hooks
 import { useGetDigitalIdsQuery, useGetPolicyLawsQuery } from "@/redux/api/apiSlice";
+import { getDocumentLanguage, getRegion } from "./utils";
+import ResourceCard from "./ResourceCard";
 
 // Enum for resource type
-enum ResourceType {
+export enum ResourceType {
     DATA_PROTECTION = "data-protection",
     DIGITAL_ID = "digital-id",
 }
 
 // Interface for unified resource data
-interface Resource {
+export interface Resource {
     id: string;
     countryCode: string;
     countryName: string;
@@ -137,126 +137,6 @@ export default function ResourcesPage() {
         error: digitalIdsError,
         refetch: refetchDigitalIds,
     } = useGetDigitalIdsQuery({ page: 1, limit: 100 });
-
-    // Helper functions
-    const getRegion = (countryName: string): string => {
-        const eastAfrica = [
-            "Burundi",
-            "Comoros",
-            "Djibouti",
-            "Eritrea",
-            "Ethiopia",
-            "Kenya",
-            "Madagascar",
-            "Mauritius",
-            "Rwanda",
-            "Seychelles",
-            "Somalia",
-            "South Sudan",
-            "Tanzania",
-            "Uganda",
-        ];
-        const centralAfrica = [
-            "Angola",
-            "Cameroon",
-            "Central African Republic",
-            "Chad",
-            "Republic of the Congo",
-            "Republic of Congo",
-            "Democratic Republic of the Congo",
-            "Democratic Republic of Congo",
-            "Equatorial Guinea",
-            "Gabon",
-            "São Tomé and Príncipe",
-            "Sao Tome and Principe",
-            "Sao Tome & Principe",
-        ];
-        const southernAfrica = [
-            "Botswana",
-            "Eswatini",
-            "Lesotho",
-            "Malawi",
-            "Mozambique",
-            "Namibia",
-            "South Africa",
-            "Zambia",
-            "Zimbabwe",
-        ];
-        const westAfrica = [
-            "Benin",
-            "Burkina Faso",
-            "Cape Verde",
-            "Cabo Verde",
-            "Côte d'Ivoire",
-            "Ivory Coast",
-            "Cote d'Ivoire",
-            "Gambia",
-            "The Gambia",
-            "Ghana",
-            "Guinea",
-            "Guinea-Bissau",
-            "Liberia",
-            "Mali",
-            "Mauritania",
-            "Niger",
-            "Nigeria",
-            "Senegal",
-            "Sierra Leone",
-            "Togo",
-        ];
-        const northAfrica = ["Algeria", "Egypt", "Libya", "Morocco", "Sudan", "Tunisia"];
-
-        if (northAfrica.includes(countryName)) return "North Africa";
-        if (westAfrica.includes(countryName)) return "West Africa";
-        if (eastAfrica.includes(countryName)) return "East Africa";
-        if (centralAfrica.includes(countryName)) return "Central Africa";
-        if (southernAfrica.includes(countryName)) return "Southern Africa";
-        return "Other";
-    };
-
-    const getDocumentLanguage = (countryName: string): string => {
-        const francophoneCountries = [
-            "Benin",
-            "Burkina Faso",
-            "Burundi",
-            "Cameroon",
-            "Central African Republic",
-            "Chad",
-            "Comoros",
-            "Congo",
-            "Republic of Congo",
-            "Democratic Republic of the Congo",
-            "Democratic Republic of Congo",
-            "Djibouti",
-            "Gabon",
-            "Guinea",
-            "Ivory Coast",
-            "Cote d'Ivoire",
-            "Madagascar",
-            "Mali",
-            "Niger",
-            "Rwanda",
-            "Senegal",
-            "Seychelles",
-            "Togo",
-        ];
-        const arabicCountries = ["Algeria", "Egypt", "Libya", "Mauritania", "Morocco", "Sudan", "Tunisia"];
-        const portugueseCountries = [
-            "Angola",
-            "Cape Verde",
-            "Cabo Verde",
-            "Guinea-Bissau",
-            "Mozambique",
-            "São Tomé and Príncipe",
-            "Sao Tome and Principe",
-            "Sao Tome & Principe",
-        ];
-
-        if (francophoneCountries.includes(countryName)) return "French";
-        if (arabicCountries.includes(countryName)) return "Arabic/French";
-        if (portugueseCountries.includes(countryName)) return "Portuguese";
-        return "English";
-    };
 
     const getResourceIcon = (type: string, linkType?: string) => {
         if (type === ResourceType.DATA_PROTECTION) {
@@ -496,7 +376,7 @@ export default function ResourcesPage() {
 
     return (
         <div className="w-full bg-gray-50 min-h-screen">
-            <div className="max-w-7xl mx-auto container px-6 pb-16">
+            <div className="max-w-7xl mx-auto container px-6 pt-5 pb-16">
                 {/* Error Alert */}
                 {hasError && (
                     <div className="mb-6">
@@ -504,7 +384,7 @@ export default function ResourcesPage() {
                             <AlertTriangle className="h-4 w-4" />
                             <AlertDescription className="flex items-center justify-between">
                                 <span>Failed to load resources. Please check your connection and try again.</span>
-                                <Button variant="outline" size="sm" onClick={handleRetry} className="ml-4">
+                                <Button variant="outline" size="sm" onClick={handleRetry} className="cursor-pointer">
                                     <RefreshCw className="h-3 w-3 mr-1" />
                                     Retry
                                 </Button>
@@ -526,7 +406,7 @@ export default function ResourcesPage() {
                                 <TabsList className="grid grid-cols-2 h-12">
                                     <TabsTrigger
                                         value={ResourceType.DATA_PROTECTION}
-                                        className="flex items-center justify-center gap-2 data-[state=active]:shadow-sm"
+                                        className="flex items-center cursor-pointer justify-center gap-2 data-[state=active]:shadow-sm"
                                     >
                                         <Shield className="h-4 w-4" />
                                         <span>Data Protection</span>
@@ -536,9 +416,9 @@ export default function ResourcesPage() {
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value={ResourceType.DIGITAL_ID}
-                                        className="flex items-center justify-center gap-2 data-[state=active]:shadow-sm"
+                                        className="flex items-center cursor-pointer justify-center gap-2 data-[state=active]:shadow-sm"
                                     >
-                                        <FileDigit className="h-4 w-4" />
+                                        <Fingerprint className="h-4 w-4" />
                                         <span>Digital ID</span>
                                         <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full">
                                             {resourceCounts[ResourceType.DIGITAL_ID]}
@@ -557,8 +437,17 @@ export default function ResourcesPage() {
                                     placeholder="Search resources..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-9 h-11 border-gray-200 min-w-[350px]"
+                                    className="pl-9 pr-9 h-10 border-gray-200 min-w-[350px]"
                                 />
+                                {searchQuery && (
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => setSearchQuery("")}
+                                        className="cursor-pointer absolute right-0 top-1/2 transform -translate-y-1/2 text-red-500 hover:text-red-600 transition-colors"
+                                    >
+                                        <X className="h-4 w-4" />
+                                    </Button>
+                                )}
                             </div>
                             <Select value={selectedRegion} onValueChange={setSelectedRegion}>
                                 <SelectTrigger className="h-11 border-gray-200 min-w-[180px]">
@@ -581,7 +470,7 @@ export default function ResourcesPage() {
 
                 {/* Loading State */}
                 {isLoading && (
-                    <div className="bg-white rounded-lg shadow-md p-16 text-center">
+                    <div className="bg-white rounded-lg shadow-sm p-16 text-center">
                         <Loader2 className="h-12 w-12 text-primary mx-auto mb-4 animate-spin" />
                         <p className="text-xl text-gray-600">Loading resources...</p>
                     </div>
@@ -591,11 +480,9 @@ export default function ResourcesPage() {
                 {!isLoading && (
                     <div>
                         {filteredResources.length === 0 ? (
-                            <div className="bg-white rounded-lg shadow-md p-16 text-center">
+                            <div className="bg-white rounded-lg shadow-sm p-16 text-center">
                                 <AlertTriangle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
-                                <p className="text-xl text-gray-600 mb-6">
-                                    No resources found. Try adjusting your search or filters.
-                                </p>
+                                <p className="text-xl text-gray-600 mb-6">No resources found.</p>
                                 <Button
                                     variant="outline"
                                     onClick={() => {
@@ -631,189 +518,5 @@ export default function ResourcesPage() {
                 )}
             </div>
         </div>
-    );
-}
-
-// Resource Card Component
-function ResourceCard({ resource }: { resource: Resource }) {
-    const getBorderColor = () => {
-        if (resource.type === ResourceType.DATA_PROTECTION) {
-            return "border-t-emerald-500";
-        }
-
-        // Different colors based on link type for Digital ID
-        switch (resource.linkType) {
-            case "Academic Research":
-                return "border-t-blue-600";
-            case "Policy Research":
-                return "border-t-purple-600";
-            case "Development Partner":
-                return "border-t-orange-500";
-            case "Research Institute":
-                return "border-t-indigo-500";
-            case "Government":
-            case "Official":
-                return "border-t-green-600";
-            default:
-                return "border-t-blue-500";
-        }
-    };
-
-    const handleLinkClick = (url: string) => {
-        if (url && url !== "#") {
-            window.open(url, "_blank", "noopener,noreferrer");
-        }
-    };
-
-    return (
-        <Card
-            className={cn(
-                "border border-gray-200 overflow-hidden h-full transition-all hover:-translate-y-1 hover:shadow-lg relative group border-t-4",
-                getBorderColor()
-            )}
-        >
-            <div className="p-6 flex flex-col h-full">
-                {/* Header */}
-                <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center gap-2">
-                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-xl">
-                            {resource.flagEmoji}
-                        </div>
-                        <span className="font-medium text-gray-700">{resource.countryName}</span>
-                    </div>
-                    <span className="text-sm text-gray-500 px-2 py-1 bg-gray-100 rounded">{resource?.yearLaunched || resource?.year}</span>
-                </div>
-
-                {/* Title */}
-                <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-start gap-2">
-                    <span className="text-primary mt-1">{resource.icon}</span>
-                    <span>{resource.title}</span>
-                </h3>
-
-                {/* Description */}
-                <p className="text-gray-600 text-sm mb-4 flex-grow line-clamp-3">{resource.description}</p>
-
-                {/* Additional info for Digital ID */}
-                {resource.type === ResourceType.DIGITAL_ID && (
-                    <div className="mb-4 space-y-2">
-                        {resource.coverage && (
-                            <div className="text-xs text-gray-600">
-                                <span className="font-medium">Coverage:</span> {resource.coverage}
-                            </div>
-                        )}
-                        {resource.authority && (
-                            <div className="text-xs text-gray-600">
-                                <span className="font-medium">Authority:</span> {resource.authority}
-                            </div>
-                        )}
-                        {resource.features && resource.features.length > 0 && (
-                            <div className="text-xs text-gray-600">
-                                <span className="font-medium">Features:</span>
-                                <div className="flex flex-wrap gap-1 mt-1">
-                                    {resource.features.slice(0, 3).map((feature, index) => (
-                                        <span
-                                            key={`${resource.id}-feature-${index}`}
-                                            className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-xs"
-                                        >
-                                            {feature}
-                                        </span>
-                                    ))}
-                                    {resource.features.length > 3 && (
-                                        <span className="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
-                                            +{resource.features.length - 3}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                        {resource.linkType && (
-                            <div className="text-xs text-gray-600">
-                                <span className="font-medium">Source:</span>
-                                <span className="px-1.5 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs ml-1">
-                                    {resource.linkType}
-                                </span>
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                {/* Additional info for Data Protection */}
-                {resource.type === ResourceType.DATA_PROTECTION && (
-                    <div className="mb-4 space-y-2">
-                        {resource.malaboStatus && (
-                            <div className="text-xs text-gray-600">
-                                <span className="font-medium">Malabo Convention:</span>
-                                <span
-                                    className={cn(
-                                        "px-1.5 py-0.5 rounded text-xs ml-1",
-                                        resource.malaboStatus === "Ratified"
-                                            ? "bg-green-100 text-green-700"
-                                            : resource.malaboStatus === "Signed"
-                                            ? "bg-yellow-100 text-yellow-700"
-                                            : "bg-gray-100 text-gray-700"
-                                    )}
-                                >
-                                    {resource.malaboStatus}
-                                </span>
-                            </div>
-                        )}
-                        {resource.linkType && (
-                            <div className="text-xs text-gray-600">
-                                <span className="font-medium">Source:</span>
-                                <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded text-xs ml-1">
-                                    {resource.linkType}
-                                </span>
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                {/* Metadata */}
-                <div className="flex flex-wrap gap-3 mb-6">
-                    <span className="text-xs text-gray-500">
-                        <span className="text-gray-400">Language:</span> {resource.language}
-                    </span>
-                    {resource.fileType && (
-                        <span className="text-xs text-gray-500">
-                            <span className="text-gray-400">Format:</span> {resource.fileType}
-                        </span>
-                    )}
-                    {resource.isOfficial && (
-                        <span className="text-xs text-primary flex items-center">
-                            <Check className="h-3 w-3 mr-1" /> Official
-                        </span>
-                    )}
-                </div>
-
-                {/* Actions */}
-                <div className="flex gap-3 mt-auto">
-                    {resource.documentUrl && resource.documentUrl !== "#" && (
-                        <Button
-                            className="flex-1 flex items-center gap-2"
-                            onClick={() => handleLinkClick(resource.documentUrl!)}
-                        >
-                            <ExternalLink className="h-4 w-4" />
-                            <span>View Resource</span>
-                        </Button>
-                    )}
-                    {resource.websiteUrl && resource.websiteUrl !== "#" && (
-                        <Button
-                            variant="outline"
-                            className="flex-1 flex items-center gap-2"
-                            onClick={() => handleLinkClick(resource.websiteUrl!)}
-                        >
-                            <ExternalLink className="h-4 w-4" />
-                            <span>Visit Website</span>
-                        </Button>
-                    )}
-                    {(!resource.documentUrl || resource.documentUrl === "#") &&
-                        (!resource.websiteUrl || resource.websiteUrl === "#") && (
-                            <Button variant="outline" className="flex-1" disabled>
-                                <span>No Document Available</span>
-                            </Button>
-                        )}
-                </div>
-            </div>
-        </Card>
     );
 }

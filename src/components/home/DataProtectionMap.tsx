@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Button } from "@/components/ui/button";
 import africanCountries from "@/data/world-map.json";
 import { usePolicyLawData } from "@/redux/api/apiSlice";
-import { AlertCircle, Loader2, RefreshCw, Shield } from "lucide-react";
+import { AlertCircle, Loader2, Shield } from "lucide-react";
 import React, { useState } from "react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Tooltip as ReactTooltip } from "react-tooltip";
@@ -85,30 +84,30 @@ const DataProtectionMap: React.FC = () => {
     const getColor = (status: string): string => {
         switch (status) {
             case "Enacted":
-                return "#059669"; // Emerald-600 - consistent with other components
+                return "#10b981"; // Emerald-500 - bright success green
             case "Draft":
-                return "#3b82f6"; // Blue-500 - professional blue
+                return "#3b82f6"; // Blue-500 - clear professional blue
             case "Lite":
-                return "#8b5cf6"; // Violet-500 - distinguishable purple
+                return "#8b5cf6"; // Violet-500 - vibrant purple
             case "No Law":
-                return "#6b7280"; // Gray-500 - neutral
+                return "#6b7280"; // Gray-500 - neutral gray
             default:
-                return "#B7BDBF"; // Gray-400 - default state
+                return "#9ca3af"; // Gray-400 - light neutral
         }
     };
 
-    // Professional color mapping for Malabo Convention status
+    // Lighter color mapping for Malabo Convention status
     const getMalaboColor = (status: string): string => {
         switch (status) {
             case "Ratified":
-                return "#059669"; // Emerald-600
+                return "#10b981"; // Emerald-500 - bright success green
             case "Signed":
-                return "#f59e0b"; // Amber-500
+                return "#f59e0b"; // Amber-500 - bright orange
             case "No":
             case "Not Signed":
-                return "#6b7280"; // Gray-500
+                return "#6b7280"; // Gray-500 - neutral gray
             default:
-                return "#9ca3af"; // Gray-400
+                return "#9ca3af"; // Gray-400 - light neutral
         }
     };
 
@@ -243,23 +242,15 @@ const DataProtectionMap: React.FC = () => {
 
     if (error) {
         return (
-            <div className="w-full h-[600px] lg:h-[700px] rounded-xl bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center border border-red-200">
+            <div className="w-full h-[500px] rounded-xl flex items-center justify-center border border-slate-200 bg-white">
                 <div className="text-center bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-sm border border-white/60 max-w-md mx-4">
                     <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <AlertCircle className="h-8 w-8 text-red-600" />
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2">Failed to load data</h3>
-                    <p className="text-gray-600 mb-6                ">
+                    <p className="text-gray-600 mb-6">
                         Unable to fetch data protection legislation data from the server
                     </p>
-                    <Button
-                        variant="outline"
-                        onClick={() => window.location.reload()}
-                        className="gap-2 hover:bg-red-50 border-red-200 text-red-700 hover:border-red-300"
-                    >
-                        <RefreshCw className="h-4 w-4" />
-                        Retry
-                    </Button>
                 </div>
             </div>
         );
@@ -285,7 +276,7 @@ const DataProtectionMap: React.FC = () => {
     return (
         <div className="w-full space-y-6">
             <div className="relative">
-                <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden relative bg-gradient-to-br from-slate-50/50 to-blue-50/30 border border-slate-200/60">
+                <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden relative bg-gradient-to-br from-slate-50/50 to-blue-50/30 border border-slate-100">
                     {/* Professional background pattern */}
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(34,197,94,0.05)_0%,transparent_70%)] pointer-events-none"></div>
 
@@ -322,7 +313,7 @@ const DataProtectionMap: React.FC = () => {
                                             key={geo.rsmKey}
                                             geography={geo}
                                             fill={fillColor}
-                                            stroke={isHovered ? "rgba(59, 130, 246, 0.8)" : "rgba(255,255,255,0.8)"}
+                                            stroke={isHovered ? "rgba(34, 197, 94, 0.8)" : "rgba(255,255,255,0.8)"}
                                             strokeWidth={isHovered ? 2 : 0.8}
                                             style={{
                                                 default: {
@@ -336,7 +327,7 @@ const DataProtectionMap: React.FC = () => {
                                                           outline: "none",
                                                           fill: fillColor,
                                                           filter: "url(#dataProtectionFilter) drop-shadow(0 4px 12px rgba(0,0,0,0.55)) brightness(1.1)",
-                                                          stroke: "rgba(59, 130, 246, 0.9)",
+                                                          stroke: "rgba(34, 197, 94, 0.9)",
                                                           strokeWidth: 2.5,
                                                       }
                                                     : {},

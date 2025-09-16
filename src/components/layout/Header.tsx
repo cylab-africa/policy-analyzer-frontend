@@ -39,7 +39,7 @@ export default function Header() {
             <div
                 className={cn(
                     "fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out",
-                    isScrolled ? "bg-white/95 backdrop-blur-lg shadow-lg" : "bg-primary"
+                    isScrolled ? "bg-white/95 backdrop-blur-lg shadow-sm" : "bg-primary"
                 )}
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
@@ -97,7 +97,7 @@ export default function Header() {
                                                     : "text-white"
                                                 : isScrolled
                                                 ? "text-muted-foreground hover:text-foreground"
-                                                : "text-primary-foreground/70 hover:text-primary-foreground"
+                                                : "text-primary-foreground/80 hover:text-primary-foreground"
                                         )}
                                     >
                                         Home
@@ -116,7 +116,7 @@ export default function Header() {
                                                     : "text-white"
                                                 : isScrolled
                                                 ? "text-muted-foreground hover:text-foreground"
-                                                : "text-primary-foreground/70 hover:text-primary-foreground"
+                                                : "text-primary-foreground/80 hover:text-primary-foreground"
                                         )}
                                     >
                                         Policy Chat
@@ -135,7 +135,7 @@ export default function Header() {
                                                     : "text-white"
                                                 : isScrolled
                                                 ? "text-muted-foreground hover:text-foreground"
-                                                : "text-primary-foreground/70 hover:text-primary-foreground"
+                                                : "text-primary-foreground/80 hover:text-primary-foreground"
                                         )}
                                     >
                                         Resources
