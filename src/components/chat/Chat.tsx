@@ -25,6 +25,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Input } from "../ui/input";
 
 // Define enum for chat tabs
 enum ChatTab {
@@ -219,9 +220,9 @@ function MessageBubble({ message, formatTime }: { message: Message; formatTime: 
             {/* User Message */}
             <div className="flex justify-end mb-3">
                 <div className="flex items-start gap-2 max-w-full sm:max-w-3xl">
-                    <Card className="bg-blue-50 border-blue-100 py-3 px-4 shadow-sm max-w-full">
+                    <Card className="bg-blue-50 border-blue-100 py-3 px-4 shadow-none max-w-full">
                         <div className="text-gray-800 text-sm sm:text-base break-words">{message.user}</div>
-                        <div className="text-gray-400 text-xs text-right mt-1">{formatTime(message.timestamp)}</div>
+                        <div className="text-gray-400 text-xs text-right">{formatTime(message.timestamp)}</div>
                     </Card>
                     <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shrink-0">
                         <User size={16} className="text-white" />
@@ -239,7 +240,7 @@ function MessageBubble({ message, formatTime }: { message: Message; formatTime: 
 
                         <Card
                             className={cn(
-                                "p-4 sm:p-6 shadow-sm flex-1 min-w-0",
+                                "p-4 sm:p-6 shadow-none flex-1 min-w-0",
                                 message.error ? "bg-red-50 border-red-200" : "bg-white border-gray-200"
                             )}
                         >
@@ -403,7 +404,7 @@ function MessageBubble({ message, formatTime }: { message: Message; formatTime: 
                                 </div>
                             )}
 
-                            <div className="text-gray-400 text-xs mt-2 sm:mt-3 pt-2 border-t border-gray-100">
+                            <div className="text-gray-400 text-xs  border-t border-gray-100">
                                 {formatTime(message.timestamp)}
                             </div>
                         </Card>
@@ -492,15 +493,15 @@ function ChatInput({
     activeTab: ChatTab;
 }) {
     return (
-        <div className="bg-white/95 backdrop-blur-sm border-t border-slate-200/60 px-4 py-6 shrink-0">
+        <div className="bg-white/95 backdrop-blur-sm border-t border-slate-200/60 px-4 py-3 shrink-0">
             <div className="max-w-4xl mx-auto">
                 <form onSubmit={handleSend} className="relative">
                     {/* Main Input Container */}
-                    <div className="relative bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 focus-within:shadow-lg focus-within:border-slate-300">
-                        <div className="flex items-center gap-3 p-4">
+                    <div className="relative bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-xs transition-all duration-200 focus-within:shadow-lg focus-within:border-primary/30">
+                        <div className="flex items-center gap-1 px-4 py-2">
                             {/* Tab Icon */}
                             <div className="flex-shrink-0">
-                                <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-200/60">
+                                <div className="w-8 h-8 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-200/60">
                                     {activeTab === ChatTab.DATA_PROTECTION ? (
                                         <Shield className="w-5 h-5 text-slate-600" />
                                     ) : (
@@ -510,7 +511,7 @@ function ChatInput({
                             </div>
 
                             {/* Input Field */}
-                            <input
+                            <Input
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
@@ -529,7 +530,7 @@ function ChatInput({
                                 <Button
                                     type="submit"
                                     disabled={!input.trim() || isStreaming}
-                                    className="w-11 h-11 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md disabled:shadow-none p-0"
+                                    className="w-10 h-10 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md disabled:shadow-none p-0"
                                 >
                                     {isStreaming ? (
                                         <Loader2 size={18} className="animate-spin text-white" />
@@ -545,9 +546,42 @@ function ChatInput({
                     </div>
 
                     {/* Context Indicators */}
-                    <div className="flex items-center justify-center mt-4">
-                        <div className="text-xs text-amber-600 flex items-center gap-1">
-                            Note: The AI can make mistakes. Please verify important information.
+                    <div className="mt-4">
+                        {/* Enhanced Context Bar */}
+                        <div className="flex items-end justify-between px-4 py-1 bg-gradient-to-r rounded-2x">
+                            {/* Left Side - Feedback Link */}
+                            <div className="flex items-center gap-2">
+                                <a
+                                    href="https://form.typeform.com/to/D7we4T7R"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="group flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium transition-all duration-200"
+                                >
+                                    <span className="text-xs">Share feedback</span>
+                                    <div className="w-4 h-4 rounded-full bg-blue-100 group-hover:bg-blue-200 flex items-center justify-center transition-colors">
+                                        <svg
+                                            className="w-2.5 h-2.5 text-blue-600 group-hover:translate-x-0.5 transition-transform"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M9 5l7 7-7 7"
+                                            />
+                                        </svg>
+                                    </div>
+                                </a>
+                            </div>
+
+                            {/* Right Side - AI Disclaimer */}
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs font-medium text-gray-500">
+                                    AI can make mistakes. please double-check it.
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -925,10 +959,10 @@ export default function ChatPage() {
 
     return (
         <div
-            className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+            className="bg-white rounded-lg border border-gray-200 overflow-hidden"
             style={{
                 height: "calc(100vh - 280px)", // Account for header (120px) + margins (160px)
-                minHeight: "600px", 
+                minHeight: "600px",
             }}
         >
             <div className="flex h-full">
