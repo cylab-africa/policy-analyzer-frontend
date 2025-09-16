@@ -283,9 +283,8 @@ const DigitalIDMap: React.FC = () => {
 
     return (
         <div className="w-full space-y-6">
-            {/* Map Container */}
             <div className="relative">
-                <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden relative">
+                <div className="w-full h-[600px] lg:h-[700px] overflow-hidden relative bg-gradient-to-br from-slate-50/50 to-blue-50/30 border border-slate-100">
                     {/* Professional background pattern */}
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(99,102,241,0.05)_0%,transparent_70%)] pointer-events-none"></div>
 
@@ -334,8 +333,8 @@ const DigitalIDMap: React.FC = () => {
                                                     ? {
                                                           fill: fillColor, // Keep the original color
                                                           outline: "none",
-                                                          filter: "url(#digitalIdFilter) drop-shadow(0 8px 25px rgba(99,102,241,0.2)) brightness(1.08)",
-                                                          stroke: "rgba(59, 130, 246, 0.8)", // Blue border on hover
+                                                          filter: "url(#digitalIdFilter) drop-shadow(0 8px 25px rgba(16,185,129,0.2)) brightness(1.08)",
+                                                          stroke: "rgba(16, 185, 129, 0.8)", // Emerald border on hover
                                                           strokeWidth: 2.5,
                                                       }
                                                     : {},
@@ -343,7 +342,7 @@ const DigitalIDMap: React.FC = () => {
                                                     ? {
                                                           outline: "none",
                                                           filter: "brightness(0.95)",
-                                                          stroke: "rgba(99, 102, 241, 0.9)",
+                                                          stroke: "rgba(16, 185, 129, 0.9)",
                                                           strokeWidth: 2,
                                                       }
                                                     : {},

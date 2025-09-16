@@ -1,4 +1,4 @@
-import ChatPage from "@/components/chat/Chat";
+import ChatPage from "@/components/chat";
 import { ScrollReveal } from "@/components/ui/smooth-scroll";
 
 function page() {

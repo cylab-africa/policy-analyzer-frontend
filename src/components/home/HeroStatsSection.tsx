@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { useDigitalIdData, usePolicyLawData } from "@/redux/api/apiSlice";
-import { AlertCircle, ChevronLeft, ChevronRight, FileKey, Loader2, Shield } from "lucide-react";
+import { AlertCircle, ChevronLeft, ChevronRight, Fingerprint, Loader2, Shield } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 // Enhanced Donut Chart Component
@@ -80,7 +80,7 @@ const DonutChart: React.FC<{
                     <div className="text-3xl font-bold text-white drop-shadow-sm">
                         {hoveredSegment !== null ? data[hoveredSegment]?.value : centerText}
                     </div>
-                    <div className="text-sm text-white/80 font-medium mt-1">
+                    <div className="text-sm text-white/80 mt-1">
                         {hoveredSegment !== null ? data[hoveredSegment]?.label : centerSubtext}
                     </div>
                     {hoveredSegment !== null && (
@@ -117,17 +117,18 @@ const MiniBarChart: React.FC<{
         <div className="space-y-3">
             {data.map((item, index) => (
                 <div key={index} className="flex items-center gap-3">
-                    <div className="w-20 text-sm font-medium text-white/90">{item.label}</div>
-                    <div className="flex-1 bg-white/20 rounded-full h-2 overflow-hidden">
+                    <div className="w-20 text-sm font-medium text-white">{item.label}</div>
+                    <div className="flex-1 bg-white/50 rounded-full h-2 overflow-hidden border border-white/40">
                         <div
-                            className="h-full rounded-full transition-all duration-500 ease-out"
+                            className="h-full rounded-full transition-all duration-500 ease-out shadow-sm"
                             style={{
                                 width: `${maxValue > 0 ? (item.value / maxValue) * 100 : 0}%`,
                                 backgroundColor: item.color,
+                                boxShadow: `0 0 4px ${item.color}40`,
                             }}
                         />
                     </div>
-                    <div className="w-8 text-xs font-bold text-white text-right">{item.value}</div>
+                    <div className="w-8 text-xs font-bold text-white text-left px-1 rounded">{item.value}</div>
                 </div>
             ))}
         </div>
@@ -173,18 +174,18 @@ const HeroStatsSection: React.FC = () => {
 
     // Data Protection Chart Data
     const dataProtectionData = [
-        { label: "Enacted", value: enactedLaws, color: "#059669" },
+        { label: "Enacted", value: enactedLaws, color: "#10b981" },
         { label: "Draft", value: draftLaws, color: "#3b82f6" },
-        { label: "Partial", value: liteLaws, color: "#8b5cf6" },
-        { label: "No Law", value: noLaws, color: "#6b7280" },
+        { label: "Partial", value: liteLaws, color: "#a855f7" },
+        { label: "No Data", value: noLaws, color: "#9ca3af" },
     ];
 
     // Digital ID Chart Data
     const digitalIdData = [
-        { label: "Implemented", value: implementedSystems, color: "#059669" },
+        { label: "Implemented", value: implementedSystems, color: "#10b981" },
         { label: "Partial", value: partialSystems, color: "#3b82f6" },
         { label: "Planning", value: planningSystems, color: "#f59e0b" },
-        { label: "No Data", value: noDataSystems, color: "#6b7280" },
+        { label: "No Data", value: noDataSystems, color: "#9ca3af" },
     ];
 
     const nextSlide = () => {
@@ -231,7 +232,7 @@ const HeroStatsSection: React.FC = () => {
 
     const slides = [
         {
-            title: "Data Protection Landscape",
+            title: "Data Protection Laws",
             subtitle: "African legislative overview",
             icon: <Shield className="w-5 h-5 text-white" />,
             content: (
@@ -258,7 +259,7 @@ const HeroStatsSection: React.FC = () => {
         {
             title: "Digital Identity Systems",
             subtitle: "Implementation across Africa",
-            icon: <FileKey className="w-5 h-5 text-white" />,
+            icon: <Fingerprint className="w-5 h-5 text-white" />,
             content: (
                 <div className="space-y-6">
                     {/* Digital ID Chart */}
@@ -284,11 +285,11 @@ const HeroStatsSection: React.FC = () => {
     return (
         <div className="space-y-4">
             {/* Carousel Header */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                     {slides[currentSlide]?.icon}
                     <div>
-                        <h3 className="text-lg font-bold text-white">{slides[currentSlide]?.title}</h3>
+                        <h3 className="text-lg font-semibold text-white">{slides[currentSlide]?.title}</h3>
                     </div>
                 </div>
 
@@ -312,7 +313,7 @@ const HeroStatsSection: React.FC = () => {
             </div>
 
             {/* Carousel Content */}
-            <div className="relative overflow-hidden rounded-xl">
+            <div className="relative overflow-hidden rounded-xl bg-primary/50">
                 <div
                     className="flex transition-transform duration-500 ease-in-out"
                     style={{ transform: `translateX(-${currentSlide * 100}%)` }}

@@ -84,30 +84,30 @@ const DataProtectionMap: React.FC = () => {
     const getColor = (status: string): string => {
         switch (status) {
             case "Enacted":
-                return "#059669"; // Emerald-600 - consistent with other components
+                return "#10b981"; // Emerald-500 - bright success green
             case "Draft":
-                return "#3b82f6"; // Blue-500 - professional blue
+                return "#3b82f6"; // Blue-500 - clear professional blue
             case "Lite":
-                return "#8b5cf6"; // Violet-500 - distinguishable purple
+                return "#8b5cf6"; // Violet-500 - vibrant purple
             case "No Law":
-                return "#6b7280"; // Gray-500 - neutral
+                return "#6b7280"; // Gray-500 - neutral gray
             default:
-                return "#B7BDBF"; // Gray-400 - default state
+                return "#9ca3af"; // Gray-400 - light neutral
         }
     };
 
-    // Professional color mapping for Malabo Convention status
+    // Lighter color mapping for Malabo Convention status
     const getMalaboColor = (status: string): string => {
         switch (status) {
             case "Ratified":
-                return "#059669"; // Emerald-600
+                return "#10b981"; // Emerald-500 - bright success green
             case "Signed":
-                return "#f59e0b"; // Amber-500
+                return "#f59e0b"; // Amber-500 - bright orange
             case "No":
             case "Not Signed":
-                return "#6b7280"; // Gray-500
+                return "#6b7280"; // Gray-500 - neutral gray
             default:
-                return "#9ca3af"; // Gray-400
+                return "#9ca3af"; // Gray-400 - light neutral
         }
     };
 
@@ -276,7 +276,7 @@ const DataProtectionMap: React.FC = () => {
     return (
         <div className="w-full space-y-6">
             <div className="relative">
-                <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden relative bg-gradient-to-br from-slate-50/50 to-blue-50/30 border border-slate-200/60">
+                <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden relative bg-gradient-to-br from-slate-50/50 to-blue-50/30 border border-slate-100">
                     {/* Professional background pattern */}
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(34,197,94,0.05)_0%,transparent_70%)] pointer-events-none"></div>
 
@@ -313,7 +313,7 @@ const DataProtectionMap: React.FC = () => {
                                             key={geo.rsmKey}
                                             geography={geo}
                                             fill={fillColor}
-                                            stroke={isHovered ? "rgba(59, 130, 246, 0.8)" : "rgba(255,255,255,0.8)"}
+                                            stroke={isHovered ? "rgba(34, 197, 94, 0.8)" : "rgba(255,255,255,0.8)"}
                                             strokeWidth={isHovered ? 2 : 0.8}
                                             style={{
                                                 default: {
@@ -327,7 +327,7 @@ const DataProtectionMap: React.FC = () => {
                                                           outline: "none",
                                                           fill: fillColor,
                                                           filter: "url(#dataProtectionFilter) drop-shadow(0 4px 12px rgba(0,0,0,0.55)) brightness(1.1)",
-                                                          stroke: "rgba(59, 130, 246, 0.9)",
+                                                          stroke: "rgba(34, 197, 94, 0.9)",
                                                           strokeWidth: 2.5,
                                                       }
                                                     : {},

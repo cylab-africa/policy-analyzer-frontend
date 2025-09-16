@@ -3,10 +3,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, ArrowRight, Calendar, Shield, Fingerprint } from "lucide-react";
+import { ArrowLeft, ArrowRight, Fingerprint, Shield } from "lucide-react";
 import React, { useState } from "react";
-import TimelineComponent from "./TimelineComponent";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
+import TimelineComponent from "./TimelineComponent";
 
 interface TimelineEvent {
     year: number;
@@ -216,20 +216,14 @@ const PolicyHighlightsSection: React.FC = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
                 {/* Header */}
                 <div className="text-center mb-12">
-                    <Badge variant="outline" className="mb-4">
-                        <Calendar className="h-3 w-3 mr-2" />
-                        Policy Timeline
-                    </Badge>
                     <h2 className="text-3xl font-bold text-slate-900 mb-4">
                         African {activeTimeline === "data-protection" ? "Data Protection" : "Digital Identity"}{" "}
                         Milestones
                     </h2>
                     <p className="text-slate-600 max-w-2xl mx-auto">
                         Key developments in{" "}
-                        {activeTimeline === "data-protection"
-                            ? "data protection"
-                            : "digital identity systems"}{" "}
-                        across Africa
+                        {activeTimeline === "data-protection" ? "data protection" : "digital identity systems"} across
+                        Africa
                     </p>
                 </div>
 

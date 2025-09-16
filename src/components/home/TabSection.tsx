@@ -20,7 +20,7 @@ const TabSection = () => {
                     </p>
                 </div>
 
-                <Tabs defaultValue="digital-id" className="w-full">
+                <Tabs defaultValue="data-protection" className="w-full">
                     {/* Tab Navigation */}
                     <div className="flex justify-center mb-4">
                         <TabsList className="grid grid-cols-2 bg-slate-100 rounded-xl p-1 border-0 h-auto">

@@ -1,6 +1,5 @@
-import ResourcesPage from "@/components/resources/Resources";
+import ResourcesPage from "@/components/resources";
 import { ScrollReveal } from "@/components/ui/smooth-scroll";
-import React from "react";
 
 function page() {
     return (
