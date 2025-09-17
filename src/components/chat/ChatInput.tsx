@@ -2,9 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 
-import { FileKey, Loader2, Send, Shield } from "lucide-react";
-import { Input } from "../ui/input";
+import { Fingerprint, Loader2, Send, Shield } from "lucide-react";
 import { ChatTab } from ".";
+import { Input } from "../ui/input";
 
 export function ChatInput({
     input,
@@ -32,7 +32,7 @@ export function ChatInput({
                                     {activeTab === ChatTab.DATA_PROTECTION ? (
                                         <Shield className="w-5 h-5 text-slate-600" />
                                     ) : (
-                                        <FileKey className="w-5 h-5 text-slate-600" />
+                                        <Fingerprint className="w-5 h-5 text-slate-600" />
                                     )}
                                 </div>
                             </div>
