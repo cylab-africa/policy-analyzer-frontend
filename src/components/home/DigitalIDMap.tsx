@@ -3,7 +3,7 @@
 
 import africanCountries from "@/data/world-map.json";
 import { useDigitalIdData } from "@/redux/api/apiSlice";
-import { AlertCircle, FileKey, Loader2 } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Tooltip as ReactTooltip } from "react-tooltip";
@@ -395,9 +395,6 @@ const DigitalIDMap: React.FC = () => {
                     {/* Enhanced Legend */}
                     <div className="absolute bottom-4 right-0 bg-white/95 backdrop-blur-md rounded-tl-md rounded-bl-md p-5 border border-white/60 shadow-xs max-w-xs">
                         <div className="flex items-center gap-2.5 mb-4">
-                            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <FileKey className="w-4 h-4 text-blue-600" />
-                            </div>
                             <h4 className="text-sm font-bold text-gray-800">Digital ID</h4>
                         </div>
                         <div className="space-y-3">
