@@ -1,16 +1,20 @@
-FROM node:18-alpine AS builder
+# --- Dependencies ---
+FROM node:18-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production --legacy-peer-deps && npm cache clean --force
 
-# Set working directory
+# --- Builder ---
+FROM node:18-alpine AS builder
 WORKDIR /app
 
+# Build-time environment variables
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
-# Copy package files
+# Copy package files and install ALL dependencies (including devDependencies)
 COPY package*.json ./
-
-# Install dependencies with legacy peer deps
-RUN npm ci --legacy-peer-deps --verbose
+RUN npm ci --legacy-peer-deps && npm cache clean --force
 
 # Copy source code
 COPY . .
@@ -18,29 +22,31 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Production stage
+# --- Runner ---
 FROM node:18-alpine AS runner
-
 WORKDIR /app
 
-# Copy built application
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/public ./public
-
-# Install only production dependencies
-RUN npm ci --only=production --legacy-peer-deps
+# Set production environment
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Create non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nextjs -u 1001
 
-# Change ownership
-RUN chown -R nextjs:nodejs /app
+# Copy production dependencies
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy built application with correct ownership
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./
+
+# Copy config files if they exist
+COPY --from=builder /app/next.config.* ./
+
 USER nextjs
 
-# Expose port
 EXPOSE 3000
 
-# Start the application
 CMD ["npm", "start"]

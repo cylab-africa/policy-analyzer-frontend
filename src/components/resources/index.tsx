@@ -24,7 +24,7 @@ import React, { useMemo, useState } from "react";
 
 // Import API hooks
 import { useGetDigitalIdsQuery, useGetPolicyLawsQuery } from "@/redux/api/apiSlice";
-import { getDocumentLanguage, getRegion } from "./utils";
+import { FLAG_EMOJIS, getDocumentLanguage, getRegion } from "./utils";
 import ResourceCard from "./ResourceCard";
 
 // Enum for resource type
@@ -60,63 +60,6 @@ export interface Resource {
     linkType?: string;
 }
 
-// Country code to emoji mapping
-const FLAG_EMOJIS: Record<string, string> = {
-    DZ: "🇩🇿",
-    AO: "🇦🇴",
-    BJ: "🇧🇯",
-    BW: "🇧🇼",
-    BF: "🇧🇫",
-    BI: "🇧🇮",
-    CM: "🇨🇲",
-    CV: "🇨🇻",
-    CF: "🇨🇫",
-    TD: "🇹🇩",
-    KM: "🇰🇲",
-    CG: "🇨🇬",
-    CD: "🇨🇩",
-    CI: "🇨🇮",
-    DJ: "🇩🇯",
-    EG: "🇪🇬",
-    GQ: "🇬🇶",
-    ER: "🇪🇷",
-    SZ: "🇸🇿",
-    ET: "🇪🇹",
-    GA: "🇬🇦",
-    GM: "🇬🇲",
-    GH: "🇬🇭",
-    GN: "🇬🇳",
-    GW: "🇬🇼",
-    KE: "🇰🇪",
-    LS: "🇱🇸",
-    LR: "🇱🇷",
-    LY: "🇱🇾",
-    MG: "🇲🇬",
-    MW: "🇲🇼",
-    ML: "🇲🇱",
-    MR: "🇲🇷",
-    MU: "🇲🇺",
-    MA: "🇲🇦",
-    MZ: "🇲🇿",
-    NA: "🇳🇦",
-    NE: "🇳🇪",
-    NG: "🇳🇬",
-    RW: "🇷🇼",
-    ST: "🇸🇹",
-    SN: "🇸🇳",
-    SC: "🇸🇨",
-    SL: "🇸🇱",
-    SO: "🇸🇴",
-    ZA: "🇿🇦",
-    SS: "🇸🇸",
-    SD: "🇸🇩",
-    TZ: "🇹🇿",
-    TG: "🇹🇬",
-    TN: "🇹🇳",
-    UG: "🇺🇬",
-    ZM: "🇿🇲",
-    ZW: "🇿🇼",
-};
 
 export default function ResourcesPage() {
     const [activeTab, setActiveTab] = useState<ResourceType>(ResourceType.DATA_PROTECTION);
@@ -311,11 +254,11 @@ export default function ResourcesPage() {
             const query = searchQuery.toLowerCase();
             filtered = filtered.filter(
                 (resource) =>
-                    resource.title.toLowerCase().includes(query) ||
-                    resource.countryName.toLowerCase().includes(query) ||
-                    resource.description.toLowerCase().includes(query) ||
-                    resource.authority?.toLowerCase().includes(query) ||
-                    resource.features?.some((f) => f.toLowerCase().includes(query))
+                    // resource.title.toLowerCase().includes(query) ||
+                    resource.countryName.toLowerCase().includes(query) 
+                    // resource.description.toLowerCase().includes(query) ||
+                    // resource.authority?.toLowerCase().includes(query) ||
+                    // resource.features?.some((f) => f.toLowerCase().includes(query))
             );
         }
 
@@ -434,23 +377,23 @@ export default function ResourcesPage() {
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                                 <Input
                                     type="text"
-                                    placeholder="Search resources..."
+                                    placeholder="Search by country..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-9 pr-9 h-10 border-gray-200 min-w-[350px]"
+                                    className="pl-9 pr-9 h-11 border-gray-200 min-w-[350px]"
                                 />
                                 {searchQuery && (
                                     <Button
                                         variant="ghost"
                                         onClick={() => setSearchQuery("")}
-                                        className="cursor-pointer absolute right-0 top-1/2 transform -translate-y-1/2 text-red-500 hover:text-red-600 transition-colors"
+                                        className="cursor-pointer absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-red-500 hover:text-red-600 transition-colors"
                                     >
                                         <X className="h-4 w-4" />
                                     </Button>
                                 )}
                             </div>
                             <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-                                <SelectTrigger className="h-11 border-gray-200 min-w-[180px]">
+                                <SelectTrigger className="h-12 border-gray-200 min-w-[180px]">
                                     <SelectValue placeholder="Filter by Region" />
                                 </SelectTrigger>
                                 <SelectContent>
