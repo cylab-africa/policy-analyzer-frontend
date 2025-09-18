@@ -1,22 +1,26 @@
-# --- Builder ---
-FROM node:18-alpine AS builder
-WORKDIR /app
-
-# Install dependencies (cached layer if package*.json unchanged)
-COPY package*.json package-lock.json* ./
-RUN npm ci --legacy-peer-deps && npm cache clean --force
-
-# Copy rest of the source
-COPY . .
-
-# Build Next.js app
-RUN npm run build
-
-# --- Production Dependencies ---
+# --- Dependencies ---
 FROM node:18-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production --legacy-peer-deps && npm cache clean --force
+
+# --- Builder ---
+FROM node:18-alpine AS builder
+WORKDIR /app
+
+# Build-time environment variables
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+# Copy package files and install ALL dependencies (including devDependencies)
+COPY package*.json ./
+RUN npm ci --legacy-peer-deps && npm cache clean --force
+
+# Copy source code
+COPY . .
+
+# Build the application
+RUN npm run build
 
 # --- Runner ---
 FROM node:18-alpine AS runner
@@ -26,9 +30,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Create non-root user first
-RUN addgroup -g 1001 -S nodejs \
-    && adduser -S nextjs -u 1001
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nextjs -u 1001
 
 # Copy production dependencies
 COPY --from=deps /app/node_modules ./node_modules
@@ -38,7 +42,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./
 
-# Only copy next.config.js if it exists
+# Copy config files if they exist
 COPY --from=builder /app/next.config.* ./
 
 USER nextjs
