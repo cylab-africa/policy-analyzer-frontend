@@ -73,50 +73,104 @@ export const getRegion = (countryName: string): string => {
     return "Other";
 };
 
-
 export const getDocumentLanguage = (countryName: string): string => {
-        const francophoneCountries = [
-            "Benin",
-            "Burkina Faso",
-            "Burundi",
-            "Cameroon",
-            "Central African Republic",
-            "Chad",
-            "Comoros",
-            "Congo",
-            "Republic of Congo",
-            "Democratic Republic of the Congo",
-            "Democratic Republic of Congo",
-            "Djibouti",
-            "Gabon",
-            "Guinea",
-            "Ivory Coast",
-            "Cote d'Ivoire",
-            "Madagascar",
-            "Mali",
-            "Niger",
-            "Rwanda",
-            "Senegal",
-            "Seychelles",
-            "Togo",
-        ];
-        const arabicCountries = ["Algeria", "Egypt", "Libya", "Mauritania", "Morocco", "Sudan", "Tunisia"];
-        const portugueseCountries = [
-            "Angola",
-            "Cape Verde",
-            "Cabo Verde",
-            "Guinea-Bissau",
-            "Mozambique",
-            "São Tomé and Príncipe",
-            "Sao Tome and Principe",
-            "Sao Tome & Principe",
-        ];
+    const francophoneCountries = [
+        "Benin",
+        "Burkina Faso",
+        "Burundi",
+        "Cameroon",
+        "Central African Republic",
+        "Chad",
+        "Comoros",
+        "Congo",
+        "Republic of Congo",
+        "Democratic Republic of the Congo",
+        "Democratic Republic of Congo",
+        "Djibouti",
+        "Gabon",
+        "Guinea",
+        "Ivory Coast",
+        "Cote d'Ivoire",
+        "Madagascar",
+        "Mali",
+        "Niger",
+        "Rwanda",
+        "Senegal",
+        "Seychelles",
+        "Togo",
+    ];
+    const arabicCountries = ["Algeria", "Egypt", "Libya", "Mauritania", "Morocco", "Sudan", "Tunisia"];
+    const portugueseCountries = [
+        "Angola",
+        "Cape Verde",
+        "Cabo Verde",
+        "Guinea-Bissau",
+        "Mozambique",
+        "São Tomé and Príncipe",
+        "Sao Tome and Principe",
+        "Sao Tome & Principe",
+    ];
 
-        if (francophoneCountries.includes(countryName)) return "French";
-        if (arabicCountries.includes(countryName)) return "Arabic/French";
-        if (portugueseCountries.includes(countryName)) return "Portuguese";
-        return "English";
-    };
+    if (francophoneCountries.includes(countryName)) return "French";
+    if (arabicCountries.includes(countryName)) return "Arabic/French";
+    if (portugueseCountries.includes(countryName)) return "Portuguese";
+    return "English";
+};
 
-
-    
+// Country code to emoji mapping
+export const FLAG_EMOJIS: Record<string, string> = {
+    DZ: "🇩🇿",
+    AO: "🇦🇴",
+    BJ: "🇧🇯",
+    BW: "🇧🇼",
+    BF: "🇧🇫",
+    BI: "🇧🇮",
+    CM: "🇨🇲",
+    CV: "🇨🇻",
+    CF: "🇨🇫",
+    TD: "🇹🇩",
+    KM: "🇰🇲",
+    CG: "🇨🇬",
+    CD: "🇨🇩",
+    CI: "🇨🇮",
+    DJ: "🇩🇯",
+    EG: "🇪🇬",
+    GQ: "🇬🇶",
+    ER: "🇪🇷",
+    SZ: "🇸🇿",
+    ET: "🇪🇹",
+    GA: "🇬🇦",
+    GM: "🇬🇲",
+    GH: "🇬🇭",
+    GN: "🇬🇳",
+    GW: "🇬🇼",
+    KE: "🇰🇪",
+    LS: "🇱🇸",
+    LR: "🇱🇷",
+    LY: "🇱🇾",
+    MG: "🇲🇬",
+    MW: "🇲🇼",
+    ML: "🇲🇱",
+    MR: "🇲🇷",
+    MU: "🇲🇺",
+    MA: "🇲🇦",
+    MZ: "🇲🇿",
+    NA: "🇳🇦",
+    NE: "🇳🇪",
+    NG: "🇳🇬",
+    RW: "🇷🇼",
+    ST: "🇸🇹",
+    SN: "🇸🇳",
+    SC: "🇸🇨",
+    SL: "🇸🇱",
+    SO: "🇸🇴",
+    ZA: "🇿🇦",
+    SS: "🇸🇸",
+    SD: "🇸🇩",
+    TZ: "🇹🇿",
+    TG: "🇹🇬",
+    TN: "🇹🇳",
+    UG: "🇺🇬",
+    ZM: "🇿🇲",
+    ZW: "🇿🇼",
+};

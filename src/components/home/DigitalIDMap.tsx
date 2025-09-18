@@ -93,11 +93,13 @@ const getColor = (status: string): string => {
 
 const DigitalIDMap: React.FC = () => {
     const [tooltipContent, setTooltipContent] = useState<string>("");
+    const [hoveredCountry, setHoveredCountry] = useState<string>("");
 
     // Use RTK Query hook with updated structure
     const { digitalIds, isLoading, error } = useDigitalIdData();
 
     const handleMouseEnter = (countryName: string) => {
+        setHoveredCountry(countryName);
         const countryData = findCountryData(digitalIds, countryName);
 
         if (countryData) {
@@ -228,7 +230,8 @@ const DigitalIDMap: React.FC = () => {
     };
 
     const handleMouseLeave = () => {
-        setTooltipContent("");
+        // The tooltip's delayHide prop will handle the delay automatically
+        setHoveredCountry("");
     };
 
     const getCountryStatus = (countryName: string): string => {
@@ -321,11 +324,14 @@ const DigitalIDMap: React.FC = () => {
                                             geography={geo}
                                             fill={fillColor}
                                             stroke="rgba(255,255,255,0.8)"
-                                            strokeWidth={0.6}
+                                            strokeWidth={hoveredCountry === countryName ? 2 : 0.6}
                                             style={{
                                                 default: {
                                                     outline: "none",
-                                                    filter: "url(#digitalIdFilter) drop-shadow(0 2px 4px rgba(0,0,0,0.06))",
+                                                    filter:
+                                                        hoveredCountry === countryName
+                                                            ? "url(#digitalIdFilter) drop-shadow(0 4px 12px rgba(59, 130, 246, 0.3)) brightness(1.1)"
+                                                            : "url(#digitalIdFilter) drop-shadow(0 2px 4px rgba(0,0,0,0.06))",
                                                     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                                                     cursor: isAfricanCountry(countryName) ? "pointer" : "default",
                                                 },
@@ -333,16 +339,16 @@ const DigitalIDMap: React.FC = () => {
                                                     ? {
                                                           fill: fillColor, // Keep the original color
                                                           outline: "none",
-                                                          filter: "url(#digitalIdFilter) drop-shadow(0 8px 25px rgba(16,185,129,0.2)) brightness(1.08)",
-                                                          stroke: "rgba(16, 185, 129, 0.8)", // Emerald border on hover
-                                                          strokeWidth: 2.5,
+                                                          filter: "url(#digitalIdFilter) drop-shadow(0 4px 12px rgba(59, 130, 246, 0.3)) brightness(1.1)",
+                                                          //   stroke: "#3B82F6", // Blue border on hover
+                                                          strokeWidth: 2,
                                                       }
                                                     : {},
                                                 pressed: isAfricanCountry(countryName)
                                                     ? {
                                                           outline: "none",
                                                           filter: "brightness(0.95)",
-                                                          stroke: "rgba(16, 185, 129, 0.9)",
+                                                          //   stroke: "#2563EB",
                                                           strokeWidth: 2,
                                                       }
                                                     : {},
@@ -369,8 +375,25 @@ const DigitalIDMap: React.FC = () => {
                         </Geographies>
                     </ComposableMap>
 
+                    {/* Map Source Reference */}
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                        <div className="bg-black/5 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-white/20">
+                            <p className="text-xs text-gray-500 font-medium">
+                                Source:
+                                <a
+                                    href="https://geojson-maps.kyd.au/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-gray-600 hover:text-blue-900 ml-1 transition-colors duration-200"
+                                >
+                                    Natural Earth
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+
                     {/* Enhanced Legend */}
-                    <div className="absolute bottom-6 right-0 bg-white/95 backdrop-blur-md rounded-2xl p-5 border border-white/60 shadow-xl max-w-xs">
+                    <div className="absolute bottom-4 right-0 bg-white/95 backdrop-blur-md rounded-tl-md rounded-bl-md p-5 border border-white/60 shadow-xs max-w-xs">
                         <div className="flex items-center gap-2.5 mb-4">
                             <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                                 <FileKey className="w-4 h-4 text-blue-600" />
@@ -405,10 +428,16 @@ const DigitalIDMap: React.FC = () => {
                     border: "none",
                     borderRadius: "0",
                     boxShadow: "none",
+                    pointerEvents: "auto",
                 }}
                 place="top"
                 offset={15}
                 noArrow={true}
+                delayHide={150}
+                openOnClick={false}
+                clickable={true}
+                // events={["mouseenter"]}
+                // globalEventOff="click"
             />
         </div>
     );

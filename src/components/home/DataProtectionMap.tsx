@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import africanCountries from "@/data/world-map.json";
 import { usePolicyLawData } from "@/redux/api/apiSlice";
-import { AlertCircle, Loader2, Shield } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Tooltip as ReactTooltip } from "react-tooltip";
@@ -120,7 +119,7 @@ const DataProtectionMap: React.FC = () => {
             const malaboColor = getMalaboColor(countryData.malaboConventionStatus);
 
             setTooltipContent(`
-                <div class="font-sans max-w-sm bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
+                <div class="font-sans max-w-sm bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-200 cursor-default">
                     <div class="p-4 bg-gradient-to-r from-slate-50 to-gray-50 border-b border-gray-100">
                         <div class="flex items-center gap-3">
                             <div class="text-2xl">${countryData.flagEmoji || "🏳️"}</div>
@@ -178,7 +177,7 @@ const DataProtectionMap: React.FC = () => {
                                 .slice(0, 2)
                                 .map(
                                     (link) => `
-                                <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 w-full bg-slate-800 hover:bg-slate-700 text-white py-2 px-3 rounded-lg text-xs font-medium transition-colors no-underline group">
+                                <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 w-full bg-slate-600 hover:bg-primary text-white py-2 px-3 rounded-lg text-xs font-medium transition-all duration-200 no-underline group hover:scale-105 hover:shadow-lg">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                                     </svg>
@@ -201,7 +200,7 @@ const DataProtectionMap: React.FC = () => {
             `);
         } else {
             setTooltipContent(`
-                <div class="font-sans max-w-xs bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
+                <div class="font-sans max-w-xs bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-200 cursor-default">
                     <div class="p-4 bg-gradient-to-r from-slate-50 to-gray-50 border-b border-gray-100">
                         <h3 class="text-lg font-bold text-gray-900">${countryName}</h3>
                     </div>
@@ -220,7 +219,7 @@ const DataProtectionMap: React.FC = () => {
     };
 
     const handleMouseLeave = () => {
-        setTooltipContent("");
+        // The tooltip's delayHide prop will handle the delay automatically
         setHoveredCountry("");
     };
 
@@ -313,21 +312,25 @@ const DataProtectionMap: React.FC = () => {
                                             key={geo.rsmKey}
                                             geography={geo}
                                             fill={fillColor}
-                                            stroke={isHovered ? "rgba(34, 197, 94, 0.8)" : "rgba(255,255,255,0.8)"}
-                                            strokeWidth={isHovered ? 2 : 0.8}
+                                            // stroke={isHovered ? "rgba(34, 197, 94, 0.8)" : "rgba(255,255,255,0.8)"}
+                                            stroke="rgba(255,255,255,0.8)"
+                                            strokeWidth={isHovered ? 2.5 : 0.8}
                                             style={{
                                                 default: {
                                                     outline: "none",
                                                     filter: "url(#dataProtectionFilter) drop-shadow(0 2px 4px rgba(0,0,0,0.06))",
-                                                    transition: "all 0.2s ease-in-out",
+                                                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                                                     cursor: isAfricanCountry(countryName) ? "pointer" : "default",
+                                                    transformOrigin: "center",
                                                 },
                                                 hover: isAfricanCountry(countryName)
                                                     ? {
                                                           outline: "none",
                                                           fill: fillColor,
-                                                          filter: "url(#dataProtectionFilter) drop-shadow(0 4px 12px rgba(0,0,0,0.55)) brightness(1.1)",
-                                                          stroke: "rgba(34, 197, 94, 0.9)",
+                                                          //   filter: "url(#dataProtectionFilter) drop-shadow(0 4px 12px rgba(0,0,0,0.55)) brightness(1.1)",
+                                                          filter: "url(#digitalIdFilter) drop-shadow(0 4px 12px rgba(59, 130, 246, 0.3)) brightness(1.1)",
+
+                                                          //   stroke: "rgba(34, 197, 94, 0.9)",
                                                           strokeWidth: 2.5,
                                                       }
                                                     : {},
@@ -360,13 +363,26 @@ const DataProtectionMap: React.FC = () => {
                             }
                         </Geographies>
                     </ComposableMap>
+                    {/* Source Reference */}
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                        <div className="bg-black/5 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-white/20">
+                            <p className="text-xs text-gray-500 font-medium">
+                                Source:
+                                <a
+                                    href="https://geojson-maps.kyd.au/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-gray-600 hover:text-blue-900 ml-1 transition-colors duration-200"
+                                >
+                                    Natural Earth
+                                </a>
+                            </p>
+                        </div>
+                    </div>
 
                     {/* Enhanced Legend */}
-                    <div className="absolute bottom-6 right-0 bg-white/95 backdrop-blur-md rounded-2xl p-5 border border-white/60 shadow-xl max-w-xs">
+                    <div className="absolute bottom-4 right-0 bg-white/95 backdrop-blur-md rounded-tl-md rounded-bl-md p-5 border border-white/60 shadow-xs max-w-xs">
                         <div className="flex items-center gap-2.5 mb-4">
-                            <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
-                                <Shield className="w-4 h-4 text-emerald-600" />
-                            </div>
                             <h4 className="text-sm font-bold text-gray-800">Data Protection</h4>
                         </div>
                         <div className="space-y-3">
@@ -401,6 +417,9 @@ const DataProtectionMap: React.FC = () => {
                 place="top"
                 offset={10}
                 noArrow={true}
+                delayHide={300}
+                delayShow={100}
+                clickable={true}
             />
         </div>
     );
