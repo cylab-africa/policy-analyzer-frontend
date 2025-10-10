@@ -7,6 +7,7 @@ import { ReduxProvider } from "@/components/providers/ReduxProvider";
 import { PostHogProvider } from "@/components/providers/PostHogProvider";
 import { PostHogPageView } from "@/components/providers/PostHogPageView";
 import { Toaster } from "sonner";
+import { Suspense } from "react";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -64,7 +65,9 @@ export default function RootLayout({
         <html lang="en">
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
                 <PostHogProvider>
-                    <PostHogPageView />
+                    <Suspense fallback={null}>
+                        <PostHogPageView />
+                    </Suspense>
                     <ReduxProvider>
                         <div className="flex flex-col min-h-screen">
                             <Toaster position="bottom-right" richColors closeButton />
