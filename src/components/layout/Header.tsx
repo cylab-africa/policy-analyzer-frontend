@@ -42,7 +42,7 @@ export default function Header() {
                     isScrolled ? "bg-white/95 backdrop-blur-lg shadow-sm" : "bg-primary"
                 )}
             >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+                <div className="max-w-8xl container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
                     <div>
                         <Link
                             href="/"
