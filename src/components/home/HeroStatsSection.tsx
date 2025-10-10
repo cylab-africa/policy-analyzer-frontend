@@ -15,8 +15,8 @@ const DonutChart: React.FC<{
     const total = data?.reduce((sum, item) => sum + item.value, 0);
 
     const radius = 45;
-    const strokeWidth = 8;
-    const normalizedRadius = radius - strokeWidth * 2;
+    const strokeWidth = 7;
+    const normalizedRadius = radius - strokeWidth * 1.5;
     const circumference = normalizedRadius * 2 * Math.PI;
 
     let cumulativePercentage = 0;
@@ -117,8 +117,8 @@ const MiniBarChart: React.FC<{
         <div className="space-y-3">
             {data.map((item, index) => (
                 <div key={index} className="flex items-center gap-3">
-                    <div className="w-20 text-sm font-medium text-white">{item.label}</div>
-                    <div className="flex-1 bg-white/50 rounded-full h-2 overflow-hidden border border-white/40">
+                    <div className="w-24 text-sm font-medium text-white">{item.label}</div>
+                    <div className="flex-1 bg-white/80 rounded-full h-3 overflow-hidden">
                         <div
                             className="h-full rounded-full transition-all duration-500 ease-out shadow-sm"
                             style={{
@@ -269,7 +269,7 @@ const HeroStatsSection: React.FC = () => {
                                 <DonutChart
                                     data={digitalIdData}
                                     centerText={`${implementedSystems}`}
-                                    centerSubtext="Active"
+                                    centerSubtext="Implemented"
                                 />
                                 <div className="flex-1 ml-3">
                                     <MiniBarChart data={digitalIdData} />
@@ -286,7 +286,7 @@ const HeroStatsSection: React.FC = () => {
         <div className="space-y-4">
             {/* Carousel Header */}
             <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
                     {slides[currentSlide]?.icon}
                     <div>
                         <h3 className="text-lg font-semibold text-white">{slides[currentSlide]?.title}</h3>
@@ -297,14 +297,14 @@ const HeroStatsSection: React.FC = () => {
                 <div className="flex items-center gap-2">
                     <button
                         onClick={prevSlide}
-                        className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors duration-200"
+                        className="w-8 h-8 cursor-pointer bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors duration-200"
                         aria-label="Previous slide"
                     >
                         <ChevronLeft className="w-4 h-4 text-white" />
                     </button>
                     <button
                         onClick={nextSlide}
-                        className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors duration-200"
+                        className="w-8 h-8 cursor-pointer bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors duration-200"
                         aria-label="Next slide"
                     >
                         <ChevronRight className="w-4 h-4 text-white" />

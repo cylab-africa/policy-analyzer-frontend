@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
-import { Clock, History, MessageSquare, X } from "lucide-react";
+import { Clock, History, X } from "lucide-react";
 import { Message } from ".";
 
 export function ChatHistorySidebar({
@@ -26,42 +26,52 @@ export function ChatHistorySidebar({
         <>
             {/* Mobile overlay */}
             {isMobile && showChatHistory && (
-                <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setShowChatHistory(false)} />
+                <div className="fixed inset-0 bg-black/50 lg:hidden z-40" onClick={() => setShowChatHistory(false)} />
             )}
 
             {/* Sidebar */}
             <div
                 className={cn(
-                    "bg-white border-r border-gray-200 flex flex-col transition-all duration-300",
-                    isMobile ? "fixed left-0 top-0 bottom-0 w-80 transform" : "w-64",
+                    "bg-gray-50 border-r border-gray-200 flex flex-col transition-all duration-300",
+                    isMobile ? "fixed left-0 top-0 bottom-0 w-72 transform z-50" : "w-80",
                     showChatHistory ? "translate-x-0" : isMobile ? "-translate-x-full" : "hidden"
                 )}
             >
-                <div className="p-4 border-b border-gray-200 flex items-center">
-                    {isMobile && (
-                        <Button variant="ghost" size="sm" className="mr-2" onClick={() => setShowChatHistory(false)}>
-                            <X size={16} />
+                {/* Header */}
+                <div className="p-3 py-4.5 border-b border-gray-200 shrink-0">
+                    <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                            {isMobile && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0 shrink-0"
+                                    onClick={() => setShowChatHistory(false)}
+                                >
+                                    <X size={16} />
+                                </Button>
+                            )}
+                            <h2 className="text-sm font-semibold flex items-center gap-2 truncate">
+                                <History size={16} className="shrink-0" />
+                                <span>Chat History</span>
+                            </h2>
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center gap-1.5 text-xs h-8 px-3 shrink-0"
+                            onClick={clearChatHistory}
+                        >
+                            <Clock size={14} />
+                            Clear
                         </Button>
-                    )}
-                    <h2 className="text-lg font-semibold flex items-center gap-2">
-                        <History size={18} />
-                        Chat History
-                    </h2>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="ml-auto flex items-center gap-1 text-xs h-8"
-                        onClick={clearChatHistory}
-                    >
-                        <Clock size={14} />
-                        Clear
-                    </Button>
+                    </div>
                 </div>
 
-                <ScrollArea className="flex-1">
+                <ScrollArea className="flex-1 mt-2">
                     {getChatHistory().length > 0 ? (
                         getChatHistory().map(([date, dateMessages]) => (
-                            <div key={date} className="mb-4 px-2">
+                            <div key={date} className="mb-4">
                                 <div className="px-2 py-1 text-xs font-semibold text-gray-500 flex items-center gap-2">
                                     <div className="w-1/3 h-px bg-gray-200" />
                                     {date}
@@ -82,12 +92,11 @@ export function ChatHistorySidebar({
                                         }}
                                     >
                                         <div className="text-sm font-medium text-gray-800 truncate">
-                                            {message.user.length > 28
-                                                ? `${message.user.substring(0, 28)}...`
+                                            {message.user.length > 36
+                                                ? `${message.user.substring(0, 36)}...`
                                                 : message.user}
                                         </div>
                                         <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                                            <MessageSquare size={12} />
                                             {formatTime(message.timestamp)}
                                         </div>
                                     </div>

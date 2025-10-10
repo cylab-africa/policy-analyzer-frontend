@@ -4,6 +4,8 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { ReduxProvider } from "@/components/providers/ReduxProvider";
+import { PostHogProvider } from "@/components/providers/PostHogProvider";
+import { PostHogPageView } from "@/components/providers/PostHogPageView";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({
@@ -61,15 +63,18 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
-                <ReduxProvider>
-                    <div className="flex flex-col min-h-screen">
-                        <Toaster position="bottom-right" richColors closeButton />
+                <PostHogProvider>
+                    <PostHogPageView />
+                    <ReduxProvider>
+                        <div className="flex flex-col min-h-screen">
+                            <Toaster position="bottom-right" richColors closeButton />
 
-                        <Header />
-                        <main className="flex-1 w-full">{children}</main>
-                        <Footer />
-                    </div>
-                </ReduxProvider>
+                            <Header />
+                            <main className="flex-1 w-full">{children}</main>
+                            <Footer />
+                        </div>
+                    </ReduxProvider>
+                </PostHogProvider>
             </body>
         </html>
     );

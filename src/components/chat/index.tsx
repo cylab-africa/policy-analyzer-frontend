@@ -221,6 +221,7 @@ export default function ChatPage() {
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let streamCompleted = false;
+            let buffer = ""; // Buffer for incomplete chunks
 
             while (true) {
                 const { done, value } = await reader.read();
@@ -231,10 +232,15 @@ export default function ChatPage() {
                 }
 
                 const chunk = decoder.decode(value, { stream: true });
-                const lines = chunk.split("\n").filter((line) => line.trim() !== "");
+                buffer += chunk;
+
+                // Process complete lines only
+                const lines = buffer.split("\n");
+                // Keep the last potentially incomplete line in the buffer
+                buffer = lines.pop() || "";
 
                 for (const line of lines) {
-                    if (!line.startsWith("data: ")) continue;
+                    if (!line.trim() || !line.startsWith("data: ")) continue;
 
                     const data = line.slice(6).trim();
 
@@ -242,6 +248,9 @@ export default function ChatPage() {
                         streamCompleted = true;
                         break;
                     }
+
+                    // Skip empty data
+                    if (!data) continue;
 
                     try {
                         // Handle both JSON and Python dict-like responses
@@ -261,20 +270,21 @@ export default function ChatPage() {
 
                         // Handle content streaming - be more flexible with data structure
                         if (parsedData.type === "content" || parsedData.content) {
-                            let contentText = "";
+                            let contentText: string = "";
 
                             // Try different ways to extract content
-                            if (parsedData.content?.content) {
-                                contentText = parsedData.content.content;
-                            } else if (parsedData.content) {
+                            if (parsedData.content?.content !== undefined && parsedData.content?.content !== null) {
+                                contentText = String(parsedData.content.content);
+                            } else if (parsedData.content !== undefined && parsedData.content !== null && typeof parsedData.content === "string") {
                                 contentText = parsedData.content;
-                            } else if (parsedData.text) {
-                                contentText = parsedData.text;
+                            } else if (parsedData.text !== undefined && parsedData.text !== null) {
+                                contentText = String(parsedData.text);
                             } else if (typeof parsedData === "string") {
                                 contentText = parsedData;
                             }
 
-                            if (contentText && contentText.trim()) {
+                            // Ensure contentText is a string and trim it safely
+                            if (typeof contentText === "string" && contentText.trim().length > 0) {
                                 hasReceivedContent = true;
                                 accumulatedResponseRef.current += contentText;
 
@@ -297,22 +307,12 @@ export default function ChatPage() {
                                 prev.map((msg) => (msg.id === newMessageId ? { ...msg, sources: finalSources } : msg))
                             );
                         }
-                    } catch (parseError) {
-                        console.error("Error parsing SSE data:", parseError, "Raw data:", data);
-
-                        // If we can't parse the data, treat it as plain text content
-                        if (data && data.trim() && !data.includes("{") && !data.includes("[DONE]")) {
-                            hasReceivedContent = true;
-                            accumulatedResponseRef.current += data;
-
-                            setMessages((prev) =>
-                                prev.map((msg) =>
-                                    msg.id === newMessageId
-                                        ? { ...msg, bot: accumulatedResponseRef.current, isStreaming: true }
-                                        : msg
-                                )
-                            );
+                    } catch {
+                        // Only log errors for non-empty data that looks like it should be valid JSON
+                        if (data && data.trim() && (data.startsWith("{") || data.startsWith("["))) {
+                            console.warn("Could not parse SSE data chunk (may be incomplete):", data.substring(0, 100));
                         }
+                        // Silently skip unparseable chunks - they're likely incomplete and will be completed in the next chunk
                     }
                 }
 
@@ -426,7 +426,7 @@ export default function ChatPage() {
         <div
             className="bg-white rounded-lg border border-gray-200 overflow-hidden"
             style={{
-                height: "calc(100vh - 280px)", // Account for header (120px) + margins (160px)
+                height: "calc(100vh - 250px)", 
                 minHeight: "600px",
             }}
         >
@@ -458,7 +458,7 @@ export default function ChatPage() {
                     {/* Chat Messages Area */}
                     <div
                         ref={chatBodyRef}
-                        className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-white"
+                        className="flex-1 overflow-y-auto"
                         style={{
                             scrollBehavior: "smooth",
                         }}

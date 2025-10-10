@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-import { Bot, User } from "lucide-react";
+import { Bot, Sparkles, User } from "lucide-react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Message } from ".";
@@ -17,7 +18,7 @@ export function MessageBubble({ message, formatTime }: { message: Message; forma
                 <div className="flex items-start gap-2 max-w-full sm:max-w-3xl">
                     <Card className="bg-blue-50 border-blue-100 py-3 px-4 shadow-none max-w-full">
                         <div className="text-gray-800 text-sm sm:text-base break-words">{message.user}</div>
-                        <div className="text-gray-400 text-xs text-right">{formatTime(message.timestamp)}</div>
+                        {/* <div className="text-gray-400 text-xs text-right">{formatTime(message.timestamp)}</div> */}
                     </Card>
                     <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shrink-0">
                         <User size={16} className="text-white" />
@@ -30,12 +31,12 @@ export function MessageBubble({ message, formatTime }: { message: Message; forma
                 <div className="flex mb-3">
                     <div className="flex items-start gap-2 w-full">
                         <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
-                            <Bot size={16} className="text-white" />
+                            <Sparkles size={16} className="text-white" />
                         </div>
 
                         <Card
                             className={cn(
-                                "p-4 sm:p-6 shadow-none flex-1 min-w-0",
+                                "p-4 sm:p-6 shadow-none border-0 flex-1 min-w-0",
                                 message.error ? "bg-red-50 border-red-200" : "bg-white border-gray-200"
                             )}
                         >
@@ -199,9 +200,9 @@ export function MessageBubble({ message, formatTime }: { message: Message; forma
                                 </div>
                             )}
 
-                            <div className="text-gray-400 text-xs  border-t border-gray-100">
+                            {/* <div className="text-gray-400 text-xs  border-t border-gray-100">
                                 {formatTime(message.timestamp)}
-                            </div>
+                            </div> */}
                         </Card>
                     </div>
                 </div>
