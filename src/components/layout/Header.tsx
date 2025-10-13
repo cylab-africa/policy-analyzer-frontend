@@ -163,7 +163,7 @@ export default function Header() {
                             </Button>
                         </SheetTrigger>
                         <SheetContent className="w-full max-w-sm bg-background/95 backdrop-blur-lg border-l border-border">
-                            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                            <SheetTitle className="sr-only">Main Navigation</SheetTitle>
                             <div className="flex flex-col space-y-2 mt-8">
                                 <Link
                                     href="/"
