@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/components/ui/navigation-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import Image from "next/image";
@@ -163,6 +163,7 @@ export default function Header() {
                             </Button>
                         </SheetTrigger>
                         <SheetContent className="w-full max-w-sm bg-background/95 backdrop-blur-lg border-l border-border">
+                            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                             <div className="flex flex-col space-y-2 mt-8">
                                 <Link
                                     href="/"
