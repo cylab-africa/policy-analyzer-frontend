@@ -32,17 +32,28 @@ export const metadata: Metadata = {
         "secure systems",
         "engineering research",
     ],
-    authors: [{ name: "Upanzi Network", url: "https://www.africa.engineering.cmu.edu/" }],
+    authors: [{ name: "Upanzi Network", url: "https://www.africa.engineering.cmu.edu/research/upanzi/index.html" }],
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+        },
+    },
     openGraph: {
         title: "Policy Analyzer | Upanzi Network",
         description: "Advanced policy analysis for Africa's digital transformation",
-        url: "https://www.africa.engineering.cmu.edu/",
+        url: "https://www.africa.engineering.cmu.edu/research/upanzi/index.html",
         siteName: "Policy Analyzer",
         images: [
             {
-                url: "/images/og-image.jpg",
+                url: "/images/og-image.png",
                 width: 1200,
                 height: 630,
+                alt: "Policy Analyzer by Upanzi Network - Advanced policy analysis for Africa's digital transformation",
             },
         ],
         locale: "en_US",
@@ -52,7 +63,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "Policy Analyzer | Upanzi Network",
         description: "Advanced policy analysis for Africa's digital transformation",
-        images: ["/images/twitter-image.jpg"],
+        images: ["/images/og-image.png"],
     },
 };
 
