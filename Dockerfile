@@ -2,7 +2,9 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --only=production --legacy-peer-deps && npm cache clean --force
+# Install ALL dependencies (including devDependencies like TypeScript)
+# Next.js 16+ requires TypeScript at runtime for next.config.ts
+RUN npm ci --legacy-peer-deps && npm cache clean --force
 
 # --- Builder ---
 FROM node:20-alpine AS builder
@@ -43,16 +45,16 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nextjs -u 1001
 
-# Copy production dependencies
-COPY --from=deps /app/node_modules ./node_modules
+# Copy all dependencies with correct ownership
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 
 # Copy built application with correct ownership
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./
 
-# Copy config files if they exist
-COPY --from=builder /app/next.config.* ./
+# Copy config files with correct ownership
+COPY --from=builder --chown=nextjs:nodejs /app/next.config.* ./
 
 USER nextjs
 
