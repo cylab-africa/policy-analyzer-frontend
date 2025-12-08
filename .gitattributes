@@ -1,0 +1,23 @@
+# Ensure consistent line endings across all platforms
+* text=auto
+
+# Force LF line endings for Docker-related files
+Dockerfile text eol=lf
+docker-compose.yml text eol=lf
+docker-compose.yaml text eol=lf
+*.sh text eol=lf
+
+# Force LF for configuration files
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
