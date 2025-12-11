@@ -22,7 +22,7 @@ export function BatchAnalysisPanel({ isOpen, onClose }: BatchAnalysisPanelProps)
     const toastShownRef = useRef<string | null>(null);
 
     // RTK Query for batch job status polling
-    const { data: jobStatus } = useGetBatchJobStatusQuery(jobId!, {
+    const { data: jobStatus } = useGetBatchJobStatusQuery(jobId, {
         skip: !jobId || !isPollingActive,
         pollingInterval: 5000, // Poll every 5 seconds instead of 3
     });
