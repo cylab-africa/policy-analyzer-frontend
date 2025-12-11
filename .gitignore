@@ -44,3 +44,4 @@ FRONTEND_INTEGRATION_GUIDE.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.claude/

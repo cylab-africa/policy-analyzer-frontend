@@ -416,7 +416,7 @@ const DigitalIDMap: React.FC = () => {
             {/* Enhanced Professional Tooltip */}
             <ReactTooltip
                 id="id-tooltip"
-                className="z-50 opacity-100 !bg-transparent !p-0"
+                className="z-50 opacity-100 !bg-transparent !p-0 !pointer-events-auto"
                 style={{
                     backgroundColor: "transparent",
                     maxWidth: "420px",
@@ -429,11 +429,10 @@ const DigitalIDMap: React.FC = () => {
                 place="top"
                 offset={15}
                 noArrow={true}
-                delayHide={150}
+                delayHide={500}
+                delayShow={100}
                 openOnClick={false}
                 clickable={true}
-                // events={["mouseenter"]}
-                // globalEventOff="click"
             />
         </div>
     );

@@ -85,7 +85,7 @@ export function WelcomeScreen({
                             <div className="flex items-center gap-3">
                                 <div className="flex-shrink-0 w-2 h-2 bg-primary/60 rounded-full transition-colors"></div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-gray-600 group-hover:text-gray-700 leading-relaxed">
+                                    <p className="text-xs lg:text-sm text-gray-600 group-hover:text-gray-700 leading-relaxed">
                                         {question}
                                     </p>
                                 </div>
