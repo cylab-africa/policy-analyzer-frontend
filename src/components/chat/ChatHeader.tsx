@@ -50,7 +50,6 @@ export function ChatHeader({
                 </Tabs>
             </div>
 
-            
         </div>
     );
 }
