@@ -46,7 +46,7 @@ export function BatchAnalysisPanel({ isOpen, onClose }: BatchAnalysisPanelProps)
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0];
         if (selectedFile) {
-            if (!/\.(xlsx|xls)$/.exec(selectedFile.name)) {
+            if (!/\.(xlsx|xls)$/i.test(selectedFile.name)) {
                 toast.error("Please select a valid Excel file (.xlsx or .xls)");
                 return;
             }
@@ -101,7 +101,7 @@ export function BatchAnalysisPanel({ isOpen, onClose }: BatchAnalysisPanelProps)
     const handleDownload = () => {
         const downloadUrl = jobStatus?.pdf_download_url || `${process.env.NEXT_PUBLIC_API_URL}/batch/download/${jobId}`;
         // Open in new tab instead of same window
-        globalThis.open(downloadUrl, "_blank", "noopener,noreferrer");
+        window.open(downloadUrl, "_blank", "noopener,noreferrer");
     };
 
     // Calculate progress percentage safely to avoid NaN
