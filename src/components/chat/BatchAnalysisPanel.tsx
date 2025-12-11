@@ -46,7 +46,7 @@ export function BatchAnalysisPanel({ isOpen, onClose }: BatchAnalysisPanelProps)
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0];
         if (selectedFile) {
-            if (!/\.(xlsx|xls)$/.exec(selectedFile.name)) {
+            if (!/\.(xlsx|xls)$/i.test(selectedFile.name)) {
                 toast.error("Please select a valid Excel file (.xlsx or .xls)");
                 return;
             }
