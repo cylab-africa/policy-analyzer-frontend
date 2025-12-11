@@ -79,10 +79,20 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
             }
         } catch (err) {
             console.error("Upload failed:", err);
-            const errorMessage =
-                err instanceof Error
-                    ? err.message
-                    : (err as { data?: { detail?: string } })?.data?.detail || "Failed to upload documents";
+            let errorMessage = "Failed to upload documents";
+            if (err instanceof Error) {
+                errorMessage = err.message;
+            } else if (
+                err &&
+                typeof err === "object" &&
+                "data" in err &&
+                err.data &&
+                typeof err.data === "object" &&
+                "detail" in err.data &&
+                typeof err.data.detail === "string"
+            ) {
+                errorMessage = err.data.detail;
+            }
             toast.error(errorMessage);
         }
     };
