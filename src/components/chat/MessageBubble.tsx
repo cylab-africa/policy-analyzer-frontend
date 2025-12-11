@@ -4,20 +4,53 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-import { Bot, User } from "lucide-react";
+import { Bot, User, Copy, Check } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Message } from ".";
 
-export function MessageBubble({ message, formatTime }: { message: Message; formatTime: (date: Date) => string }) {
+interface MessageBubbleProps {
+    message: Message;
+    formatTime?: (date: Date) => string;
+}
+
+export function MessageBubble({ message }: Readonly<MessageBubbleProps>) {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopyUserMessage = async () => {
+        try {
+            await navigator.clipboard.writeText(message.user);
+            setCopied(true);
+            toast.success("Message copied to clipboard");
+            setTimeout(() => setCopied(false), 2000);
+        } catch {
+            toast.error("Failed to copy message");
+        }
+    };
+
     return (
         <div id={`message-${message.id}`} className="mb-6 px-2 sm:px-4">
             {/* User Message */}
             <div className="flex justify-end mb-3">
                 <div className="flex items-start gap-2 max-w-full sm:max-w-3xl">
-                    <Card className="bg-blue-50 border-blue-100 py-3 px-4 shadow-none max-w-full">
-                        <div className="text-gray-800 text-sm sm:text-base break-words">{message.user}</div>
-                        <div className="text-gray-400 text-xs text-right">{formatTime(message.timestamp)}</div>
+                    <Card className="bg-blue-50 border-blue-100 py-3 px-4 shadow-none max-w-full relative group">
+                        <div className="text-gray-800 text-sm sm:text-base break-words pr-8">{message.user}</div>
+                        {/* Copy Button */}
+                        <button
+                            onClick={handleCopyUserMessage}
+                            className="absolute top-3 right-3 p-1.5 rounded-md hover:bg-blue-100 transition-colors opacity-0 group-hover:opacity-100"
+                            aria-label="Copy message"
+                            title="Copy message"
+                        >
+                            {copied ? (
+                                <Check size={14} className="text-green-600" />
+                            ) : (
+                                <Copy size={14} className="text-gray-600" />
+                            )}
+                        </button>
+                        {/* <div className="text-gray-400 text-xs text-right">{formatTime(message.timestamp)}</div> */}
                     </Card>
                     <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shrink-0">
                         <User size={16} className="text-white" />
@@ -199,9 +232,9 @@ export function MessageBubble({ message, formatTime }: { message: Message; forma
                                 </div>
                             )}
 
-                            <div className="text-gray-400 text-xs  border-t border-gray-100">
+                            {/* <div className="text-gray-400 text-xs  border-t border-gray-100">
                                 {formatTime(message.timestamp)}
-                            </div>
+                            </div> */}
                         </Card>
                     </div>
                 </div>

@@ -85,7 +85,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
                 </div>
 
-                <div className="max-w-7xl container mx-auto px-6 relative z-10">
+                <div className="max-w-8xl container mx-auto px-6 relative z-10">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
                         {/* Left side - Hero content */}
                         <div className="space-y-6">

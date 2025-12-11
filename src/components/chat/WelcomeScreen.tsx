@@ -1,17 +1,21 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Upload, FileSpreadsheet } from "lucide-react";
 import { ChatTab } from ".";
 
 export function WelcomeScreen({
     activeTab,
     setInput,
     suggestedQuestions,
+    onUploadClick,
+    onBatchClick,
 }: {
     activeTab: ChatTab;
     setInput: (input: string) => void;
     suggestedQuestions: Record<ChatTab, string[]>;
+    onUploadClick?: () => void;
+    onBatchClick?: () => void;
 }) {
     return (
         <div className="h-full flex flex-col items-center justify-center text-center p-4 sm:p-6 max-w-4xl mx-auto">
@@ -29,10 +33,43 @@ export function WelcomeScreen({
                 </p>
             </div>
 
+            {/* Action Cards */}
+            <div className="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+                <button
+                    onClick={onUploadClick}
+                    className="group flex items-start gap-4 p-5 bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/15 border border-primary/20 hover:border-primary/30 rounded-2xl text-left transition-all duration-300"
+                >
+                    <div className="p-3 bg-white rounded-xl shadow-sm group-hover:shadow-md transition-shadow">
+                        <Upload className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <h3 className="text-base font-semibold text-slate-800 mb-1">Upload Documents</h3>
+                        <p className="text-sm text-slate-500 leading-relaxed">
+                            Add your own documents to enhance the knowledge base
+                        </p>
+                    </div>
+                </button>
+
+                <button
+                    onClick={onBatchClick}
+                    className="group flex items-start gap-4 p-5 bg-gradient-to-br from-green-50 to-emerald-50 hover:from-green-100/80 hover:to-emerald-100/80 border border-green-200 hover:border-green-300 rounded-2xl text-left transition-all duration-300"
+                >
+                    <div className="p-3 bg-white rounded-xl shadow-sm group-hover:shadow-md transition-shadow">
+                        <FileSpreadsheet className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <h3 className="text-base font-semibold text-slate-800 mb-1">Batch Analysis</h3>
+                        <p className="text-sm text-slate-500 leading-relaxed">
+                            Process multiple queries from an Excel file
+                        </p>
+                    </div>
+                </button>
+            </div>
+
             {/* Enhanced suggestion tags */}
-            <div className="w-full max-w-3xl mt-10">
+            <div className="w-full max-w-3xl">
                 <div className="flex items-center gap-2 mb-4">
-                    <span className="text-sm font-medium text-gray-700">Try asking about:</span>
+                    <span className="text-sm font-medium text-gray-700">Or try asking:</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">

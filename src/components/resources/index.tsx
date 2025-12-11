@@ -60,7 +60,6 @@ export interface Resource {
     linkType?: string;
 }
 
-
 export default function ResourcesPage() {
     const [activeTab, setActiveTab] = useState<ResourceType>(ResourceType.DATA_PROTECTION);
     const [selectedRegion, setSelectedRegion] = useState<string>("all");
@@ -255,10 +254,10 @@ export default function ResourcesPage() {
             filtered = filtered.filter(
                 (resource) =>
                     // resource.title.toLowerCase().includes(query) ||
-                    resource.countryName.toLowerCase().includes(query) 
-                    // resource.description.toLowerCase().includes(query) ||
-                    // resource.authority?.toLowerCase().includes(query) ||
-                    // resource.features?.some((f) => f.toLowerCase().includes(query))
+                    resource.countryName.toLowerCase().includes(query)
+                // resource.description.toLowerCase().includes(query) ||
+                // resource.authority?.toLowerCase().includes(query) ||
+                // resource.features?.some((f) => f.toLowerCase().includes(query))
             );
         }
 
@@ -319,7 +318,7 @@ export default function ResourcesPage() {
 
     return (
         <div className="w-full bg-gray-50 min-h-screen">
-            <div className="max-w-7xl mx-auto container px-6 pt-5 pb-16">
+            <div className="max-w-8xl container mx-auto container px-6 pt-5 pb-16">
                 {/* Error Alert */}
                 {hasError && (
                     <div className="mb-6">

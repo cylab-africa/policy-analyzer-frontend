@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { ChevronLeft, History, Menu } from "lucide-react";
+import { ChevronLeft, Menu } from "lucide-react";
 import { ChatTab } from ".";
 
 export function ChatHeader({
@@ -11,53 +11,47 @@ export function ChatHeader({
     handleTabChange,
     showChatHistory,
     setShowChatHistory,
-    isMobile,
 }: {
-    activeTab: ChatTab;
-    handleTabChange: (tab: ChatTab) => void;
-    showChatHistory: boolean;
-    setShowChatHistory: (show: boolean) => void;
-    isMobile: boolean;
+    readonly activeTab: ChatTab;
+    readonly handleTabChange: (tab: ChatTab) => void;
+    readonly showChatHistory: boolean;
+    readonly setShowChatHistory: (show: boolean) => void;
 }) {
     return (
-        <div className="bg-white border-b border-gray-200 p-3 lg:p-4 flex items-center gap-3 shrink-0">
-            {/* Mobile menu button */}
-            <Button
-                variant="outline"
-                size="sm"
-                className="lg:hidden flex items-center gap-1"
-                onClick={() => setShowChatHistory(!showChatHistory)}
-            >
-                {showChatHistory ? <ChevronLeft size={16} /> : <Menu size={16} />}
-                <span className="sr-only">Toggle menu</span>
-            </Button>
-
-            {/* Tabs */}
-            <Tabs value={activeTab} className="flex-1" onValueChange={(value) => handleTabChange(value as ChatTab)}>
-                <TabsList className="grid w-full max-w-md grid-cols-2 h-9">
-                    <TabsTrigger className="cursor-pointer text-xs sm:text-sm px-2" value={ChatTab.DATA_PROTECTION}>
-                        <span className="hidden sm:inline">Data Protection</span>
-                        <span className="sm:hidden">Data</span>
-                    </TabsTrigger>
-                    <TabsTrigger className="cursor-pointer text-xs sm:text-sm px-2" value={ChatTab.DIGITAL_ID}>
-                        <span className="hidden sm:inline">Digital ID</span>
-                        <span className="sm:hidden">ID</span>
-                    </TabsTrigger>
-                </TabsList>
-            </Tabs>
-
-            {/* Desktop history toggle */}
-            {!isMobile && (
+        <div className="bg-white/80 backdrop-blur-md border-b border-gray-200/60 p-3 lg:px-6 lg:py-3 flex items-center justify-between shrink-0 z-10">
+            <div className="flex items-center gap-3">
+                {/* Sidebar Toggle */}
                 <Button
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
-                    className="hidden lg:flex items-center gap-1"
+                    className="text-slate-500 hover:text-slate-900 hover:bg-slate-100"
                     onClick={() => setShowChatHistory(!showChatHistory)}
+                    title={showChatHistory ? "Close Sidebar" : "Open Sidebar"}
                 >
-                    <History size={14} />
-                    {showChatHistory ? "Hide History" : "Show History"}
+                    {showChatHistory ? <ChevronLeft size={18} /> : <Menu size={18} />}
                 </Button>
-            )}
+
+                {/* Context Switcher (Tabs) */}
+                <Tabs value={activeTab} onValueChange={(value) => handleTabChange(value as ChatTab)}>
+                    <TabsList className="bg-gradient-to-r from-slate-50 to-slate-100/90 p-1 h-10 border border-slate-200 rounded-lg shadow-none">
+                        <TabsTrigger
+                            className="text-xs cursor-pointer font-semibold px-5 py-2 rounded-md data-[state=active]:bg-white data-[state=active]:text-emerald-600 data-[state=active]:shadow-md data-[state=inactive]:text-slate-600 data-[state=inactive]:hover:text-slate-900 data-[state=inactive]:hover:bg-slate-50/50 transition-all duration-200"
+                            value={ChatTab.DATA_PROTECTION}
+                        >
+                            Data Protection
+                        </TabsTrigger>
+                        <TabsTrigger
+                            className="text-xs cursor-pointer font-semibold px-5 py-2 rounded-md data-[state=active]:bg-white data-[state=active]:text-emerald-600 data-[state=active]:shadow-md data-[state=inactive]:text-slate-600 data-[state=inactive]:hover:text-slate-900 data-[state=inactive]:hover:bg-slate-50/50 transition-all duration-200"
+                            value={ChatTab.DIGITAL_ID}
+                        >
+                            Digital ID
+                        </TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
+
+            {/* Right Actions (Minimal) */}
+            
         </div>
     );
 }

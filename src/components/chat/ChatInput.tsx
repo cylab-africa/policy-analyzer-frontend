@@ -1,10 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useEffect, useRef, useState } from "react";
 
-import { Fingerprint, Loader2, Send, Shield } from "lucide-react";
+import { FileSpreadsheet, Heart, Loader2, Plus, Send, Upload } from "lucide-react";
 import { ChatTab } from ".";
 import { Input } from "../ui/input";
+
+const FEEDBACK_URL = "https://form.typeform.com/to/D7we4T7R";
 
 export function ChatInput({
     input,
@@ -12,122 +15,152 @@ export function ChatInput({
     handleSend,
     isStreaming,
     activeTab,
-}: {
+    onUploadClick,
+    onBatchClick,
+}: Readonly<{
     input: string;
     setInput: (input: string) => void;
     handleSend: (e?: React.FormEvent) => void;
     isStreaming: boolean;
     activeTab: ChatTab;
-}) {
+    onUploadClick?: () => void;
+    onBatchClick?: () => void;
+}>) {
+    const [showMenu, setShowMenu] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setShowMenu(false);
+            }
+        };
+
+        if (showMenu) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [showMenu]);
+
+    const handleMenuAction = (action: () => void | undefined) => {
+        setShowMenu(false);
+        action?.();
+    };
+
+    const openFeedback = () => {
+        globalThis.open(FEEDBACK_URL, "_blank", "noopener,noreferrer");
+    };
+
     return (
-        <div className="bg-white/95 backdrop-blur-sm border-t border-slate-200/60 px-4 py-3 shrink-0">
-            <div className="max-w-4xl mx-auto">
+        <div className="sticky bottom-0 bg-slate-100/40 backdrop-blur-sm border-t border-slate-200/60 px-4 py-2.5 shrink-0 z-20">
+            <div className="max-w-3xl mx-auto">
                 <form onSubmit={handleSend} className="relative">
                     {/* Main Input Container */}
-                    <div className="relative bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-xs transition-all duration-200 focus-within:shadow-lg focus-within:border-primary/30">
-                        <div className="flex items-center gap-1 px-4 py-2">
-                            {/* Tab Icon */}
-                            <div className="flex-shrink-0">
-                                <div className="w-8 h-8 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-200/60">
-                                    {activeTab === ChatTab.DATA_PROTECTION ? (
-                                        <Shield className="w-5 h-5 text-slate-600" />
-                                    ) : (
-                                        <Fingerprint className="w-5 h-5 text-slate-600" />
-                                    )}
-                                </div>
-                            </div>
+                    <div className="relative bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 focus-within:shadow-lg focus-within:border-primary/30 p-1.5 flex items-center gap-1.5">
+                        {/* Plus Button with Dropdown */}
+                        <div className="relative" ref={menuRef}>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className={`h-8 w-8 rounded-lg transition-all duration-200 shrink-0 ${
+                                    showMenu
+                                        ? "bg-primary/10 text-primary"
+                                        : "text-slate-500 hover:text-slate-600 hover:bg-slate-100"
+                                }`}
+                                onClick={() => setShowMenu(!showMenu)}
+                                title="More options"
+                            >
+                                <Plus
+                                    size={20}
+                                    className={`transition-transform duration-200 ${showMenu ? "rotate-45" : ""}`}
+                                />
+                            </Button>
 
-                            {/* Input Field */}
+                            {/* Dropdown Menu */}
+                            {showMenu && (
+                                <div className="absolute bottom-full left-0 mb-2 w-56 bg-white rounded-xl shadow-lg border border-slate-200 py-1.5 animate-in fade-in slide-in-from-bottom-2 duration-200 z-50">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleMenuAction(onUploadClick!)}
+                                        className="w-full flex cursor-pointer items-center gap-3 px-4 py-2.5 text-left hover:bg-slate-50 transition-colors"
+                                    >
+                                        <div className="p-1.5 bg-primary/10 rounded-lg">
+                                            <Upload size={16} className="text-primary" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-medium text-slate-700">Upload Documents</p>
+                                            <p className="text-xs text-slate-400">Add files to knowledge base</p>
+                                        </div>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleMenuAction(onBatchClick!)}
+                                        className="w-full flex cursor-pointer items-center gap-3 px-4 py-2.5 text-left hover:bg-slate-50 transition-colors"
+                                    >
+                                        <div className="p-1.5 bg-green-100 rounded-lg">
+                                            <FileSpreadsheet size={16} className="text-green-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-medium text-slate-700">Batch Analysis</p>
+                                            <p className="text-xs text-slate-400">Process multiple queries</p>
+                                        </div>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Input Field */}
+                        <div className="flex-1 min-w-0">
                             <Input
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder={
                                     activeTab === ChatTab.DATA_PROTECTION
-                                        ? "Ask about data protection policies, legislation status..."
-                                        : "Ask about digital ID systems, implementation progress..."
+                                        ? "Ask about data protection policies..."
+                                        : "Ask about digital ID systems..."
                                 }
-                                className="flex-1 w-full border-1 bg-transparent text-base placeholder:text-slate-400 outline-none ring-0 focus:ring-0 focus:outline-none px-0 py-1 pl-1"
+                                className="w-full border-1 rounded-full bg-transparent text-sm placeholder:text-slate-400 outline-none ring-0 focus:ring-0 focus:outline-none px-2 py-0 h-auto shadow-none"
                                 disabled={isStreaming}
                                 style={{ border: "none", outline: "none", boxShadow: "none" }}
                             />
-
-                            {/* Send Button */}
-                            <div className="flex-shrink-0">
-                                <Button
-                                    type="submit"
-                                    disabled={!input.trim() || isStreaming}
-                                    className="w-10 h-10 cursor-pointer rounded-xl bg-primary hover:bg-primary/90 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md disabled:shadow-none p-0"
-                                >
-                                    {isStreaming ? (
-                                        <Loader2 size={18} className="animate-spin text-white" />
-                                    ) : (
-                                        <Send size={18} className="text-white" />
-                                    )}
-                                </Button>
-                            </div>
                         </div>
 
-                        {/* Input Enhancement Line */}
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-slate-200 to-transparent opacity-0 transition-opacity duration-200 group-focus-within:opacity-100"></div>
+                        {/* Send Button */}
+                        <Button
+                            type="submit"
+                            disabled={!input.trim() || isStreaming}
+                            className="h-8 w-8 rounded-lg bg-primary hover:bg-primary/90 disabled:bg-slate-100 disabled:text-slate-300 transition-all duration-200 shadow-sm p-0 shrink-0"
+                        >
+                            {isStreaming ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                        </Button>
                     </div>
 
-                    {/* Context Indicators */}
-                    <div className="mt-4">
-                        {/* Enhanced Context Bar */}
-                        <div className="flex items-end justify-between px-4 py-1 bg-gradient-to-r rounded-2x">
-                            {/* Left Side - Feedback Link */}
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    asChild
-                                    className="text-xs text-primary hover:text-primary/80 h-8 px-3 rounded-full flex items-center gap-1.5 
-        border-primary/40 hover:border-primary/60 hover:bg-transparent transition-all duration-300 relative overflow-hidden
-        shadow-[0_0_4px_rgba(var(--primary),0.2)] 
-        hover:shadow-[0_0_12px_rgba(var(--primary),0.4),0_0_24px_rgba(var(--primary),0.2)]
-        animate-[glow_3s_ease-in-out_infinite]
-        before:absolute before:inset-0 before:rounded-full 
-        before:bg-gradient-to-r before:from-transparent before:via-primary/15 before:to-transparent
-        before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-1000 before:ease-out"
-                                >
-                                    <a
-                                        href="https://form.typeform.com/to/D7we4T7R"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-1.5 relative z-10"
-                                    >
-                                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                                        </svg>
-                                        Give Feedback
-                                    </a>
-                                </Button>
-                            </div>
-
-                            {/* Right Side - AI Disclaimer */}
-                            <div className="flex items-center gap-2">
-                                <span className="text-xs font-medium text-gray-500">
-                                    AI can make mistakes. please double-check it.
+                    {/* Footer: Context Indicators + Feedback */}
+                    <div className="flex items-center justify-between text-[11px] text-slate-400">
+                        <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-1.5">
+                                <span className="font-medium">
+                                    {activeTab === ChatTab.DATA_PROTECTION ? "Data Protection Mode" : "Digital ID Mode"}
                                 </span>
                             </div>
+                            <span className="hidden sm:inline">•</span>
+                            <span className="hidden sm:inline">AI can make mistakes. Check important info.</span>
                         </div>
+
+                        {/* Feedback Button */}
+                        <Button
+                            variant={"ghost"}
+                            onClick={openFeedback}
+                            className="flex items-center gap-1 text-primary hover:text-primary transition-colors group"
+                        >
+                            <Heart size={14} className="group-hover:scale-110 transition-transform" />
+                            <span className="font-medium">Feedback</span>
+                        </Button>
                     </div>
                 </form>
-
-                {/* Enhanced Status Bar */}
-                {isStreaming && (
-                    <div className="mt-4 flex items-center justify-center">
-                        <div className="flex items-center gap-3 bg-slate-50 rounded-full px-4 py-2 border border-slate-200">
-                            <div className="flex gap-1">
-                                <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                                <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                                <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                            </div>
-                            <span className="text-sm font-medium text-slate-600">Analyzing...</span>
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );

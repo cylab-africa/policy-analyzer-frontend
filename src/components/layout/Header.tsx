@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/components/ui/navigation-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import Image from "next/image";
@@ -42,7 +42,7 @@ export default function Header() {
                     isScrolled ? "bg-white/95 backdrop-blur-lg shadow-sm" : "bg-primary"
                 )}
             >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+                <div className="max-w-8xl container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
                     <div>
                         <Link
                             href="/"
@@ -163,6 +163,7 @@ export default function Header() {
                             </Button>
                         </SheetTrigger>
                         <SheetContent className="w-full max-w-sm bg-background/95 backdrop-blur-lg border-l border-border">
+                            <SheetTitle className="sr-only">Main Navigation</SheetTitle>
                             <div className="flex flex-col space-y-2 mt-8">
                                 <Link
                                     href="/"
