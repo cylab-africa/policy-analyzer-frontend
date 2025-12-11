@@ -101,7 +101,7 @@ export function BatchAnalysisPanel({ isOpen, onClose }: BatchAnalysisPanelProps)
     const handleDownload = () => {
         const downloadUrl = jobStatus?.pdf_download_url || `${process.env.NEXT_PUBLIC_API_URL}/batch/download/${jobId}`;
         // Open in new tab instead of same window
-        globalThis.open(downloadUrl, "_blank", "noopener,noreferrer");
+        window.open(downloadUrl, "_blank", "noopener,noreferrer");
     };
 
     // Calculate progress percentage safely to avoid NaN
