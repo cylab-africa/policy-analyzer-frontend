@@ -318,17 +318,17 @@ export default function ResourcesPage() {
 
     return (
         <div className="w-full bg-gray-50 min-h-screen">
-            <div className="max-w-8xl mx-auto container px-6 pt-5 pb-16">
+            <div className="max-w-8xl container mx-auto px-6 pt-5 pb-16">
                 {/* Error Alert */}
                 {hasError && (
                     <div className="mb-6">
                         <Alert variant="destructive">
                             <AlertTriangle className="h-4 w-4" />
                             <AlertDescription className="flex items-center justify-between">
-                                <span>Failed to load resources. Please try again.</span>
+                                <span>Failed to load resources. Please check your connection and try again.</span>
                                 <Button variant="outline" size="sm" onClick={handleRetry} className="cursor-pointer">
                                     <RefreshCw className="h-3 w-3 mr-1" />
-                                    Refresh
+                                    Retry
                                 </Button>
                             </AlertDescription>
                         </Alert>
@@ -337,203 +337,75 @@ export default function ResourcesPage() {
 
                 {/* Tabs and Filters */}
                 <div className="mb-10">
-                    <div className="bg-white rounded-lg shadow-md p-4">
-                        {/* Mobile View (< lg) - Stacked Layout */}
-                        <div className="lg:hidden space-y-4">
-                            {/* Resource Type Selector - Select on mobile, Tabs on tablet */}
-                            <div className="w-full">
-                                {/* Mobile View (< 768px) - Select Dropdown */}
-                                <div className="md:hidden">
-                                    <Select value={activeTab} onValueChange={(value) => setActiveTab(value as ResourceType)}>
-                                        <SelectTrigger className="h-12 border-gray-200 w-full">
-                                            <SelectValue>
-                                                <div className="flex items-center gap-2">
-                                                    {activeTab === ResourceType.DATA_PROTECTION ? (
-                                                        <>
-                                                            <Shield className="h-4 w-4" />
-                                                            <span>Data Protection</span>
-                                                            <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full ml-auto">
-                                                                {resourceCounts[ResourceType.DATA_PROTECTION]}
-                                                            </span>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <Fingerprint className="h-4 w-4" />
-                                                            <span>Digital ID</span>
-                                                            <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full ml-auto">
-                                                                {resourceCounts[ResourceType.DIGITAL_ID]}
-                                                            </span>
-                                                        </>
-                                                    )}
-                                                </div>
-                                            </SelectValue>
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value={ResourceType.DATA_PROTECTION}>
-                                                <div className="flex items-center gap-2 w-full">
-                                                    <Shield className="h-4 w-4" />
-                                                    <span>Data Protection</span>
-                                                    <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full ml-2">
-                                                        {resourceCounts[ResourceType.DATA_PROTECTION]}
-                                                    </span>
-                                                </div>
-                                            </SelectItem>
-                                            <SelectItem value={ResourceType.DIGITAL_ID}>
-                                                <div className="flex items-center gap-2 w-full">
-                                                    <Fingerprint className="h-4 w-4" />
-                                                    <span>Digital ID</span>
-                                                    <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full ml-2">
-                                                        {resourceCounts[ResourceType.DIGITAL_ID]}
-                                                    </span>
-                                                </div>
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {/* Tablet View (>= 768px and < lg) - Tabs */}
-                                <div className="hidden md:block">
-                                    <Tabs
-                                        value={activeTab}
-                                        onValueChange={(value) => setActiveTab(value as ResourceType)}
-                                        className="w-full"
+                    <div className="bg-white rounded-lg shadow-md p-4 flex flex-col md:flex-row gap-4 items-stretch">
+                        {/* Tabs */}
+                        <div className="flex-1 min-w-0">
+                            <Tabs
+                                value={activeTab}
+                                onValueChange={(value) => setActiveTab(value as ResourceType)}
+                                className="w-full"
+                            >
+                                <TabsList className="grid grid-cols-2 h-12">
+                                    <TabsTrigger
+                                        value={ResourceType.DATA_PROTECTION}
+                                        className="flex items-center cursor-pointer justify-center gap-2 data-[state=active]:shadow-sm"
                                     >
-                                        <TabsList className="grid grid-cols-2 h-12 w-full max-w-2xl">
-                                            <TabsTrigger
-                                                value={ResourceType.DATA_PROTECTION}
-                                                className="flex items-center cursor-pointer justify-center gap-2 data-[state=active]:shadow-sm"
-                                            >
-                                                <Shield className="h-4 w-4" />
-                                                <span>Data Protection</span>
-                                                <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full">
-                                                    {resourceCounts[ResourceType.DATA_PROTECTION]}
-                                                </span>
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value={ResourceType.DIGITAL_ID}
-                                                className="flex items-center cursor-pointer justify-center gap-2 data-[state=active]:shadow-sm"
-                                            >
-                                                <Fingerprint className="h-4 w-4" />
-                                                <span>Digital ID</span>
-                                                <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full">
-                                                    {resourceCounts[ResourceType.DIGITAL_ID]}
-                                                </span>
-                                            </TabsTrigger>
-                                        </TabsList>
-                                    </Tabs>
-                                </div>
-                            </div>
-
-                            {/* Search and Region Filter */}
-                            <div className="flex flex-col sm:flex-row gap-3">
-                                <div className="relative flex-1">
-                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                                    <Input
-                                        type="text"
-                                        placeholder="Search by country..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="pl-9 pr-9 h-10 border-gray-200 w-full"
-                                    />
-                                    {searchQuery && (
-                                        <Button
-                                            variant="ghost"
-                                            onClick={() => setSearchQuery("")}
-                                            className="cursor-pointer absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-red-500 hover:text-red-600 transition-colors"
-                                        >
-                                            <X className="h-4 w-4" />
-                                        </Button>
-                                    )}
-                                </div>
-                                <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-                                    <SelectTrigger className="h-12 border-gray-200 w-full sm:w-[150px]">
-                                        <SelectValue placeholder="Filter by Region" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Regions</SelectItem>
-                                        {regions
-                                            .filter((r) => r !== "all")
-                                            .map((region, index) => (
-                                                <SelectItem key={index} value={region}>
-                                                    {region}
-                                                </SelectItem>
-                                            ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                                        <Shield className="h-4 w-4" />
+                                        <span>Data Protection</span>
+                                        <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full">
+                                            {resourceCounts[ResourceType.DATA_PROTECTION]}
+                                        </span>
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        value={ResourceType.DIGITAL_ID}
+                                        className="flex items-center cursor-pointer justify-center gap-2 data-[state=active]:shadow-sm"
+                                    >
+                                        <Fingerprint className="h-4 w-4" />
+                                        <span>Digital ID</span>
+                                        <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full">
+                                            {resourceCounts[ResourceType.DIGITAL_ID]}
+                                        </span>
+                                    </TabsTrigger>
+                                </TabsList>
+                            </Tabs>
                         </div>
 
-                        {/* Desktop View (>= lg) - Tabs and Filters on Same Row */}
-                        <div className="hidden lg:flex items-center justify-between gap-4">
-                            {/* Tabs - Left Side */}
-                            <div className="flex-shrink-0">
-                                <Tabs
-                                    value={activeTab}
-                                    onValueChange={(value) => setActiveTab(value as ResourceType)}
-                                    className="w-auto"
-                                >
-                                    <TabsList className="grid grid-cols-2 h-12 w-auto">
-                                        <TabsTrigger
-                                            value={ResourceType.DATA_PROTECTION}
-                                            className="flex items-center cursor-pointer justify-center gap-2 data-[state=active]:shadow-sm px-6"
-                                        >
-                                            <Shield className="h-4 w-4" />
-                                            <span>Data Protection</span>
-                                            <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full">
-                                                {resourceCounts[ResourceType.DATA_PROTECTION]}
-                                            </span>
-                                        </TabsTrigger>
-                                        <TabsTrigger
-                                            value={ResourceType.DIGITAL_ID}
-                                            className="flex items-center cursor-pointer justify-center gap-2 data-[state=active]:shadow-sm px-6"
-                                        >
-                                            <Fingerprint className="h-4 w-4" />
-                                            <span>Digital ID</span>
-                                            <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full">
-                                                {resourceCounts[ResourceType.DIGITAL_ID]}
-                                            </span>
-                                        </TabsTrigger>
-                                    </TabsList>
-                                </Tabs>
+                        {/* Search and Filter */}
+                        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                            <div className="relative flex-1 min-w-[200px]">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                                <Input
+                                    type="text"
+                                    placeholder="Search by country..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="pl-9 pr-9 h-11 border-gray-200 min-w-[350px]"
+                                />
+                                {searchQuery && (
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => setSearchQuery("")}
+                                        className="cursor-pointer absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-red-500 hover:text-red-600 transition-colors"
+                                    >
+                                        <X className="h-4 w-4" />
+                                    </Button>
+                                )}
                             </div>
-
-                            {/* Search and Region Filter - Right Side */}
-                            <div className="flex items-center gap-3">
-                                <div className="relative w-[350px]">
-                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                                    <Input
-                                        type="text"
-                                        placeholder="Search by country..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="pl-9 pr-9 h-10 border-gray-200 w-full"
-                                    />
-                                    {searchQuery && (
-                                        <Button
-                                            variant="ghost"
-                                            onClick={() => setSearchQuery("")}
-                                            className="cursor-pointer absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-red-500 hover:text-red-600 transition-colors"
-                                        >
-                                            <X className="h-4 w-4" />
-                                        </Button>
-                                    )}
-                                </div>
-                                <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-                                    <SelectTrigger className="h-12 border-gray-200 w-[120px]">
-                                        <SelectValue placeholder="Filter by Region" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Regions</SelectItem>
-                                        {regions
-                                            .filter((r) => r !== "all")
-                                            .map((region, index) => (
-                                                <SelectItem key={index} value={region}>
-                                                    {region}
-                                                </SelectItem>
-                                            ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                            <Select value={selectedRegion} onValueChange={setSelectedRegion}>
+                                <SelectTrigger className="h-12 border-gray-200 min-w-[180px]">
+                                    <SelectValue placeholder="Filter by Region" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Regions</SelectItem>
+                                    {regions
+                                        .filter((r) => r !== "all")
+                                        .map((region, index) => (
+                                            <SelectItem key={index} value={region}>
+                                                {region}
+                                            </SelectItem>
+                                        ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                 </div>
@@ -576,7 +448,7 @@ export default function ResourcesPage() {
                                             region
                                         )}
                                     </h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {groupedResources[region].map((resource, resourceIndex) => (
                                             <ResourceCard key={resourceIndex} resource={resource} />
                                         ))}

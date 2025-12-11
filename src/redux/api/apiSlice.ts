@@ -1,73 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type {
+    BatchQueryJob,
+    DigitalId,
+    DigitalIdFile,
+    DocumentProcessingRequest,
+    DocumentProcessingStatus,
+    PolicyLaw,
+    PolicyLawFile,
+    QueryRequest
+} from "@/types/api";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Updated types based on your actual API data structures
-export interface PolicyLaw {
-    country: string;
-    yearLegislationEnacted: string;
-    malaboConventionStatus: string;
-    dataProtectionLegislationStatus: string;
-    isoAlpha2: string;
-    flagEmoji: string;
-    links: {
-        title: string;
-        url: string;
-        type: string;
-    }[];
-}
-
-export interface DigitalId {
-    country: string;
-    status: string;
-    isoAlpha2: string;
-    flagEmoji: string;
-    authority: string;
-    description: string;
-    features: string[];
-    year_launched: string;
-    coverage: string;
-    links: {
-        title: string;
-        url: string;
-        type: string;
-    }[];
-}
-
-export interface PolicyLawFile {
-    country: string;
-    isoAlpha2: string;
-    link: string;
-}
-
-export interface DigitalIdFile {
-    country: string;
-    isoAlpha2: string;
-    link: string;
-}
-
-export interface DocumentProcessingRequest {
-    documents: {
-        link: string;
-        document_type: "pdf";
-    }[];
-    tab: "data-protection" | "digital-id";
-}
-
-export interface QueryStreamRequest {
-    query: string;
-    tab: string;
-    session_id: string;
-    enable_web_search?: boolean;
-    search_tool?: "tavily";
-}
-
-export interface ValidationError {
-    detail: {
-        loc: (string | number)[];
-        msg: string;
-        type: string;
-    }[];
-}
+// Re-export types for convenience
+export type {
+    BatchQueryJob,
+    CacheStats,
+    DigitalId,
+    DigitalIdFile,
+    DocumentProcessingRequest,
+    DocumentProcessingStatus,
+    HealthStatus,
+    LLMMetrics,
+    PolicyLaw,
+    PolicyLawFile,
+    QueryRequest,
+    TabConfig,
+    ValidationError
+} from "@/types/api";
 
 // API endpoints configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -76,8 +35,12 @@ export const apiSlice = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({
         baseUrl: API_BASE_URL,
-        prepareHeaders: (headers) => {
-            headers.set("Content-Type", "application/json");
+        prepareHeaders: (headers, { endpoint }) => {
+            // Don't set Content-Type for FormData uploads - browser will set it automatically with boundary
+            const formDataEndpoints = ["uploadBatchQueries", "uploadDocuments"];
+            if (!formDataEndpoints.includes(endpoint)) {
+                headers.set("Content-Type", "application/json");
+            }
             const apiKey = process.env.NEXT_PUBLIC_API_KEY || "HpOfOIDyNljM7LlC5QYxKGXSjn0ZRhidTUYW6bgh";
             if (apiKey) {
                 headers.set("X-API-Key", apiKey);
@@ -85,7 +48,17 @@ export const apiSlice = createApi({
             return headers;
         },
     }),
-    tagTypes: ["PolicyLaw", "DigitalId", "PolicyLawFile", "DigitalIdFile", "Task", "Session"],
+    tagTypes: [
+        "PolicyLaw",
+        "DigitalId",
+        "PolicyLawFile",
+        "DigitalIdFile",
+        "Task",
+        "Session",
+        "BatchJob",
+        "Document",
+        "Admin",
+    ],
     endpoints: (builder) => ({
         // Policy Laws endpoints
         getPolicyLaws: builder.query<PolicyLaw[], { page?: number; limit?: number }>({
@@ -234,18 +207,53 @@ export const apiSlice = createApi({
             providesTags: (result, error, sessionId) => [{ type: "Session", id: sessionId }],
         }),
 
-        queryStream: builder.mutation<string, QueryStreamRequest>({
+        // Updated to v3.1 API endpoint
+        queryStream: builder.mutation<string, QueryRequest>({
             query: (body) => ({
-                url: "/query_stream",
+                url: "/query_v2",
                 method: "POST",
                 body,
             }),
-            invalidatesTags: (result, error, { session_id }) => [{ type: "Session", id: session_id }],
+            invalidatesTags: (result, error, { session_id }) =>
+                session_id ? [{ type: "Session", id: session_id }] : [],
         }),
 
-        // Root endpoint
-        getRoot: builder.query<string, void>({
-            query: () => "/",
+        // Batch Query endpoints (v3.1 API)
+        uploadBatchQueries: builder.mutation<BatchQueryJob, FormData>({
+            query: (formData) => ({
+                url: "/batch/upload",
+                method: "POST",
+                body: formData,
+            }),
+            invalidatesTags: ["BatchJob"],
+        }),
+
+        getBatchJobStatus: builder.query<BatchQueryJob, string>({
+            query: (jobId) => `/batch/status/${jobId}`,
+            providesTags: (result, error, jobId) => [{ type: "BatchJob", id: jobId }],
+        }),
+
+        getBatchJobs: builder.query<BatchQueryJob[], void>({
+            query: () => "/batch/jobs",
+            providesTags: ["BatchJob"],
+        }),
+
+        deleteBatchJob: builder.mutation<void, string>({
+            query: (jobId) => ({
+                url: `/batch/${jobId}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["BatchJob"],
+        }),
+
+        // Document Upload endpoints (v3.1 API)
+        uploadDocuments: builder.mutation<DocumentProcessingStatus, FormData>({
+            query: (formData) => ({
+                url: "/documents/upload-documents",
+                method: "POST",
+                body: formData,
+            }),
+            invalidatesTags: ["Document"],
         }),
     }),
 });
@@ -279,8 +287,14 @@ export const {
     useGetSessionQuery,
     useQueryStreamMutation,
 
-    // Root hook
-    useGetRootQuery,
+    // Batch Query hooks (v3.1 API)
+    useUploadBatchQueriesMutation,
+    useGetBatchJobStatusQuery,
+    useGetBatchJobsQuery,
+    useDeleteBatchJobMutation,
+
+    // Document Upload hooks (v3.1 API)
+    useUploadDocumentsMutation,
 } = apiSlice;
 
 // Updated custom hook for policy law data
