@@ -1,17 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
     BatchQueryJob,
-    CacheStats,
     DigitalId,
     DigitalIdFile,
     DocumentProcessingRequest,
     DocumentProcessingStatus,
-    HealthStatus,
-    LLMMetrics,
     PolicyLaw,
     PolicyLawFile,
-    QueryRequest,
-    TabConfig,
+    QueryRequest
 } from "@/types/api";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -259,69 +255,6 @@ export const apiSlice = createApi({
             }),
             invalidatesTags: ["Document"],
         }),
-
-        // Admin endpoints (v3.1 API)
-        getSystemHealth: builder.query<HealthStatus, void>({
-            query: () => ({
-                url: "/admin/health",
-                headers: {
-                    "X-Admin-Key": process.env.NEXT_PUBLIC_API_KEY || "MY_API_KEY3",
-                },
-            }),
-            providesTags: ["Admin"],
-        }),
-
-        getCacheStats: builder.query<CacheStats, void>({
-            query: () => ({
-                url: "/admin/query-cache/stats",
-                headers: {
-                    "X-Admin-Key": process.env.NEXT_PUBLIC_API_KEY || "MY_API_KEY3",
-                },
-            }),
-            providesTags: ["Admin"],
-        }),
-
-        clearCache: builder.mutation<void, void>({
-            query: () => ({
-                url: "/admin/query-cache/clear",
-                method: "POST",
-                headers: {
-                    "X-Admin-Key": process.env.NEXT_PUBLIC_API_KEY || "MY_API_KEY3",
-                },
-            }),
-            invalidatesTags: ["Admin"],
-        }),
-
-        getTabs: builder.query<TabConfig[], void>({
-            query: () => ({
-                url: "/admin/tabs",
-                headers: {
-                    "X-Admin-Key": process.env.NEXT_PUBLIC_API_KEY || "MY_API_KEY3",
-                },
-            }),
-            providesTags: ["Admin"],
-        }),
-
-        toggleTab: builder.mutation<void, { tabName: string; enabled: boolean }>({
-            query: ({ tabName, enabled }) => ({
-                url: `/admin/tabs/${tabName}/toggle?enabled=${!enabled}`,
-                method: "PATCH",
-                headers: {
-                    "X-Admin-Key": process.env.NEXT_PUBLIC_API_KEY || "MY_API_KEY3",
-                },
-            }),
-            invalidatesTags: ["Admin"],
-        }),
-
-        getLLMMetrics: builder.query<LLMMetrics, void>({
-            query: () => "/monitoring/metrics",
-            providesTags: ["Admin"],
-        }),
-
-        // Root endpoint
-        getRoot: builder.query<string, void>({
-            query: () => "/",
-        }),
     }),
 });
 
@@ -362,17 +295,6 @@ export const {
 
     // Document Upload hooks (v3.1 API)
     useUploadDocumentsMutation,
-
-    // Admin hooks (v3.1 API)
-    useGetSystemHealthQuery,
-    useGetCacheStatsQuery,
-    useClearCacheMutation,
-    useGetTabsQuery,
-    useToggleTabMutation,
-    useGetLLMMetricsQuery,
-
-    // Root hook
-    useGetRootQuery,
 } = apiSlice;
 
 // Updated custom hook for policy law data
