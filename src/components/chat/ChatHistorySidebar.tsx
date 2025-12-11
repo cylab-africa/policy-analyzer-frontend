@@ -216,7 +216,7 @@ export function ChatHistorySidebar({
                                                 tabIndex={0}
                                             >
                                                 <div className="flex items-start gap-2">
-                                                    <div className="flex-1l min-w-0 pr-2">
+                                                    <div className="flex-1 min-w-0 pr-2">
                                                         <div
                                                             className={cn(
                                                                 "text-xs font-medium line-clamp-2 transition-colors overflow-hidden break-words",
