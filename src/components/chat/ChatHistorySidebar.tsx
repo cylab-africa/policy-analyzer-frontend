@@ -219,17 +219,11 @@ export function ChatHistorySidebar({
                                                     <div className="flex-1l min-w-0 pr-2">
                                                         <div
                                                             className={cn(
-                                                                "text-xs font-medium line-clamp-2 transition-colors overflow-hidden",
+                                                                "text-xs font-medium line-clamp-2 transition-colors overflow-hidden break-words",
                                                                 activeConversationId === conversation.id
                                                                     ? "text-primary"
                                                                     : "text-slate-700 group-hover:text-primary"
                                                             )}
-                                                            style={{
-                                                                display: "-webkit-box",
-                                                                WebkitLineClamp: 2,
-                                                                WebkitBoxOrient: "vertical",
-                                                                wordBreak: "break-word"
-                                                            }}
                                                         >
                                                             {conversation.title}
                                                         </div>
