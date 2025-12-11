@@ -49,7 +49,7 @@ export function ChatInput({
     };
 
     const openFeedback = () => {
-        globalThis.open(FEEDBACK_URL, "_blank", "noopener,noreferrer");
+        window.open(FEEDBACK_URL, "_blank", "noopener,noreferrer");
     };
 
     return (
