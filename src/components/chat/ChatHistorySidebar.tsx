@@ -227,11 +227,6 @@ export function ChatHistorySidebar({
                                                         >
                                                             {conversation.title}
                                                         </div>
-                                                        {/* <div className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1">
-                                                            <Clock size={10} />
-                                                            {conversation.messages.length} message
-                                                            {conversation.messages.length !== 1 ? "s" : ""}
-                                                        </div> */}
                                                     </div>
                                                     <Button
                                                         variant="ghost"
