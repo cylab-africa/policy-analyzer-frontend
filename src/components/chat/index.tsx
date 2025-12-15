@@ -627,7 +627,7 @@ export default function ChatPage() {
                                     onBatchClick={openBatchPanel}
                                 />
                             ) : (
-                                <div className="w-full mx-auto py-6 px-4 max-w-4xl">
+                                <div className="w-full mx-auto py-6 px-4 max-w-6xl">
                                     {getDisplayMessages().map((message) => (
                                         <MessageBubble key={message.id} message={message} formatTime={formatTime} />
                                     ))}
