@@ -318,7 +318,7 @@ export default function ResourcesPage() {
 
     return (
         <div className="w-full bg-gray-50 min-h-screen">
-            <div className="max-w-8xl container mx-auto px-6 pt-5 pb-16">
+            <div className="max-w-7xl container mx-auto px-6 pt-5 pb-16">
                 {/* Error Alert */}
                 {hasError && (
                     <div className="mb-6">

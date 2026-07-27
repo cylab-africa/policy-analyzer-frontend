@@ -1,0 +1,93 @@
+[
+    {
+        "code": "R1",
+        "name": "Privacy vulnerability",
+        "category": "Safety",
+        "description": "Personal data collected or processed through DPI is exposed, misused, or observed beyond what individuals consented to or reasonably expect.",
+        "associatedPrinciples": ["F1", "O3", "O5"]
+    },
+    {
+        "code": "R2",
+        "name": "Digital insecurity",
+        "category": "Safety",
+        "description": "DPI systems and the data they hold are vulnerable to breach, tampering, or unauthorized access due to weak technical security controls.",
+        "associatedPrinciples": ["O4"]
+    },
+    {
+        "code": "R3",
+        "name": "Physical insecurity",
+        "category": "Safety",
+        "description": "Exposure or misuse of DPI-linked data or credentials creates risk of physical harm to individuals, particularly at-risk groups.",
+        "associatedPrinciples": ["F1"]
+    },
+    {
+        "code": "R4",
+        "name": "Lack of recourse",
+        "category": "Safety",
+        "description": "Individuals harmed by DPI have no accessible or effective way to complain, appeal, or seek remedy.",
+        "associatedPrinciples": ["F8"]
+    },
+    {
+        "code": "R5",
+        "name": "Discrimination",
+        "category": "Inclusion",
+        "description": "DPI design or implementation results in unequal treatment or biased outcomes for individuals based on identity or group membership.",
+        "associatedPrinciples": ["F2", "O6"]
+    },
+    {
+        "code": "R6",
+        "name": "Unequal access",
+        "category": "Inclusion",
+        "description": "Structural, economic, or infrastructural barriers prevent some individuals or groups from accessing DPI-enabled services on equal terms.",
+        "associatedPrinciples": ["F3"]
+    },
+    {
+        "code": "R7",
+        "name": "Exclusion",
+        "category": "Inclusion",
+        "description": "Mandatory or digital-only channels leave individuals without the capacity or means to use DPI unable to access essential services.",
+        "associatedPrinciples": ["F3"]
+    },
+    {
+        "code": "R8",
+        "name": "Disempowerment",
+        "category": "Inclusion",
+        "description": "Individuals lose meaningful control over their own data and outcomes, and lack agency or channels to influence how DPI affects them.",
+        "associatedPrinciples": ["F6", "F8"]
+    },
+    {
+        "code": "R9",
+        "name": "Digital distrust",
+        "category": "Structural Vulnerabilities",
+        "description": "Lack of transparency or independent evidence about how DPI operates undermines public confidence in the system.",
+        "associatedPrinciples": ["F5", "O2"]
+    },
+    {
+        "code": "R10",
+        "name": "Weak rule of law",
+        "category": "Structural Vulnerabilities",
+        "description": "DPI is deployed without a clear legal basis, enforceable regulation, or embedded legal safeguards.",
+        "associatedPrinciples": ["F5"]
+    },
+    {
+        "code": "R11",
+        "name": "Weak institutions",
+        "category": "Structural Vulnerabilities",
+        "description": "The institutions responsible for governing, auditing, or overseeing DPI lack the independence, capacity, or evidence base to do so effectively.",
+        "associatedPrinciples": ["O2"]
+    },
+    {
+        "code": "R12",
+        "name": "Technical shortcomings",
+        "category": "Structural Vulnerabilities",
+        "description": "DPI relies on closed, proprietary, or poorly engineered systems that limit interoperability, resilience, or long-term safety.",
+        "associatedPrinciples": ["O4", "O9"]
+    },
+    {
+        "code": "R13",
+        "name": "Unsustainability",
+        "category": "Structural Vulnerabilities",
+        "description": "DPI lacks a viable long-term financing, institutional, or environmental model needed to sustain operations.",
+        "associatedPrinciples": ["F9", "O8"]
+    }
+]

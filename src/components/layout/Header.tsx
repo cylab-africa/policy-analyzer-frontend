@@ -42,7 +42,7 @@ export default function Header() {
                     isScrolled ? "bg-white/95 backdrop-blur-lg shadow-sm" : "bg-primary"
                 )}
             >
-                <div className="max-w-8xl container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+                <div className="max-w-7xl container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
                     <div>
                         <Link
                             href="/"
@@ -142,6 +142,25 @@ export default function Header() {
                                     </div>
                                 </Link>
                             </NavigationMenuItem>
+
+                            <NavigationMenuItem>
+                                <Link href="/safeguards" passHref>
+                                    <div
+                                        className={cn(
+                                            "px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300",
+                                            isActive("/safeguards")
+                                                ? isScrolled
+                                                    ? "text-foreground"
+                                                    : "text-white"
+                                                : isScrolled
+                                                ? "text-muted-foreground hover:text-foreground"
+                                                : "text-primary-foreground/80 hover:text-primary-foreground"
+                                        )}
+                                    >
+                                        Safeguards
+                                    </div>
+                                </Link>
+                            </NavigationMenuItem>
                         </NavigationMenuList>
                     </NavigationMenu>
 
@@ -197,6 +216,17 @@ export default function Header() {
                                     )}
                                 >
                                     Resources
+                                </Link>
+                                <Link
+                                    href="/safeguards"
+                                    className={cn(
+                                        "px-4 py-3 text-base font-medium transition-all duration-300",
+                                        isActive("/safeguards")
+                                            ? "text-foreground"
+                                            : "text-muted-foreground hover:text-foreground"
+                                    )}
+                                >
+                                    Safeguards
                                 </Link>
                             </div>
                         </SheetContent>

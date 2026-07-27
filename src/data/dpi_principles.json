@@ -1,0 +1,128 @@
+[
+    {
+        "code": "F1",
+        "name": "Do no harm",
+        "category": "Foundational",
+        "description": "Anticipate, assess, and mitigate human rights harms across the full DPI life cycle.",
+        "sourceCitation": "UN DPI Safeguards Framework, Foundational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "F2",
+        "name": "Do not discriminate",
+        "category": "Foundational",
+        "description": "Ensure unbiased access and equal opportunity for all individuals regardless of intersecting identities.",
+        "sourceCitation": "UN DPI Safeguards Framework, Foundational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "F3",
+        "name": "Do not exclude",
+        "category": "Foundational",
+        "description": "Provide a choice of channels — digital and non-digital — based on individual capacity. Access must not be conditional or mandatory.",
+        "sourceCitation": "UN DPI Safeguards Framework, Foundational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "F4",
+        "name": "Reinforce transparency and accountability",
+        "category": "Foundational",
+        "description": "Develop DPI with democratic participation, public oversight, and fair market competition. Avoid vendor lock-in.",
+        "sourceCitation": "UN DPI Safeguards Framework, Foundational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "F5",
+        "name": "Uphold the rule of law",
+        "category": "Foundational",
+        "description": "Introduce DPI with a clear legal basis and embed regulatory aspects into its design from the outset.",
+        "sourceCitation": "UN DPI Safeguards Framework, Foundational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "F6",
+        "name": "Promote autonomy and agency",
+        "category": "Foundational",
+        "description": "Enable everyone to take control of their data, exercise choice, and contribute to their society's well-being.",
+        "sourceCitation": "UN DPI Safeguards Framework, Foundational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "F7",
+        "name": "Foster community engagement",
+        "category": "Foundational",
+        "description": "Centre all life cycle stages on the needs and interests of individuals and communities at risk.",
+        "sourceCitation": "UN DPI Safeguards Framework, Foundational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "F8",
+        "name": "Ensure effective remedy and redress",
+        "category": "Foundational",
+        "description": "Complaint response, avenues for appeal, and grievance mechanisms must be accessible to all, equitably.",
+        "sourceCitation": "UN DPI Safeguards Framework, Foundational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "F9",
+        "name": "Focus on future sustainability",
+        "category": "Foundational",
+        "description": "Anticipate and limit long-term harms. Mitigate environmental impact and minimise resource needs.",
+        "sourceCitation": "UN DPI Safeguards Framework, Foundational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "O1",
+        "name": "Leverage market dynamics",
+        "category": "Operational",
+        "description": "Foster inclusive public and private innovation so market players can compete and address emerging needs.",
+        "sourceCitation": "UN DPI Safeguards Framework, Operational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "O2",
+        "name": "Evolve with evidence",
+        "category": "Operational",
+        "description": "Independent, transparent, continuous assessments and audits — rapidly cease or initiate activities based on evidence.",
+        "sourceCitation": "UN DPI Safeguards Framework, Operational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "O3",
+        "name": "Ensure data privacy by design",
+        "category": "Operational",
+        "description": "Embed data minimization, provisions to delink, and ability to limit observability into legal and technical architecture.",
+        "sourceCitation": "UN DPI Safeguards Framework, Operational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "O4",
+        "name": "Assure data security by design",
+        "category": "Operational",
+        "description": "Incorporate encryption and pseudonymization. Legal frameworks should fill gaps where technical design is insufficient.",
+        "sourceCitation": "UN DPI Safeguards Framework, Operational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "O5",
+        "name": "Ensure data protection during use",
+        "category": "Operational",
+        "description": "Process or retain personal data lawfully and transparently only by authorized personnel within a legal framework.",
+        "sourceCitation": "UN DPI Safeguards Framework, Operational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "O6",
+        "name": "Respond to gender, ability or age",
+        "category": "Operational",
+        "description": "DPI must not exacerbate existing challenges or introduce new barriers for those facing structural inequalities.",
+        "sourceCitation": "UN DPI Safeguards Framework, Operational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "O7",
+        "name": "Practice inclusive governance",
+        "category": "Operational",
+        "description": "Establish a robust legal, regulatory, and institutional framework promoting transparent multi-stakeholder governance.",
+        "sourceCitation": "UN DPI Safeguards Framework, Operational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "O8",
+        "name": "Sustain financial viability",
+        "category": "Operational",
+        "description": "Establish diversified, phased, and sustainable financing models. Governments lead build; partners lead operations.",
+        "sourceCitation": "UN DPI Safeguards Framework, Operational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    },
+    {
+        "code": "O9",
+        "name": "Build and share open assets",
+        "category": "Operational",
+        "description": "Share and reuse open protocols, specifications, and DPGs to prevent proprietary systems from limiting safety.",
+        "sourceCitation": "UN DPI Safeguards Framework, Operational Principles — https://digitalpublicinfrastructure.ai/safeguards.php"
+    }
+]

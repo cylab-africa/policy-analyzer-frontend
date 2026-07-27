@@ -35,6 +35,26 @@ export interface DigitalId {
     }[];
 }
 
+// ==========================================
+// UN DPI Safeguards Reference Data
+// ==========================================
+
+export interface DpiPrinciple {
+    code: string;
+    name: string;
+    category: "Foundational" | "Operational";
+    description: string;
+    sourceCitation: string;
+}
+
+export interface DpiRisk {
+    code: string;
+    name: string;
+    category: "Safety" | "Inclusion" | "Structural Vulnerabilities";
+    description: string;
+    associatedPrinciples: string[];
+}
+
 export interface PolicyLawFile {
     country: string;
     isoAlpha2: string;
