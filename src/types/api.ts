@@ -35,6 +35,51 @@ export interface DigitalId {
     }[];
 }
 
+// ==========================================
+// UN DPI Safeguards Reference Data
+// ==========================================
+
+export interface DpiPrinciple {
+    code: string;
+    name: string;
+    category: "Foundational" | "Operational";
+    description: string;
+    sourceCitation: string;
+}
+
+export interface DpiRisk {
+    code: string;
+    name: string;
+    category: "Safety" | "Inclusion" | "Structural Vulnerabilities";
+    description: string;
+    associatedPrinciples: string[];
+}
+
+// ==========================================
+// Country Principle Coverage (applied DPI Safeguards)
+// ==========================================
+
+export type CoverageStatus = "addressed" | "partial" | "not_addressed";
+
+export interface CountryPrincipleCoverage {
+    country: string;
+    isoAlpha2: string;
+    flagEmoji: string;
+    law: string;
+    status: Record<string, CoverageStatus>;
+    caveats?: Record<string, string>;
+}
+
+export interface CountryCoverageRegion {
+    region: string;
+    countries: CountryPrincipleCoverage[];
+}
+
+export interface CountryCoverageData {
+    principleCodes: string[];
+    regions: CountryCoverageRegion[];
+}
+
 export interface PolicyLawFile {
     country: string;
     isoAlpha2: string;
