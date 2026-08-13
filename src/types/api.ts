@@ -55,6 +55,31 @@ export interface DpiRisk {
     associatedPrinciples: string[];
 }
 
+// ==========================================
+// Country Principle Coverage (applied DPI Safeguards)
+// ==========================================
+
+export type CoverageStatus = "addressed" | "partial" | "not_addressed";
+
+export interface CountryPrincipleCoverage {
+    country: string;
+    isoAlpha2: string;
+    flagEmoji: string;
+    law: string;
+    status: Record<string, CoverageStatus>;
+    caveats?: Record<string, string>;
+}
+
+export interface CountryCoverageRegion {
+    region: string;
+    countries: CountryPrincipleCoverage[];
+}
+
+export interface CountryCoverageData {
+    principleCodes: string[];
+    regions: CountryCoverageRegion[];
+}
+
 export interface PolicyLawFile {
     country: string;
     isoAlpha2: string;

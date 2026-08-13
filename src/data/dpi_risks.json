@@ -4,7 +4,7 @@
         "name": "Privacy vulnerability",
         "category": "Safety",
         "description": "Personal data collected or processed through DPI is exposed, misused, or observed beyond what individuals consented to or reasonably expect.",
-        "associatedPrinciples": ["F1", "O3", "O5"]
+        "associatedPrinciples": ["F1", "O3", "O4", "O5"]
     },
     {
         "code": "R2",
@@ -18,7 +18,7 @@
         "name": "Physical insecurity",
         "category": "Safety",
         "description": "Exposure or misuse of DPI-linked data or credentials creates risk of physical harm to individuals, particularly at-risk groups.",
-        "associatedPrinciples": ["F1"]
+        "associatedPrinciples": ["F1", "O3", "O4"]
     },
     {
         "code": "R4",
@@ -53,14 +53,14 @@
         "name": "Disempowerment",
         "category": "Inclusion",
         "description": "Individuals lose meaningful control over their own data and outcomes, and lack agency or channels to influence how DPI affects them.",
-        "associatedPrinciples": ["F6", "F8"]
+        "associatedPrinciples": ["F6", "F7"]
     },
     {
         "code": "R9",
         "name": "Digital distrust",
         "category": "Structural Vulnerabilities",
         "description": "Lack of transparency or independent evidence about how DPI operates undermines public confidence in the system.",
-        "associatedPrinciples": ["F5", "O2"]
+        "associatedPrinciples": ["F4", "F5", "O2"]
     },
     {
         "code": "R10",
