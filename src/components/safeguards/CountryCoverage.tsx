@@ -180,17 +180,19 @@ export default function CountryCoverage({ data, principles }: CountryCoveragePro
                                     <button
                                         type="button"
                                         onClick={() => toggleRegion(region.region)}
-                                        className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-gray-400 hover:text-gray-600 py-1.5 cursor-pointer"
+                                        className="flex items-center gap-2 w-full text-left border-b border-gray-200 hover:border-gray-300 py-2 cursor-pointer"
                                     >
                                         <ChevronDown
                                             className={cn(
-                                                "h-3.5 w-3.5 transition-transform",
+                                                "h-4 w-4 shrink-0 text-gray-500 transition-transform",
                                                 isCollapsed && "-rotate-90",
                                             )}
                                         />
-                                        {region.region}
-                                        <span className="text-gray-300 font-normal normal-case">
-                                            {region.countries.length} countries
+                                        <span className="text-sm font-bold uppercase tracking-wide text-gray-800">
+                                            {region.region}
+                                        </span>
+                                        <span className="text-xs font-medium text-gray-500">
+                                            {region.countries.length} {region.countries.length === 1 ? "country" : "countries"}
                                         </span>
                                     </button>
 
