@@ -4,12 +4,22 @@ import { cn } from "@/lib/utils";
 import { DpiPrinciple, DpiRisk } from "@/types/api";
 import { Building2, ShieldAlert, Users } from "lucide-react";
 import { useMemo, useState } from "react";
-import { RISK_CATEGORY_STYLE } from "./SafeguardsMatrix";
 
 interface RisksRegisterProps {
     risks: DpiRisk[];
     principles: DpiPrinciple[];
 }
+
+// Categorical hues validated for CVD-safe all-pairs use via dataviz skill's
+// validate_palette.js (aqua/yellow/violet slots 3-4-7 of the reference palette).
+export const RISK_CATEGORY_STYLE: Record<
+    DpiRisk["category"],
+    { dot: string; text: string; bg: string; ring: string; border: string }
+> = {
+    Safety: { dot: "bg-[#1baf7a] dark:bg-[#199e70]", text: "text-[#128a5f] dark:text-[#3fc796]", bg: "bg-[#1baf7a]/10", ring: "ring-[#1baf7a]", border: "border-l-[#1baf7a]" },
+    Inclusion: { dot: "bg-[#eda100] dark:bg-[#c98500]", text: "text-[#8a5e00] dark:text-[#f0b830]", bg: "bg-[#eda100]/10", ring: "ring-[#eda100]", border: "border-l-[#eda100]" },
+    "Structural Vulnerabilities": { dot: "bg-[#4a3aa7] dark:bg-[#9085e9]", text: "text-[#4a3aa7] dark:text-[#b3aaf0]", bg: "bg-[#4a3aa7]/10", ring: "ring-[#4a3aa7]", border: "border-l-[#4a3aa7]" },
+};
 
 const CATEGORY_ORDER = ["Safety", "Inclusion", "Structural Vulnerabilities"] as const;
 

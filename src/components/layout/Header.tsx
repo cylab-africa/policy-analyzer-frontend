@@ -142,25 +142,6 @@ export default function Header() {
                                     </div>
                                 </Link>
                             </NavigationMenuItem>
-
-                            <NavigationMenuItem>
-                                <Link href="/safeguards" passHref>
-                                    <div
-                                        className={cn(
-                                            "px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300",
-                                            isActive("/safeguards")
-                                                ? isScrolled
-                                                    ? "text-foreground"
-                                                    : "text-white"
-                                                : isScrolled
-                                                ? "text-muted-foreground hover:text-foreground"
-                                                : "text-primary-foreground/80 hover:text-primary-foreground"
-                                        )}
-                                    >
-                                        Safeguards
-                                    </div>
-                                </Link>
-                            </NavigationMenuItem>
                         </NavigationMenuList>
                     </NavigationMenu>
 
@@ -216,17 +197,6 @@ export default function Header() {
                                     )}
                                 >
                                     Resources
-                                </Link>
-                                <Link
-                                    href="/safeguards"
-                                    className={cn(
-                                        "px-4 py-3 text-base font-medium transition-all duration-300",
-                                        isActive("/safeguards")
-                                            ? "text-foreground"
-                                            : "text-muted-foreground hover:text-foreground"
-                                    )}
-                                >
-                                    Safeguards
                                 </Link>
                             </div>
                         </SheetContent>

@@ -5,12 +5,11 @@ import countryCoverageData from "@/data/country_principle_coverage.json";
 import dpiPrinciplesData from "@/data/dpi_principles.json";
 import dpiRisksData from "@/data/dpi_risks.json";
 import { CountryCoverageData, DpiPrinciple, DpiRisk } from "@/types/api";
-import { Globe2, Network, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Globe2, ShieldAlert, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 import CountryCoverage from "./CountryCoverage";
 import PrincipleOrbit from "./PrincipleOrbit";
 import RisksRegister from "./RisksRegister";
-import SafeguardsMatrix from "./SafeguardsMatrix";
 
 const dpiPrinciples = dpiPrinciplesData as DpiPrinciple[];
 const dpiRisks = dpiRisksData as DpiRisk[];
@@ -18,7 +17,6 @@ const countryCoverage = countryCoverageData as CountryCoverageData;
 
 enum SafeguardsView {
     COUNTRIES = "countries",
-    MAP = "map",
     PRINCIPLES = "principles",
     RISKS = "risks",
 }
@@ -41,7 +39,7 @@ export default function SafeguardsPage() {
                 <div className="mb-10">
                     <div className="bg-white rounded-lg shadow-md p-4 inline-flex">
                         <Tabs value={activeView} onValueChange={(value) => setActiveView(value as SafeguardsView)}>
-                            <TabsList className="grid grid-cols-4 h-12 min-w-[560px]">
+                            <TabsList className="grid grid-cols-3 h-12 min-w-[420px]">
                                 <TabsTrigger
                                     value={SafeguardsView.COUNTRIES}
                                     className="flex items-center cursor-pointer justify-center gap-2 data-[state=active]:shadow-sm"
@@ -51,13 +49,6 @@ export default function SafeguardsPage() {
                                     <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full">
                                         {countryCoverage.regions.reduce((sum, r) => sum + r.countries.length, 0)}
                                     </span>
-                                </TabsTrigger>
-                                <TabsTrigger
-                                    value={SafeguardsView.MAP}
-                                    className="flex items-center cursor-pointer justify-center gap-2 data-[state=active]:shadow-sm"
-                                >
-                                    <Network className="h-4 w-4" />
-                                    <span>Map</span>
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value={SafeguardsView.PRINCIPLES}
@@ -86,10 +77,6 @@ export default function SafeguardsPage() {
 
                 {activeView === SafeguardsView.COUNTRIES && (
                     <CountryCoverage data={countryCoverage} principles={dpiPrinciples} />
-                )}
-
-                {activeView === SafeguardsView.MAP && (
-                    <SafeguardsMatrix principles={dpiPrinciples} risks={dpiRisks} />
                 )}
 
                 {activeView === SafeguardsView.PRINCIPLES && (

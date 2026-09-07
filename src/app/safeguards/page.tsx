@@ -1,6 +1,10 @@
 import SafeguardsPage from "@/components/safeguards";
+import { notFound } from "next/navigation";
 
 function page() {
+    // Hidden from the public until reviewed by a PI.
+    notFound();
+
     return (
         <div className="min-h-screen flex flex-col">
             <div className="bg-primary text-white py-12">
