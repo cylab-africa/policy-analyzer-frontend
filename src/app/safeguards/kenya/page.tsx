@@ -4,6 +4,7 @@ import dpiPrinciplesData from "@/data/dpi_principles.json";
 import countryCoverageData from "@/data/country_principle_coverage.json";
 import { CountryCoverageData, CountryEvidenceData, DpiPrinciple } from "@/types/api";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 const evidence = kenyaEvidenceData as CountryEvidenceData;
 const principles = dpiPrinciplesData as DpiPrinciple[];
@@ -16,6 +17,9 @@ export const metadata: Metadata = {
 };
 
 export default function KenyaDossierPage() {
+    // Hidden from the public until reviewed by a PI.
+    notFound();
+
     const country = coverage.regions
         .flatMap((r) => r.countries)
         .find((c) => c.isoAlpha2 === "KE");
