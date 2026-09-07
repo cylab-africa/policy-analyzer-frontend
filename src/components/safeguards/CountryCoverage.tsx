@@ -2,9 +2,20 @@
 
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { CountryCoverageData, CountryPrincipleCoverage, CoverageStatus, DpiPrinciple } from "@/types/api";
+import {
+    CountryCoverageData,
+    CountryPrincipleCoverage,
+    CoverageStatus,
+    DpiPrinciple,
+} from "@/types/api";
 import { ChevronDown, Search, X } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
+
+/** Countries with a published clause-level evidence dossier. */
+const DOSSIER_ROUTES: Record<string, string> = {
+    Kenya: "/safeguards/kenya",
+};
 
 interface CountryCoverageProps {
     data: CountryCoverageData;
@@ -57,17 +68,8 @@ const STATUS_WEIGHT: Record<CoverageStatus, number> = {
     not_addressed: 0,
 };
 
-const DEFAULT_SELECTED_COUNTRY = "Kenya";
-
 export default function CountryCoverage({ data, principles }: CountryCoverageProps) {
     const [search, setSearch] = useState("");
-    const [selected, setSelected] = useState<CountryPrincipleCoverage | null>(() => {
-        for (const region of data.regions) {
-            const match = region.countries.find((c) => c.country === DEFAULT_SELECTED_COUNTRY);
-            if (match) return match;
-        }
-        return null;
-    });
     const [hoveredPrinciple, setHoveredPrinciple] = useState<string | null>(null);
     const [collapsedRegions, setCollapsedRegions] = useState<Set<string>>(
         () => new Set(data.regions.slice(1).map((r) => r.region)),
@@ -132,7 +134,8 @@ export default function CountryCoverage({ data, principles }: CountryCoveragePro
                     </div>
                 </div>
                 <p className="text-sm text-gray-600 max-w-3/6 mt-1">
-                    Click a row for detail, hover a column to trace one principle across countries.
+                    Hover a column to trace one principle across countries. Where an evidence dossier
+                    exists, open it to see each rating traced to the statute.
                 </p>
             </div>
 
@@ -145,12 +148,12 @@ export default function CountryCoverage({ data, principles }: CountryCoveragePro
                 ))}
             </div>
 
-            <div className="flex flex-col xl:flex-row gap-6 items-start">
-                <div className="overflow-x-auto min-w-0 flex-1">
+            <div>
+                <div className="overflow-x-auto">
                     <div className="min-w-[760px]">
                         {/* Column headers */}
                         <div className="flex sticky top-0 bg-white z-10">
-                            <div className="w-52 shrink-0" />
+                            <div className="w-44 shrink-0" />
                             <div className="w-14 shrink-0" />
                             <div className="flex">
                                 {data.principleCodes.map((code) => (
@@ -199,33 +202,14 @@ export default function CountryCoverage({ data, principles }: CountryCoveragePro
                                     {!isCollapsed && (
                                         <div role="grid" aria-label={`${region.region} principle coverage`}>
                                             {region.countries.map((c) => {
-                                                const isSelected = selected?.country === c.country;
                                                 const score = scoreOf(c);
                                                 return (
                                                     <div
                                                         key={c.country}
                                                         role="row"
-                                                        onClick={() => setSelected(isSelected ? null : c)}
-                                                        tabIndex={0}
-                                                        onKeyDown={(e) => {
-                                                            if (e.key === "Enter" || e.key === " ") {
-                                                                e.preventDefault();
-                                                                setSelected(isSelected ? null : c);
-                                                            }
-                                                        }}
-                                                        className={cn(
-                                                            "flex items-center border-t border-gray-100 cursor-pointer hover:bg-gray-50",
-                                                            isSelected && "bg-primary/5",
-                                                        )}
+                                                        className="flex items-center border-t border-gray-100 hover:bg-gray-50"
                                                     >
-                                                        <div
-                                                            className={cn(
-                                                                "w-52 shrink-0 py-2 pr-3 flex items-center gap-2 text-sm min-w-0",
-                                                                isSelected
-                                                                    ? "font-semibold text-primary"
-                                                                    : "text-gray-700",
-                                                            )}
-                                                        >
+                                                        <div className="w-44 shrink-0 py-2 pr-3 flex items-center gap-2 text-sm min-w-0 text-gray-700">
                                                             <span className="shrink-0">{c.flagEmoji}</span>
                                                             <div className="min-w-0">
                                                                 <div className="truncate">{c.country}</div>
@@ -255,7 +239,9 @@ export default function CountryCoverage({ data, principles }: CountryCoveragePro
                                                                         title={`${code} ${
                                                                             principleByCode.get(code)?.name ?? ""
                                                                         }: ${style.label}${
-                                                                            hasCaveat ? " (see note)" : ""
+                                                                            hasCaveat
+                                                                                ? `\n\nNote: ${c.caveats?.[code]}`
+                                                                                : ""
                                                                         }`}
                                                                         className={cn(
                                                                             "w-9 h-9 shrink-0 flex items-center justify-center relative",
@@ -269,6 +255,17 @@ export default function CountryCoverage({ data, principles }: CountryCoveragePro
                                                                     </div>
                                                                 );
                                                             })}
+                                                        </div>
+                                                        <div className="w-28 shrink-0 pl-4 flex justify-end">
+                                                            {DOSSIER_ROUTES[c.country] && (
+                                                                <Link
+                                                                    href={DOSSIER_ROUTES[c.country]}
+                                                                    title={`Open the ${c.country} evidence dossier — every rating traced to the statute`}
+                                                                    className="rounded-md border border-primary/40 bg-white px-2.5 py-1 text-[11px] font-medium text-primary hover:bg-primary hover:text-white hover:border-primary transition-colors"
+                                                                >
+                                                                    View details
+                                                                </Link>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 );
@@ -286,74 +283,6 @@ export default function CountryCoverage({ data, principles }: CountryCoveragePro
                         )}
                     </div>
                 </div>
-
-                <div className="w-full xl:w-[26rem] shrink-0 xl:sticky xl:top-5">
-                    <CountryDetail
-                        country={selected}
-                        principleByCode={principleByCode}
-                        principleCodes={data.principleCodes}
-                    />
-                </div>
-            </div>
-        </div>
-    );
-}
-
-function CountryDetail({
-    country,
-    principleByCode,
-    principleCodes,
-}: Readonly<{
-    country: CountryPrincipleCoverage | null;
-    principleByCode: Map<string, DpiPrinciple>;
-    principleCodes: string[];
-}>) {
-    if (!country) {
-        return (
-            <div className="rounded-lg border border-dashed p-6 text-center text-sm text-gray-400">
-                Select a country to see its full principle breakdown.
-            </div>
-        );
-    }
-
-    return (
-        <div className="rounded-lg border p-4 space-y-3 animate-fade-in-up" style={{ animationDuration: "0.3s" }}>
-            <div className="flex items-center gap-2">
-                <span className="text-xl">{country.flagEmoji}</span>
-                <div>
-                    <p className="font-semibold text-gray-900">{country.country}</p>
-                    <p className="text-xs text-gray-500">{country.law}</p>
-                </div>
-            </div>
-
-            <div className="space-y-2 max-h-[420px] overflow-y-auto pr-1">
-                {principleCodes.map((code) => {
-                    const status = country.status[code];
-                    const style = STATUS_STYLE[status];
-                    const principle = principleByCode.get(code);
-                    const caveat = country.caveats?.[code];
-                    return (
-                        <div
-                            key={code}
-                            className="flex gap-2.5 text-sm border-t border-gray-100 pt-2 first:border-0 first:pt-0"
-                        >
-                            <span className="shrink-0 w-4 flex items-center justify-center pt-0.5">
-                                <StatusGlyph status={status} />
-                            </span>
-                            <div className="min-w-0">
-                                <p className="font-medium text-gray-800">
-                                    {code} &middot; {principle?.name}
-                                </p>
-                                <p className="text-xs text-gray-500">{style.label}</p>
-                                {caveat && (
-                                    <p className="text-xs text-secondary mt-1 bg-secondary/10 rounded px-2 py-1">
-                                        {caveat}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-                    );
-                })}
             </div>
         </div>
     );

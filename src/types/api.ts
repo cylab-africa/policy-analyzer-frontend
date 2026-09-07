@@ -80,6 +80,87 @@ export interface CountryCoverageData {
     regions: CountryCoverageRegion[];
 }
 
+// ==========================================
+// Clause-level Evidence (Kenya pilot)
+// ==========================================
+
+export interface LegalEvidenceItem {
+    provision: string;
+    heading: string;
+    part: string;
+    excerpt: string;
+    anchor: string;
+    verified: boolean;
+    /** True when the excerpt paraphrases the provision rather than quoting it verbatim. */
+    excerptIsSummary?: boolean;
+    /** Present only on `nearestProvision`: why this clause falls short of the safeguard. */
+    whyInsufficient?: string;
+}
+
+export type EvidenceConfidence = "high" | "medium" | "low";
+
+export interface PrincipleEvidence {
+    principleCode: string;
+    countryIso: string;
+    status: CoverageStatus;
+    inScope: boolean;
+    confidence: EvidenceConfidence;
+    outOfScopeNote?: string;
+    /** Required by the ticket for every "partial" rating. */
+    partialityReason?: string;
+    rationale: string;
+    evidence: LegalEvidenceItem[];
+    /** For "not addressed": the closest provision considered, and why it does not suffice. */
+    nearestProvision?: LegalEvidenceItem;
+    mappingExplanation: string;
+    limitations?: string;
+}
+
+export interface RelatedInstrument {
+    title: string;
+    citation: string;
+    url: string;
+    /** Why this instrument matters to the assessment — it is context, not a rating basis. */
+    relevance: string;
+}
+
+export interface EvidenceSource {
+    lawName: string;
+    citation: string;
+    assentedDate: string;
+    commencementDate: string;
+    consolidatedTo: string;
+    publisher: string;
+    canonicalUrl: string;
+    sectionAnchorPattern: string;
+    corroboratingUrl: string;
+    retrievedAt: string;
+    verificationMethod: string;
+    relatedInstruments?: RelatedInstrument[];
+}
+
+export interface EvidenceMethodology {
+    criteria: Record<CoverageStatus, string>;
+    /** Retained for provenance; not currently surfaced in the UI. */
+    promptTemplate: string;
+    scopeNote: string;
+    reviewStatus: "unreviewed" | "in_review" | "reviewed";
+    reviewStatusLabel: string;
+    /** Who produced the assessment. */
+    preparedBy: string;
+    /** Who the pending review is by — named so "not yet reviewed" is a complete statement. */
+    reviewerRole: string;
+    /** What the reviewer is being asked to check. */
+    reviewScope: string;
+    assessedOn: string;
+}
+
+export interface CountryEvidenceData {
+    source: EvidenceSource;
+    methodology: EvidenceMethodology;
+    principles: PrincipleEvidence[];
+}
+
 export interface PolicyLawFile {
     country: string;
     isoAlpha2: string;
