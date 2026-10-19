@@ -21,8 +21,8 @@ A modern, interactive web application for analyzing and comparing data protectio
 ### Key Features
 
 - **Interactive Maps**: Visualize data protection legislation and digital ID systems across African countries
-- **Policy Chat**: AI-powered chatbot for policy inquiries and real-time analysis
-- **Resource Center**: Comprehensive policy documentation and educational materials
+- **Policy Chat**: AI-powered chatbot for law/policy inquiries and real-time analysis
+- **Resource Center**: Comprehensive law/policy documentation and educational materials
 - **Modern UI/UX**: Responsive design with glass morphism effects and smooth animations
 
 ---
@@ -40,8 +40,8 @@ A modern, interactive web application for analyzing and comparing data protectio
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/cmu-africa/policy-analyzer-frontend.git
-cd policy-analyzer-frontend
+git clone https://github.com/cylab-africa/pdp-frontend.git
+cd pdp-frontend
 
 # 2. Install dependencies
 npm install
