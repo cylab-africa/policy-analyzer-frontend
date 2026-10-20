@@ -62,7 +62,7 @@ export const apiSlice = createApi({
     endpoints: (builder) => ({
         // Policy Laws endpoints
         getPolicyLaws: builder.query<PolicyLaw[], { page?: number; limit?: number }>({
-            query: ({ page = 1, limit = 55 } = {}) => ({
+            query: ({ page = 1, limit = 100 } = {}) => ({
                 url: "/info/policy_laws",
                 params: { page, limit },
             }),
@@ -102,7 +102,7 @@ export const apiSlice = createApi({
 
         // Digital ID endpoints
         getDigitalIds: builder.query<DigitalId[], { page?: number; limit?: number }>({
-            query: ({ page = 1, limit = 55 } = {}) => ({
+            query: ({ page = 1, limit = 100 } = {}) => ({
                 url: "/info/digital_id",
                 params: { page, limit },
             }),
@@ -142,7 +142,7 @@ export const apiSlice = createApi({
 
         // File endpoints
         getPolicyLawFiles: builder.query<PolicyLawFile[], { page?: number; limit?: number }>({
-            query: ({ page = 1, limit = 55 } = {}) => ({
+            query: ({ page = 1, limit = 100 } = {}) => ({
                 url: "/info/policy_laws/files",
                 params: { page, limit },
             }),
@@ -150,7 +150,7 @@ export const apiSlice = createApi({
         }),
 
         getDigitalIdFiles: builder.query<DigitalIdFile[], { page?: number; limit?: number }>({
-            query: ({ page = 1, limit = 55 } = {}) => ({
+            query: ({ page = 1, limit = 100 } = {}) => ({
                 url: "/info/digital_id/files",
                 params: { page, limit },
             }),

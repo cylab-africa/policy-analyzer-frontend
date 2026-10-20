@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software in your work, please cite it using this information."
+title: "Policy Analyzer: frontend"
+type: software
+authors:
+  - name: "Upanzi Network"
+    website: "https://www.africa.engineering.cmu.edu/research/upanzi/index.html"
+repository-code: "https://github.com/cylab-africa/policy-analyzer-frontend"
+license: MIT
+abstract: >-
+  Web application for exploring data protection and digital identity policy
+  across Africa: country maps and statistics, a document-based question
+  answering assistant, a library of sources, and documentation of the method.
+keywords:
+  - data protection
+  - digital identity
+  - policy analysis
+  - Africa

@@ -10,6 +10,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+const navItems = [
+    { href: "/", label: "Home" },
+    { href: "/chat", label: "Policy Chat" },
+    { href: "/sources", label: "Sources" },
+    { href: "/docs", label: "Documentation" },
+];
+
 export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const pathname = usePathname();
@@ -86,62 +93,26 @@ export default function Header() {
                     {/* Desktop Navigation */}
                     <NavigationMenu className="hidden md:flex">
                         <NavigationMenuList>
-                            <NavigationMenuItem>
-                                <Link href="/" passHref>
-                                    <div
-                                        className={cn(
-                                            "px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300",
-                                            isActive("/")
-                                                ? isScrolled
-                                                    ? "text-foreground"
-                                                    : "text-white"
-                                                : isScrolled
-                                                ? "text-muted-foreground hover:text-foreground"
-                                                : "text-primary-foreground/80 hover:text-primary-foreground"
-                                        )}
-                                    >
-                                        Home
-                                    </div>
-                                </Link>
-                            </NavigationMenuItem>
-
-                            <NavigationMenuItem>
-                                <Link href="/chat" passHref>
-                                    <div
-                                        className={cn(
-                                            "px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300",
-                                            isActive("/chat")
-                                                ? isScrolled
-                                                    ? "text-foreground"
-                                                    : "text-white"
-                                                : isScrolled
-                                                ? "text-muted-foreground hover:text-foreground"
-                                                : "text-primary-foreground/80 hover:text-primary-foreground"
-                                        )}
-                                    >
-                                        Policy Chat
-                                    </div>
-                                </Link>
-                            </NavigationMenuItem>
-
-                            <NavigationMenuItem>
-                                <Link href="/resources" passHref>
-                                    <div
-                                        className={cn(
-                                            "px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300",
-                                            isActive("/resources")
-                                                ? isScrolled
-                                                    ? "text-foreground"
-                                                    : "text-white"
-                                                : isScrolled
-                                                ? "text-muted-foreground hover:text-foreground"
-                                                : "text-primary-foreground/80 hover:text-primary-foreground"
-                                        )}
-                                    >
-                                        Resources
-                                    </div>
-                                </Link>
-                            </NavigationMenuItem>
+                            {navItems.map((item) => (
+                                <NavigationMenuItem key={item.href}>
+                                    <Link href={item.href} passHref>
+                                        <div
+                                            className={cn(
+                                                "px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300",
+                                                isActive(item.href)
+                                                    ? isScrolled
+                                                        ? "text-foreground"
+                                                        : "text-white"
+                                                    : isScrolled
+                                                    ? "text-muted-foreground hover:text-foreground"
+                                                    : "text-primary-foreground/80 hover:text-primary-foreground"
+                                            )}
+                                        >
+                                            {item.label}
+                                        </div>
+                                    </Link>
+                                </NavigationMenuItem>
+                            ))}
                         </NavigationMenuList>
                     </NavigationMenu>
 
@@ -165,39 +136,20 @@ export default function Header() {
                         <SheetContent className="w-full max-w-sm bg-background/95 backdrop-blur-lg border-l border-border">
                             <SheetTitle className="sr-only">Main Navigation</SheetTitle>
                             <div className="flex flex-col space-y-2 mt-8">
-                                <Link
-                                    href="/"
-                                    className={cn(
-                                        "px-4 py-3 text-base font-medium transition-all duration-300",
-                                        isActive("/")
-                                            ? "text-foreground"
-                                            : "text-muted-foreground hover:text-foreground"
-                                    )}
-                                >
-                                    Home
-                                </Link>
-                                <Link
-                                    href="/chat"
-                                    className={cn(
-                                        "px-4 py-3 text-base font-medium transition-all duration-300",
-                                        isActive("/chat")
-                                            ? "text-foreground"
-                                            : "text-muted-foreground hover:text-foreground"
-                                    )}
-                                >
-                                    Policy Chat
-                                </Link>
-                                <Link
-                                    href="/resources"
-                                    className={cn(
-                                        "px-4 py-3 text-base font-medium transition-all duration-300",
-                                        isActive("/resources")
-                                            ? "text-foreground"
-                                            : "text-muted-foreground hover:text-foreground"
-                                    )}
-                                >
-                                    Resources
-                                </Link>
+                                {navItems.map((item) => (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        className={cn(
+                                            "px-4 py-3 text-base font-medium transition-all duration-300",
+                                            isActive(item.href)
+                                                ? "text-foreground"
+                                                : "text-muted-foreground hover:text-foreground"
+                                        )}
+                                    >
+                                        {item.label}
+                                    </Link>
+                                ))}
                             </div>
                         </SheetContent>
                     </Sheet>

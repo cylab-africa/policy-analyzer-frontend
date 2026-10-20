@@ -1,0 +1,42 @@
+name: Bug report
+description: Something isn't working as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please don't include API keys, passwords or private documents.
+        For security problems, don't open an issue. Use the private reporting link on the issue chooser page instead.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the problem, and include any error message.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Including the question you asked or the request you sent, if relevant.
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: The release, or output of `git rev-parse --short HEAD`.
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, Docker or local install, browser (for the frontend), and anything else relevant.

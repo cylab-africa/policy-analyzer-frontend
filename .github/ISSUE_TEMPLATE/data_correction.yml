@@ -1,0 +1,34 @@
+name: Data or content correction
+description: A country classification, source link or statement is wrong, outdated or missing
+labels: ["data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Corrections help keep the maps, Sources and document collection accurate. Please link to a primary source, such as an official gazette or government website, so the change can be checked.
+  - type: input
+    id: country
+    attributes:
+      label: Country
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What is wrong, outdated or missing?
+      description: Where did you see it (a map, the Sources page, a chat answer, the documentation)?
+    validations:
+      required: true
+  - type: textarea
+    id: correct
+    attributes:
+      label: What should it say instead?
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: Links to the law, gazette or official publication that supports the correction.
+    validations:
+      required: true

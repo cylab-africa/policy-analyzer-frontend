@@ -58,7 +58,7 @@ const DonutChart: React.FC<{
                             strokeWidth={isHovered ? strokeWidth + 2 : strokeWidth}
                             strokeDasharray={strokeDasharray}
                             strokeDashoffset={strokeDashoffset}
-                            strokeLinecap="round"
+                            strokeLinecap="butt"
                             className="transition-all duration-300 ease-out cursor-pointer"
                             style={{
                                 filter: isHovered
@@ -111,7 +111,8 @@ const DonutChart: React.FC<{
 const MiniBarChart: React.FC<{
     data: { label: string; value: number; color: string }[];
 }> = ({ data }) => {
-    const maxValue = Math.max(...data.map((d) => d.value));
+    // Scale bars against the total so each bar shows its share of all countries
+    const total = data.reduce((sum, d) => sum + d.value, 0);
 
     return (
         <div className="space-y-3">
@@ -122,7 +123,7 @@ const MiniBarChart: React.FC<{
                         <div
                             className="h-full rounded-full transition-all duration-500 ease-out shadow-sm"
                             style={{
-                                width: `${maxValue > 0 ? (item.value / maxValue) * 100 : 0}%`,
+                                width: `${total > 0 ? (item.value / total) * 100 : 0}%`,
                                 backgroundColor: item.color,
                                 boxShadow: `0 0 4px ${item.color}40`,
                             }}
@@ -176,8 +177,8 @@ const HeroStatsSection: React.FC = () => {
     const dataProtectionData = [
         { label: "Enacted", value: enactedLaws, color: "#10b981" },
         { label: "Draft", value: draftLaws, color: "#3b82f6" },
-        { label: "Partial", value: liteLaws, color: "#a855f7" },
-        { label: "No Data", value: noLaws, color: "#9ca3af" },
+        { label: "Limited", value: liteLaws, color: "#a855f7" },
+        { label: "No law", value: noLaws, color: "#9ca3af" },
     ];
 
     // Digital ID Chart Data
@@ -185,7 +186,7 @@ const HeroStatsSection: React.FC = () => {
         { label: "Implemented", value: implementedSystems, color: "#10b981" },
         { label: "Partial", value: partialSystems, color: "#3b82f6" },
         { label: "Planning", value: planningSystems, color: "#f59e0b" },
-        { label: "No Data", value: noDataSystems, color: "#9ca3af" },
+        { label: "No info", value: noDataSystems, color: "#9ca3af" },
     ];
 
     const nextSlide = () => {

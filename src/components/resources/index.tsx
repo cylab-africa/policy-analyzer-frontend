@@ -24,7 +24,7 @@ import React, { useMemo, useState } from "react";
 
 // Import API hooks
 import { useGetDigitalIdsQuery, useGetPolicyLawsQuery } from "@/redux/api/apiSlice";
-import { FLAG_EMOJIS, getDocumentLanguage, getRegion } from "./utils";
+import { FLAG_EMOJIS, describeLink, getDocumentLanguage, getRegion } from "./utils";
 import ResourceCard from "./ResourceCard";
 
 // Enum for resource type
@@ -42,10 +42,12 @@ export interface Resource {
     region: string;
     title: string;
     description: string;
+    /** Country-level summary of the digital ID system, shown on one card per country */
+    systemSummary?: string;
     type: ResourceType;
     documentUrl?: string;
     websiteUrl?: string;
-    year: string;
+    year?: string;
     language: string;
     fileType?: string;
     isOfficial: boolean;
@@ -127,10 +129,10 @@ export default function ResourcesPage() {
                                         flagEmoji: law.flagEmoji || FLAG_EMOJIS[countryCode] || "🏳️",
                                         region,
                                         title: linkObj.title || `${law.country} Data Protection Resources`,
-                                        description: `Data protection legislation resource for ${law.country}, enacted in ${law.yearLegislationEnacted}.`,
+                                        description: describeLink(linkObj, "data-protection"),
                                         type: ResourceType.DATA_PROTECTION,
                                         documentUrl: linkObj.url,
-                                        year: law.yearLegislationEnacted || "Unknown",
+                                        year: law.yearLegislationEnacted,
                                         language: getDocumentLanguage(law.country),
                                         fileType: linkObj.type || "PDF",
                                         isOfficial: true,
@@ -154,7 +156,7 @@ export default function ResourcesPage() {
                                 description: `Data protection legislation for ${law.country}, enacted in ${law.yearLegislationEnacted}.`,
                                 type: ResourceType.DATA_PROTECTION,
                                 documentUrl: "#",
-                                year: law.yearLegislationEnacted || "Unknown",
+                                year: law.yearLegislationEnacted,
                                 language: getDocumentLanguage(law.country),
                                 fileType: "Legislation",
                                 isOfficial: true,
@@ -189,12 +191,10 @@ export default function ResourcesPage() {
                                     flagEmoji: digitalId.flagEmoji || FLAG_EMOJIS[countryCode] || "🏳️",
                                     region,
                                     title: linkObj.title || `${digitalId.country} Digital ID Resources`,
-                                    description:
-                                        digitalId.description ||
-                                        `Digital identity system documentation for ${digitalId.country}`,
+                                    description: describeLink(linkObj, "digital-id"),
+                                    systemSummary: index === 0 ? digitalId.description : undefined,
                                     type: ResourceType.DIGITAL_ID,
                                     documentUrl: linkObj.url,
-                                    year: digitalId.year_launched || "2020",
                                     language: getDocumentLanguage(digitalId.country),
                                     fileType: linkObj.type || "Research",
                                     isOfficial: linkObj.type === "Government" || linkObj.type === "Official",
@@ -220,7 +220,6 @@ export default function ResourcesPage() {
                             description: digitalId.description || `Digital identity system in ${digitalId.country}`,
                             type: ResourceType.DIGITAL_ID,
                             documentUrl: "#",
-                            year: digitalId.year_launched || "2020",
                             language: getDocumentLanguage(digitalId.country),
                             fileType: "System Info",
                             isOfficial: true,
