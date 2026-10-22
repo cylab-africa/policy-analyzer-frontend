@@ -28,8 +28,8 @@ export function WelcomeScreen({
                 </h2>
                 <p className="text-gray-600 text-sm sm:text-base max-w-lg">
                     {activeTab === ChatTab.DATA_PROTECTION
-                        ? "Get insights on privacy laws, compliance frameworks, and regulatory landscapes across African nations"
-                        : "Learn about identity verification systems, digital citizenship, and authentication frameworks in Africa"}
+                        ? "Ask what each country's law requires, who enforces it, and how countries compare. Answers cite the laws they draw on where they can."
+                        : "Ask how national ID systems work, how far they have rolled out, and which laws govern them across Africa."}
                 </p>
             </div>
 
@@ -45,7 +45,7 @@ export function WelcomeScreen({
                     <div className="flex-1 min-w-0">
                         <h3 className="text-base font-semibold text-slate-800 mb-1">Upload Documents</h3>
                         <p className="text-sm text-slate-500 leading-relaxed">
-                            Add your own documents to enhance the knowledge base
+                            Add a law or policy document so it can be searched and cited
                         </p>
                     </div>
                 </button>
@@ -60,7 +60,7 @@ export function WelcomeScreen({
                     <div className="flex-1 min-w-0">
                         <h3 className="text-base font-semibold text-slate-800 mb-1">Batch Analysis</h3>
                         <p className="text-sm text-slate-500 leading-relaxed">
-                            Process multiple queries from an Excel file
+                            Run up to 100 questions from a spreadsheet and get a PDF report
                         </p>
                     </div>
                 </button>
@@ -76,13 +76,13 @@ export function WelcomeScreen({
                     {suggestedQuestions[activeTab].map((question, index) => (
                         <Button
                             key={index}
-                            className="group cursor-pointer relative bg-gradient-to-r from-gray-50 to-gray-100/90 
+                            className="group cursor-pointer relative h-auto w-full justify-start whitespace-normal bg-gradient-to-r from-gray-50 to-gray-100/90 
                             border border-gray-200 hover:border-primary/30 rounded-xl p-4 text-left transition-all duration-300 
                             focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2"
                             onClick={() => setInput(question)}
                         >
                             {/* Content */}
-                            <div className="flex items-center gap-3">
+                            <div className="flex w-full min-w-0 items-center gap-3">
                                 <div className="flex-shrink-0 w-2 h-2 bg-primary/60 rounded-full transition-colors"></div>
                                 <div className="flex-1 min-w-0">
                                     <p className="text-xs lg:text-sm text-gray-600 group-hover:text-gray-700 leading-relaxed">

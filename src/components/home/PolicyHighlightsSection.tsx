@@ -182,84 +182,162 @@ const PolicyHighlightsSection: React.FC = () => {
         },
     ];
 
-    // Digital ID Timeline Events (placeholder - you can add your data here)
+    // Digital ID Timeline Events
+    // Sources: Biometric Update (Ethiopia, Namibia, The Gambia), allAfrica (Liberia, Togo, Mali, Rwanda), Nairametrics
+    // (Nigeria), news reports and official statements for Niger, Somalia, Uganda, Kenya and Mauritius, the World Bank
+    // press release of 5 June 2018 (WURI), and Ghana's NIA and Senegal's launch coverage. Recent figures are as
+    // reported on the dates given; re-check them before relying on them.
     const digitalIdEvents: TimelineEvent[] = [
         {
-            year: 2025,
-            content:
-                "Ethiopia's Fayda ID enrollments surge past 24 million as the country aims for 90 million by 2027. Registration expands to rural communities to ensure wider access, with financial incentives encouraging adoption.",
+            year: 2026,
+            content: "Togo's e-ID programme has registered more than 6 million of the country's roughly 8 million people by late September, and nearly all registrants hold a digital card. Only the Kara region remains to be covered.",
             color: "green",
             type: "enrollment-milestone",
+            countries: ["Togo"],
         },
         {
-            year: 2025,
-            content:
-                "Uganda launches a nationwide mass enrollment and renewal exercise for national ID cards, targeting 15.8 million renewals and 17.2 million new registrations for the 2024/2025 financial year.",
-            color: "green",
-            type: "enrollment-milestone",
-        },
-        {
-            year: 2025,
-            content:
-                "Togo continues its mass biometric enrollment for the e-ID Togo project, expanding its campaign to regions such as Agoè-Nyivé as part of the World Bank-supported WURI program.",
+            year: 2026,
+            content: "Namibia sets September for the launch of its electronic ID card, after postponing it so that data protection and identity legislation could be finalised.",
             color: "green",
             type: "project-rollout",
+            countries: ["Namibia"],
         },
         {
-            year: 2024,
-            content:
-                "Following the lifting of an injunction by the High Court in August, Kenya's Maisha Namba digital ID system proceeds with its rollout. The government also reports progress in clearing card backlogs.",
+            year: 2026,
+            content: "Liberia selects an Austrian firm to deliver a new biometric ID system, in August.",
             color: "green",
             type: "project-update",
+            countries: ["Liberia"],
+        },
+        {
+            year: 2026,
+            content: "The Gambia launches a new national identification system, with registration beginning in the Greater Banjul area in August.",
+            color: "green",
+            type: "project-launch",
+            countries: ["The Gambia"],
+        },
+        {
+            year: 2026,
+            content: "Ethiopia's Fayda ID has about 52.8 million people registered by July, up from 24 million in June 2025. Safaricom Ethiopia joins the programme to run enrolment in seven regions.",
+            color: "green",
+            type: "enrollment-milestone",
+            countries: ["Ethiopia"],
+        },
+        {
+            year: 2026,
+            content: "Nigeria's NIN enrolment reaches 136 million in July, up from 123.9 million in October 2025, and a new NIMC Act repeals and replaces the 2007 law governing the commission.",
+            color: "green",
+            type: "enrollment-milestone",
+            countries: ["Nigeria"],
+        },
+        {
+            year: 2026,
+            content: "Niger formally launches its biometric national ID card, branded the AES card, in Niamey on 27 March, starting with a pilot phase in the capital.",
+            color: "green",
+            type: "project-launch",
+            countries: ["Niger"],
+        },
+        {
+            year: 2026,
+            content: "Somalia's national ID authority (NIRA) opens an ID registration office at its embassy in Nairobi, its 30th office abroad.",
+            color: "green",
+            type: "project-rollout",
+            countries: ["Somalia"],
+        },
+        {
+            year: 2025,
+            content: "Rwanda begins biometric enrolment for its new digital ID, following a 2023 law. More than 300,000 people had registered by 20 November, and residents are due to be able to use the digital ID from June 2026.",
+            color: "green",
+            type: "project-rollout",
+            countries: ["Rwanda"],
+        },
+        {
+            year: 2025,
+            content: "Uganda launches a nationwide mass enrolment and renewal of national ID cards on 27 May, across all 146 districts, aiming to renew about 15.8 million cards and register 17.2 million new people.",
+            color: "green",
+            type: "enrollment-milestone",
+            countries: ["Uganda"],
+        },
+        {
+            year: 2025,
+            content: "Sierra Leone's National Civil Registration Authority reports 93% national ID registration coverage (self-reported).",
+            color: "green",
+            type: "enrollment-milestone",
+            countries: ["Sierra Leone"],
         },
         {
             year: 2024,
-            content:
-                "Mauritius launches the Mauritius National Identity Card (MNIC) 3.0, a mobile-first digital identity system that aligns with international standards.",
+            content: "Mauritius unveils its new national ID card on 26 February, a chip card built by a Thales-led consortium under a 10-year contract, with a companion digital ID wallet app.",
             color: "green",
             type: "project-launch",
+            countries: ["Mauritius"],
+        },
+        {
+            year: 2024,
+            content: "Kenya's Maisha Namba digital ID rollout resumes after the High Court lifts a freeze on 12 August.",
+            color: "green",
+            type: "project-update",
+            countries: ["Kenya"],
         },
         {
             year: 2023,
-            content:
-                "The Malabo Convention on cybersecurity and data protection enters into force on June 8, providing a foundational legal framework for digital ID initiatives.",
+            content: "The Malabo Convention on cybersecurity and data protection enters into force on June 8, providing a foundational legal framework for digital ID initiatives.",
             color: "green",
             type: "legal-framework",
         },
         {
+            year: 2023,
+            content: "Mali begins handing over its new secure biometric national ID cards in April, starting in Bamako.",
+            color: "green",
+            type: "project-rollout",
+            countries: ["Mali"],
+        },
+        {
             year: 2022,
-            content:
-                "Ethiopia begins the mass enrollment process for the Fayda ID system, initially focusing on government employees and urban areas.",
+            content: "Ethiopia launches the Fayda national ID, beginning with a pilot phase ahead of a wider rollout.",
             color: "blue",
             type: "enrollment-launch",
+            countries: ["Ethiopia"],
         },
         {
             year: 2020,
-            content:
-                "The African Union adopts its Digital Transformation Strategy for Africa (2020-2030), highlighting digital ID as a crucial enabler for development.",
+            content: "The African Union adopts its Digital Transformation Strategy for Africa (2020-2030), highlighting digital ID as a crucial enabler for development.",
             color: "purple",
             type: "policy-adoption",
         },
         {
             year: 2018,
-            content:
-                "The World Bank and ECOWAS launch the West Africa Unique Identification for Regional Integration and Inclusion (WURI) program, a multi-phase project for foundational IDs.",
+            content: "The World Bank approves the West Africa Unique Identification for Regional Integration and Inclusion (WURI) program on 5 June, starting with Côte d'Ivoire and Guinea, with Benin, Burkina Faso and Niger to follow.",
             color: "gray",
             type: "program-launch",
+            countries: ["Côte d'Ivoire", "Guinea"],
+        },
+        {
+            year: 2018,
+            content: "Public registration for the Ghana Card begins in the Greater Accra region on 28 May.",
+            color: "blue",
+            type: "project-launch",
+            countries: ["Ghana"],
+        },
+        {
+            year: 2017,
+            content: "Ghana unveils the Ghana Card and relaunches its National Identification System in September.",
+            color: "blue",
+            type: "project-launch",
+            countries: ["Ghana"],
         },
         {
             year: 2016,
-            content:
-                "Ghana launches the Ghana Card, a national biometric ID card intended for a wide range of services.",
-            color: "blue",
-            type: "project-launch",
-        },
-        {
-            year: 2015,
-            content:
-                "The ECOWAS National Biometric Identity Card (ENBIC), approved in 2014, is issued by Senegal as the first implementing country, facilitating regional mobility.",
+            content: "Senegal becomes the first ECOWAS country to issue the ECOWAS biometric identity card, on 4 October.",
             color: "blue",
             type: "regional-project-launch",
+            countries: ["Senegal"],
+        },
+        {
+            year: 2014,
+            content: "ECOWAS heads of state approve a regional biometric identity card (ENBIC) to facilitate mobility across the region.",
+            color: "blue",
+            type: "regional-policy",
         },
     ];
 

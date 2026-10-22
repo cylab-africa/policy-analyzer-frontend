@@ -12,13 +12,14 @@ This document outlines the functional requirements for the African Policy & Digi
 
 **FR-001**: The system SHALL display an interactive map of Africa showing data protection legislation status for all 55 African Union member states.
 
-**FR-002**: The system SHALL color-code countries based on legislation status (Enacted, Draft, No Law) using distinct visual indicators.
+**FR-002**: The system SHALL color-code countries based on legislation status (comprehensive law, draft legislation, limited framework, no legislation) using distinct visual indicators.
 
-**FR-003**: The system SHALL display country information on hover, including:
+**FR-003**: The system SHALL display country information on hover (a preview) and on click (a card that stays open), including:
 - Country name and flag
 - Legislation status
 - Year of enactment (if applicable)
 - Malabo Convention ratification status
+- Links to the country's sources (on the card that stays open)
 
 **FR-004**: The system SHALL provide a legend explaining color coding and status indicators.
 
@@ -30,7 +31,7 @@ This document outlines the functional requirements for the African Policy & Digi
 
 **FR-006**: The system SHALL use different color schemes to distinguish between Data Protection and Digital ID maps.
 
-**FR-007**: The system SHALL display digital ID implementation details on hover, including:
+**FR-007**: The system SHALL display digital ID implementation details on hover and click, including:
 - Implementation status
 - Responsible authority
 - System coverage
@@ -95,6 +96,8 @@ This document outlines the functional requirements for the African Policy & Digi
 
 **FR-024**: The system SHALL provide source attribution for AI responses when available.
 
+**Status**: 📋 Partial. The assistant is instructed to cite documents in its answer text. The chat shows a separate sources list only if the API supplies one, and the current backend does not.
+
 **FR-025**: The system SHALL handle AI service failures gracefully with appropriate error messages.
 
 **FR-026**: The system SHALL support web search integration for enhanced AI responses.
@@ -116,19 +119,20 @@ This document outlines the functional requirements for the African Policy & Digi
 **FR-030**: The system SHALL group resources by geographical region (West Africa, East Africa, etc.).
 
 **FR-031**: The system SHALL display resource metadata including:
-- Document title and description
-- Country and region
-- Publication year
-- Language
-- Document type
-- Authority/source
-- Official status indicator
+- Document title and a description of the source (its publisher and type)
+- Country
+- Year (year enacted for data protection, launch year for digital ID, where known)
+- Coverage and key features (digital ID) and Malabo Convention status (data protection)
 
-**Implementation Status**: ✅ Implemented in `src/components/resources/index.tsx`
+📋 **Planned**: language, document type, authority and an official-status indicator on each card.
+
+**Implementation Status**: ✅ Implemented in `src/components/resources/index.tsx` (the fields marked planned in FR-031 are not yet displayed)
 
 ### 3.2 Search and Filtering
 
-**FR-032**: The system SHALL provide real-time text search across all resource fields.
+**FR-032**: The system SHALL provide real-time text search by country name.
+
+📋 **Planned**: extend the search to titles, descriptions and publishers.
 
 **FR-033**: The system SHALL support regional filtering with dropdown selection.
 
@@ -140,21 +144,21 @@ This document outlines the functional requirements for the African Policy & Digi
 
 **FR-037**: The system SHALL provide filter reset functionality.
 
-**Implementation Status**: ✅ Implemented with comprehensive filtering system
+**Implementation Status**: ✅ Implemented (search currently matches country names only)
 
 ### 3.3 Resource Access
 
-**FR-038**: The system SHALL provide direct links to official government documents.
+**FR-038**: The system SHALL provide direct links to the sources listed for each country, including government documents and the text of laws where they have been found.
 
 **FR-039**: The system SHALL indicate external links with appropriate visual cues.
 
 **FR-040**: The system SHALL support opening documents in new browser tabs.
 
-**FR-041**: The system SHALL display resource type badges (Government, Academic, Policy Research, etc.).
+**FR-041**: 📋 **Planned**: The system SHALL display resource type badges (Government, Academic, Policy Research, etc.). Today the source type is stated in each card's description, for example "Academic research from ECDPM".
 
-**FR-042**: The system SHALL show official source verification indicators.
+**FR-042**: 📋 **Planned**: The system SHALL show official source verification indicators. Not implemented. Most data protection sources are secondary summaries, and no card is marked as verified or official.
 
-**Implementation Status**: ✅ Implemented in `src/components/resources/ResourceCard.tsx`
+**Implementation Status**: ✅ Implemented in `src/components/resources/ResourceCard.tsx`, except FR-041 and FR-042, which are planned
 
 ---
 
@@ -405,10 +409,14 @@ This document outlines the functional requirements for the African Policy & Digi
 - AI Chat API: `/query_stream` (streaming)
 
 ### Data Sources
-- African Union policy databases
-- Government official websites
-- International organization reports
-- Academic research repositories
+Sources currently listed in the country records:
+- Data Protection Africa (ALT Advisory) country fact sheets, and DLA Piper's overviews of national laws
+- The text of laws, where found (for example the Seychelles Official Gazette)
+- World Bank ID4D and other development-partner reports
+- Academic and policy research (for example ECDPM, DiploFoundation and Research ICT Africa)
+- News reports on recent developments
+
+📋 **Planned**: sourcing directly from African Union policy databases and government websites.
 
 ---
 

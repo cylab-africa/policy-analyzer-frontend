@@ -560,14 +560,16 @@ export default function ChatPage() {
     // Suggested questions
     const suggestedQuestions = {
         [ChatTab.DATA_PROTECTION]: [
-            "Which countries have data protection laws?",
-            "What is the Malabo Convention?",
-            "Compare Ghana and Nigeria's data laws",
+            "Which African countries have enacted data protection laws?",
+            "What is the Malabo Convention, and which countries have ratified it?",
+            "Compare Ghana and Nigeria's data protection laws",
+            "What rights do individuals have under Kenya's Data Protection Act?",
         ],
         [ChatTab.DIGITAL_ID]: [
-            "Which countries have digital ID systems?",
-            "How does Kenya's Huduma Namba work?",
-            "Digital ID systems for women",
+            "Which African countries have a national digital ID system?",
+            "How does Ethiopia's Fayda ID work?",
+            "Compare Nigeria's NIN and the Ghana Card",
+            "How is biometric data protected in national ID systems?",
         ],
     };
 

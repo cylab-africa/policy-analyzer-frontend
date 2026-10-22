@@ -180,7 +180,7 @@ This document outlines user stories for the African Policy & Digital Identity Pl
 -   ✅ Mobile-optimized chat interface with proper scrolling
 -   ✅ Suggested questions for quick start in both contexts
 -   ✅ Comprehensive error handling for AI service failures
--   ✅ Source attribution for AI responses
+-   📋 Source attribution for AI responses (the assistant cites documents in its answer text; a separate sources list is not yet supplied by the API)
 
 **Location**: `src/components/chat/index.tsx` and related chat components
 
@@ -247,12 +247,12 @@ This document outlines user stories for the African Policy & Digital Identity Pl
 
 **Implementation Status:**
 
--   ✅ Comprehensive search with text filtering across all document fields
+-   ✅ Search by country name (📋 planned: search across titles, descriptions and publishers)
 -   ✅ Regional filtering (West Africa, East Africa, Central Africa, etc.)
 -   ✅ Tab-based organization (Data Protection vs Digital ID resources)
 -   ✅ Real-time search results with instant filtering
--   ✅ Document cards with metadata (year, language, file type, authority)
--   ✅ Direct links to official documents and resources
+-   ✅ Source cards with a description of the source, year, coverage and key features (📋 planned: language, file type and authority)
+-   ✅ Direct links to the sources listed for each country
 -   ✅ Mobile-responsive search and browse interface
 -   ✅ Resource count indicators for each category
 
@@ -272,16 +272,16 @@ This document outlines user stories for the African Policy & Digital Identity Pl
 
 -   ✅ Resources categorized by topic (Data Protection, Digital ID)
 -   ✅ Regional organization with clear visual grouping
--   ✅ Resource type badges (Government, Academic Research, Policy Research, etc.)
+-   📋 Resource type badges (today the source type is stated in each card's description)
 -   ✅ Responsive grid layout for all devices
 -   ✅ Resource count per category displayed in tabs
 -   ✅ Multiple filter combination capability (search + region + category)
 -   ✅ Country flag indicators and regional grouping
--   ✅ Official source verification badges
+-   📋 Official source verification badges (not implemented)
 
 **Location**: `src/components/resources/index.tsx`, regional grouping and filtering logic
 
-### Story 3.3: Access Official Government Links ✅ **IMPLEMENTED**
+### Story 3.3: Access Official Government Links 🔶 **PARTIALLY IMPLEMENTED**
 
 **As a** government official
 **I want to** access direct links to official government policy documents and agencies
@@ -293,13 +293,13 @@ This document outlines user stories for the African Policy & Digital Identity Pl
 
 **Implementation Status:**
 
--   ✅ "Official Source" badges on government documents
+-   📋 "Official Source" badges on government documents (not implemented)
 -   ✅ External link indicators with proper opening behavior
--   ✅ Resource type classification (Government, Official, Academic, etc.)
--   ✅ Direct links to government websites and policy documents
--   ✅ Authority information display for each resource
+-   ✅ Resource type classification in the data, shown in each card's description
+-   ✅ Direct links to the sources listed for each country (government sites and law texts where found)
+-   📋 Authority information for each resource (shown for digital ID on the map cards, not on source cards)
 -   ✅ Mobile-friendly link access with proper touch targets
--   ✅ Resource metadata including year, language, and file type
+-   ✅ Resource metadata including year (📋 planned: language and file type)
 
 **Location**: `src/components/resources/ResourceCard.tsx`, official source handling and display
 
@@ -385,7 +385,7 @@ This document outlines user stories for the African Policy & Digital Identity Pl
 -   ✅ Story 2.3: Chat History Management (4 pts)
 -   ✅ Story 3.1: Resource Search and Discovery (5 pts)
 -   ✅ Story 3.2: Category-Based Resource Browsing (4 pts)
--   ✅ Story 3.3: Official Government Resource Access (3 pts)
+-   🔶 Story 3.3: Official Government Resource Access (3 pts, partially implemented)
 
 **Total Implemented**: 51 story points
 

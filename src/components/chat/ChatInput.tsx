@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { FileSpreadsheet, Heart, Loader2, Plus, Send, Upload } from "lucide-react";
@@ -147,7 +148,12 @@ export function ChatInput({
                                 </span>
                             </div>
                             <span className="hidden sm:inline">•</span>
-                            <span className="hidden sm:inline">AI can make mistakes. Check important info.</span>
+                            <span className="hidden sm:inline">
+                                AI can make mistakes. Check the cited law before relying on an answer.{" "}
+                                <Link href="/docs#analysis-method" className="underline underline-offset-2 hover:text-slate-600">
+                                    How answers are produced
+                                </Link>
+                            </span>
                         </div>
 
                         {/* Feedback Button */}

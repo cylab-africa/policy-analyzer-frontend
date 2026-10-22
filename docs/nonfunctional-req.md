@@ -4,6 +4,8 @@
 
 This document defines the non-functional requirements for the African Policy & Digital Identity Platform, specifying the quality attributes and constraints that the system must meet to ensure optimal user experience and operational efficiency.
 
+> **Status.** These requirements are targets. Not all of them are implemented or measured today. In particular, automatic verification of broken external links (RE-008), change tracking for policy data (RE-009), data-corruption alerts (RE-010) and automated backups (RE-011) are not provided by this repository. The seed data is versioned in git, and backups depend on how an instance is deployed. External links were last checked by hand in October 2026.
+
 ---
 
 ## 1. Performance Requirements

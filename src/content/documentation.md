@@ -1,13 +1,13 @@
-The Policy Analyzer studies data protection and digital identity policy across African countries. This page describes the method behind it: what is measured, what evidence it relies on, how information is extracted from policy documents, how questions are analysed, and the limits of the results.
+The Policy Analyzer studies data protection and digital identity laws and regulations across African countries. This page describes the method behind it: what is measured, what evidence it relies on, how information is extracted from regulatory documents, how questions are analysed, and the limits of the results.
 
 ## Purpose and scope
 
 The Policy Analyzer helps researchers, policy analysts and implementers compare how African countries regulate personal data and implement digital identity systems. It works at two levels:
 
 - **Country indicators**: the same set of indicators is recorded for every country, so the whole continent can be compared at a glance.
-- **Document analysis**: questions are answered from the text of policy documents. This covers what the indicators cannot capture, such as what a law requires or how two countries' rules differ.
+- **Document analysis**: questions are answered from the text of legal and policy documents. This covers what the indicators cannot capture, such as what a law requires or how two countries' rules differ.
 
-The analysis covers three topic areas: data protection, digital identity, and general legal and regulatory questions in the same field.
+The analysis covers two topic areas: data protection and digital identity. Documents added without a topic are catalogued as general.
 
 ## Analytical framework
 
@@ -26,9 +26,13 @@ The country indicators give a consistent basis for comparison. Each country is p
 ### Digital identity indicators
 
 - **Implementation status**, in four categories: fully operational, partially implemented, planning, or no information. "No information" means we have not found enough published information. It does not mean a country has no ID system.
-- **Descriptive attributes**, where available: the issuing authority, the year the system was launched, a coverage figure, its main features and a short description. The coverage figure estimates how many people the system covers, and it is often reported by the issuing authority itself. It reads "Unknown" where no figure was found and "Not yet launched" for systems that are still being planned.
+- **Descriptive attributes**, where available: the issuing authority, the year the system was launched, a coverage figure, its main features and a short description. The coverage figure estimates how many people the system covers, and it is often reported by the issuing authority itself. It reads "Unknown" or "N/A" where no figure was found, and "Not yet launched" for systems that are still being planned.
 
 Categories such as "limited framework" or "partially implemented" involve judgement. A single category cannot capture every nuance of a country's situation. Country records were last updated in October 2026, and ID programmes in particular change quickly.
+
+### How the indicators are maintained
+
+The country indicators are recorded by hand by the project team. They are not generated automatically from the document collection, and no automatic rule assigns a category. Most records list the sources they rely on, and the records are kept in the project's code repository, so changes to them can be traced.
 
 ## Evidence base
 
@@ -36,11 +40,13 @@ The analysis relies on two separate bodies of evidence.
 
 ### Reference sources for the indicators
 
-Each country record lists reference material so that any classification can be checked against published sources. This includes country fact sheets, legal guides, the text of laws where we have found it, government and official sources, academic and policy research, reports by development partners and research institutes, and news reports on recent developments. All of it is collected in the **Sources** library, where readers can browse it by country and region.
+Most country records list reference material so that the classification can be checked against published sources. This includes country fact sheets, legal guides, the text of laws where we have found it, government and official sources, academic and policy research, reports by development partners and research institutes, and news reports on recent developments. All of it is collected in the **Sources** library, where readers can browse it by country and region.
+
+In practice, every data protection record cites a country fact sheet from Data Protection Africa (ALT Advisory). Some also cite DLA Piper's overview of the country's law, and for a few countries the text of the law itself is linked. Digital identity records cite World Bank ID4D diagnostics and other development-partner reports, research from organisations such as ECDPM, DiploFoundation and Research ICT Africa, and news reports on recent developments. Some digital identity records do not yet list a source. Most of these sources summarise the law rather than replace it, so check the law itself for anything you rely on.
 
 ### Document collection for analysis
 
-Document-level analysis draws on a collection of policy documents, including laws, regulations and frameworks, organised by topic area. The Sources library is a reading list for checking and further study. The document collection is what the analysis actually searches.
+Document-level analysis draws on a collection of policy documents, including laws, regulations and frameworks, organised by topic area. The collection is made of the texts of national legal instruments, such as data protection laws, added through the project's upload tools and organised by topic area. The Sources library is a reading list for checking and further study. The document collection is what the analysis actually searches.
 
 ## Information extraction
 
@@ -48,12 +54,12 @@ Before a document can be analysed, it is broken down into pieces of evidence tha
 
 1. **Text extraction.** The full text is extracted from the original document.
 2. **Cataloguing.** The opening part of the document is read to record the country it concerns, a title and a short description.
-3. **Topic labelling.** The document is assigned to its topic area: data protection, digital identity or general.
+3. **Topic labelling.** Whoever adds the document chooses its topic area: data protection or digital identity, or general when none is chosen.
 4. **Division into passages.** The text is divided into short, overlapping passages of a few paragraphs each. Every passage carries the document's country and topic labels.
 
 As a result, each piece of evidence is a specific passage of a document rather than the document as a whole. It can be found by country and topic, and an analysis can focus on the provisions that matter for a question.
 
-If the country cannot be identified, the document is catalogued as "Unknown". Analyses focused on a specific country will not find it, but analyses across the whole topic can.
+The country, title and description are detected automatically and are not manually checked, so a misreading is possible. If the country cannot be identified, the document is catalogued as "Unknown". Analyses focused on a specific country will not find it, but analyses across the whole topic can.
 
 ## Analysis method
 
@@ -73,7 +79,7 @@ Questions are answered by finding the relevant evidence first and then writing a
 
 ### Supplementary evidence
 
-If very little evidence is found, or the question asks about recent or current developments, the analysis also runs a web search. Answers that use web results include a note saying so.
+If very little evidence is found, or the question asks about recent or current developments, the analysis also runs a web search. Answers that use web results are instructed to include a note saying so.
 
 ### Writing the answer
 
@@ -100,7 +106,9 @@ Batch analysis applies the same method to a list of up to 100 questions supplied
 Several checks are built into the method:
 - questions outside the analyser's scope are declined;
 - answers are instructed to rely on the evidence found and to say when it is insufficient;
-- answers that draw on web results are labelled.
+- answers that draw on web results are instructed to say so.
+
+Some of these checks work through instructions given to the AI model, so they cannot be guaranteed on every answer.
 
 Keep the following limitations in mind:
 

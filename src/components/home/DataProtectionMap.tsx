@@ -3,10 +3,11 @@
 import africanCountries from "@/data/world-map.json";
 import { usePolicyLawData } from "@/redux/api/apiSlice";
 import { AlertCircle, Loader2 } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
 import { ISLAND_STATES } from "@/lib/island-states";
 import { MapPopoverCard, useMapPopover } from "./MapPopover";
+import MapLegend from "./MapLegend";
 import DataProtectionCard from "./DataProtectionCard";
 
 // Country name mapping to handle inconsistencies between map data and API data
@@ -79,6 +80,8 @@ const findCountryData = <T extends { country: string }>(data: T[], mapCountryNam
 
 const DataProtectionMap: React.FC = () => {
     const popover = useMapPopover();
+    // Status picked in the legend; every other country is dimmed while it is set
+    const [activeStatus, setActiveStatus] = useState<string | null>(null);
     const { policyLaws, isLoading, error } = usePolicyLawData();
 
     // Professional color palette for data protection legislation status
@@ -146,28 +149,35 @@ const DataProtectionMap: React.FC = () => {
         );
     }
 
-    // Add this function to check if a country is African
     const legendData = [
         { status: "Enacted", color: getColor("Enacted"), label: "Comprehensive Law" },
         { status: "Draft", color: getColor("Draft"), label: "Draft Legislation" },
         { status: "Lite", color: getColor("Lite"), label: "Limited Framework" },
         { status: "No Law", color: getColor("No Law"), label: "No Legislation" },
-    ];
+    ].map((item) => ({
+        ...item,
+        count: policyLaws.filter((law) => law.dataProtectionLegislationStatus === item.status).length,
+    }));
 
     return (
-        <div className="w-full space-y-6">
+        <div className="w-full">
+            <MapLegend items={legendData} active={activeStatus} onChange={setActiveStatus} />
             <div className="relative">
-                <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden relative bg-gradient-to-br from-slate-50/50 to-blue-50/30 border border-slate-100"
+                <div className="w-full h-[600px] lg:h-[700px] overflow-hidden relative bg-gradient-to-br from-slate-50/50 to-blue-50/30"
                     ref={popover.containerRef}
                     onClick={popover.close}
                 >
+                    {/* Faint dot grid, like graph paper */}
+                    <div
+                        className="absolute inset-0 pointer-events-none opacity-60"
+                        style={{
+                            backgroundImage: "radial-gradient(rgb(148 163 184 / 0.35) 1px, transparent 1px)",
+                            backgroundSize: "22px 22px",
+                        }}
+                    />
                     {/* Professional background pattern */}
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(34,197,94,0.05)_0%,transparent_70%)] pointer-events-none"></div>
 
-                    <p className="pointer-events-none absolute left-4 top-4 z-10 max-w-[16rem] text-xs text-slate-500">
-
-                        Hover a country for a preview. Click it to pin the card and open its sources.
-                    </p>
 
                     <ComposableMap
                         projectionConfig={{
@@ -185,6 +195,7 @@ const DataProtectionMap: React.FC = () => {
                                     const status = getCountryStatus(countryName);
                                     const fillColor = getColor(status);
                                     const isHovered = popover.state?.name === countryName;
+                                    const dimmed = activeStatus !== null && status !== activeStatus;
 
                                     return (
                                         <Geography
@@ -198,14 +209,15 @@ const DataProtectionMap: React.FC = () => {
                                                 default: {
                                                     outline: "none",
                                                     filter: isHovered ? "brightness(1.12)" : "none",
-                                                    transition: "filter 0.15s ease",
+                                                    transition: "filter 0.15s ease, opacity 0.25s ease",
+                                                    opacity: dimmed ? 0.18 : 1,
                                                     cursor: interactive ? "pointer" : "default",
                                                 },
                                                 hover: interactive
-                                                    ? { outline: "none", fill: fillColor, filter: "brightness(1.12)" }
+                                                    ? { outline: "none", fill: fillColor, filter: "brightness(1.12)", opacity: dimmed ? 0.4 : 1 }
                                                     : {},
                                                 pressed: interactive
-                                                    ? { outline: "none", fill: fillColor, filter: "brightness(0.95)" }
+                                                    ? { outline: "none", fill: fillColor, filter: "brightness(0.95)", opacity: dimmed ? 0.4 : 1 }
                                                     : {},
                                             }}
                                             onMouseEnter={interactive ? (event) => popover.hover(countryName, event) : undefined}
@@ -228,7 +240,8 @@ const DataProtectionMap: React.FC = () => {
                                     fill={getColor(getCountryStatus(name))}
                                     stroke="rgba(255,255,255,0.9)"
                                     strokeWidth={1.5}
-                                    className="cursor-pointer"
+                                    className="cursor-pointer transition-opacity duration-200"
+                                    opacity={activeStatus !== null && getCountryStatus(name) !== activeStatus ? 0.25 : 1}
                                     onMouseEnter={(event) => popover.hover(name, event)}
                                     onMouseMove={popover.move}
                                     onMouseLeave={popover.leave}
@@ -269,29 +282,8 @@ const DataProtectionMap: React.FC = () => {
                             </p>
                         </div>
                     </div>
-
-                    {/* Enhanced Legend */}
-                    <div className="absolute bottom-4 right-0 bg-white/95 backdrop-blur-md rounded-tl-md rounded-bl-md p-5 border border-white/60 shadow-xs max-w-xs">
-                        <div className="flex items-center gap-2.5 mb-4">
-                            <h4 className="text-sm font-bold text-gray-800">Data Protection</h4>
-                        </div>
-                        <div className="space-y-3">
-                            {legendData.map((item) => (
-                                <div key={item.status} className="flex items-center gap-3">
-                                    <div
-                                        className="w-3 h-3 rounded-full border-2 border-white shadow-sm"
-                                        style={{ backgroundColor: item.color }}
-                                    ></div>
-                                    <div className="flex-1">
-                                        <div className="text-xs font-medium text-gray-800">{item.label}</div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
                 </div>
             </div>
-
         </div>
     );
 };
