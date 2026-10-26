@@ -4,7 +4,7 @@ The Policy Analyzer is an open-source web tool for exploring and comparing data 
 
 ### Purpose
 
-This documentation explains the Policy Analyzer as a whole, so that readers can judge what it can tell them, how far to trust it, and how to reuse it. It describes the tool's features, design, data and method. It does not report policy findings; the tool itself does that.
+This documentation explains the Policy Analyzer as a whole, so that readers can judge what it can tell them, how far to trust it, and how to reuse it. It describes the tool's features, design, data and method. For findings about a specific country, use the maps, the Sources library or the chat.
 
 ### Who it is for
 
@@ -49,7 +49,7 @@ The tool has six parts:
 The tool works at two levels:
 
 - **Country indicators**: the same set of indicators is recorded for every country, so the whole continent can be compared at a glance.
-- **Document analysis**: questions are answered from the text of legal and policy documents. This covers what the indicators cannot capture, such as what a law requires or how two countries' rules differ.
+- **Document analysis**: questions are answered from the text of legal and policy documents. Use it for questions the indicators can't answer, such as what a law requires, what rights it gives, or how two countries' rules differ.
 
 The analysis covers two topic areas: data protection and digital identity. Documents added without a topic are catalogued as general.
 
@@ -163,7 +163,7 @@ Batch analysis applies the same method to a list of up to 100 questions supplied
 ## How insights are derived
 
 - **Continental statistics.** The figures on the Home page count how many countries fall into each indicator category. They are calculated directly from the country records, so they always match the maps.
-- **Policy timeline.** The timeline on the Home page presents selected milestones in data protection and digital identity across the continent, organised by year. Each entry is taken from a dated source, and figures are as reported on the date given.
+- **Policy timeline.** The timeline on the Home page presents selected milestones in data protection and digital identity across the continent, organised by year. Each entry is taken from a dated source, and figures are as reported on the date given. The date of the last update is shown on the timeline.
 - **Document-based findings.** An answer is a new synthesis of the evidence found for that question, not a stored conclusion. Rewording a question can bring up different passages and so produce a different answer. Asking questions in a fixed form, as batch analysis does, makes results easier to compare.
 
 ## Verification and limitations

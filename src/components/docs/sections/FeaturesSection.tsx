@@ -42,9 +42,9 @@ export function FeaturesSection() {
                     continent can be compared at a glance.
                 </LI>
                 <LI>
-                    <B>Document analysis</B>: questions are answered from the text of legal and policy documents. This
-                    covers what the indicators cannot capture, such as what a law requires or how two countries’ rules
-                    differ.
+                    <B>Document analysis</B>: questions are answered from the text of legal and policy documents. Use it
+                    for questions the indicators can’t answer, such as what a law requires, what rights it gives, or
+                    how two countries’ rules differ.
                 </LI>
             </UL>
 

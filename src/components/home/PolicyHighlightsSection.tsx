@@ -1,9 +1,7 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, ArrowRight, Fingerprint, Shield } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarClock, Fingerprint, Shield } from "lucide-react";
 import React, { useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import TimelineComponent from "./TimelineComponent";
@@ -16,6 +14,9 @@ interface TimelineEvent {
     countries?: string[];
 }
 
+// When the timeline events were last reviewed. Update this whenever an event is added or changed.
+const TIMELINE_LAST_UPDATED = "October 2026";
+
 const PolicyHighlightsSection: React.FC = () => {
     // Data Protection Timeline Events
     // Malabo Convention entries follow the African Union's official status list (ratifications are dated by the
@@ -25,35 +26,40 @@ const PolicyHighlightsSection: React.FC = () => {
     const dataProtectionEvents: TimelineEvent[] = [
         {
             year: 2026,
-            content: "Burundi enacts its data protection law (Law n° 1/03 of 10 March 2026), after parliament adopted the bill in January.",
+            content:
+                "Burundi enacts its data protection law (Law n° 1/03 of 10 March 2026), after parliament adopted the bill in January.",
             color: "green",
             type: "national-law",
             countries: ["Burundi"],
         },
         {
             year: 2025,
-            content: "The Democratic Republic of the Congo deposits its instrument of ratification of the Malabo Convention with the African Union on 27 June, the 17th country to ratify.",
+            content:
+                "The Democratic Republic of the Congo deposits its instrument of ratification of the Malabo Convention with the African Union on 27 June, the 17th country to ratify.",
             color: "blue",
             type: "ratification",
             countries: ["DR Congo"],
         },
         {
             year: 2025,
-            content: "Djibouti and The Gambia are reported to have enacted data protection laws: Djibouti within its Digital Code, and The Gambia through the Personal Data Protection and Privacy Act.",
+            content:
+                "Djibouti and The Gambia are reported to have enacted data protection laws: Djibouti within its Digital Code, and The Gambia through the Personal Data Protection and Privacy Act.",
             color: "green",
             type: "national-law",
             countries: ["Djibouti", "The Gambia"],
         },
         {
             year: 2024,
-            content: "Ethiopia (Proclamation 1321/2024), Malawi (Data Protection Act), Cameroon (Law 2024/017, December) and the Central African Republic (Loi 24/001, January) enact data protection laws.",
+            content:
+                "Ethiopia (Proclamation 1321/2024), Malawi (Data Protection Act), Cameroon (Law 2024/017, December) and the Central African Republic (Loi 24/001, January) enact data protection laws.",
             color: "green",
             type: "national-law",
             countries: ["Ethiopia", "Malawi", "Cameroon", "Central African Republic"],
         },
         {
             year: 2024,
-            content: "São Tomé & Príncipe deposits its instrument of ratification of the Malabo Convention on 15 February, the 16th country to ratify.",
+            content:
+                "São Tomé & Príncipe deposits its instrument of ratification of the Malabo Convention on 15 February, the 16th country to ratify.",
             color: "blue",
             type: "ratification",
             countries: ["São Tomé & Príncipe"],
@@ -67,7 +73,8 @@ const PolicyHighlightsSection: React.FC = () => {
         },
         {
             year: 2023,
-            content: "Nigeria (Data Protection Act, signed 14 June), Somalia (Data Protection Act, March) and Seychelles (Data Protection Act, in force 22 December) enact data protection laws.",
+            content:
+                "Nigeria (Data Protection Act, signed 14 June), Somalia (Data Protection Act, March) and Seychelles (Data Protection Act, in force 22 December) enact data protection laws.",
             color: "green",
             type: "national-law",
             countries: ["Nigeria", "Somalia", "Seychelles"],
@@ -94,13 +101,15 @@ const PolicyHighlightsSection: React.FC = () => {
         },
         {
             year: 2022,
-            content: "The African Union Executive Council endorses the AU Data Policy Framework in February, which recommends that member states adopt data protection laws backed by functioning authorities and ratify the Malabo Convention.",
+            content:
+                "The African Union Executive Council endorses the AU Data Policy Framework in February, which recommends that member states adopt data protection laws backed by functioning authorities and ratify the Malabo Convention.",
             color: "purple",
             type: "policy",
         },
         {
             year: 2022,
-            content: "Tanzania (Personal Information Protection Act, passed November) and Eswatini (Data Protection Act, published March) enact data protection laws.",
+            content:
+                "Tanzania (Personal Information Protection Act, passed November) and Eswatini (Data Protection Act, published March) enact data protection laws.",
             color: "green",
             type: "national-law",
             countries: ["Tanzania", "Eswatini"],
@@ -121,7 +130,8 @@ const PolicyHighlightsSection: React.FC = () => {
         },
         {
             year: 2021,
-            content: "Rwanda (Law No. 058/2021, October), Zambia (Data Protection Act No. 3 of 2021) and Zimbabwe (Data Protection Act) enact data protection laws.",
+            content:
+                "Rwanda (Law No. 058/2021, October), Zambia (Data Protection Act No. 3 of 2021) and Zimbabwe (Data Protection Act) enact data protection laws.",
             color: "green",
             type: "national-law",
             countries: ["Rwanda", "Zambia", "Zimbabwe"],
@@ -149,7 +159,8 @@ const PolicyHighlightsSection: React.FC = () => {
         },
         {
             year: 2019,
-            content: "Uganda (Data Protection and Privacy Act, passed 3 March) and Kenya (Data Protection Act, November) enact data protection laws.",
+            content:
+                "Uganda (Data Protection and Privacy Act, passed 3 March) and Kenya (Data Protection Act, November) enact data protection laws.",
             color: "green",
             type: "national-law",
             countries: ["Uganda", "Kenya"],
@@ -170,13 +181,15 @@ const PolicyHighlightsSection: React.FC = () => {
         },
         {
             year: 2014,
-            content: "The African Union adopts the Convention on Cyber Security and Personal Data Protection (the Malabo Convention) in June.",
+            content:
+                "The African Union adopts the Convention on Cyber Security and Personal Data Protection (the Malabo Convention) in June.",
             color: "purple",
             type: "adoption",
         },
         {
             year: 2011,
-            content: "The African Union begins drafting the Convention, with a first draft prepared at the 17th AU Summit in Malabo.",
+            content:
+                "The African Union begins drafting the Convention, with a first draft prepared at the 17th AU Summit in Malabo.",
             color: "gray",
             type: "drafting",
         },
@@ -190,14 +203,16 @@ const PolicyHighlightsSection: React.FC = () => {
     const digitalIdEvents: TimelineEvent[] = [
         {
             year: 2026,
-            content: "Togo's e-ID programme has registered more than 6 million of the country's roughly 8 million people by late September, and nearly all registrants hold a digital card. Only the Kara region remains to be covered.",
+            content:
+                "Togo's e-ID programme has registered more than 6 million of the country's roughly 8 million people by late September, and nearly all registrants hold a digital card. Only the Kara region remains to be covered.",
             color: "green",
             type: "enrollment-milestone",
             countries: ["Togo"],
         },
         {
             year: 2026,
-            content: "Namibia sets September for the launch of its electronic ID card, after postponing it so that data protection and identity legislation could be finalised.",
+            content:
+                "Namibia sets September for the launch of its electronic ID card, after postponing it so that data protection and identity legislation could be finalised.",
             color: "green",
             type: "project-rollout",
             countries: ["Namibia"],
@@ -211,83 +226,95 @@ const PolicyHighlightsSection: React.FC = () => {
         },
         {
             year: 2026,
-            content: "The Gambia launches a new national identification system, with registration beginning in the Greater Banjul area in August.",
+            content:
+                "The Gambia launches a new national identification system, with registration beginning in the Greater Banjul area in August.",
             color: "green",
             type: "project-launch",
             countries: ["The Gambia"],
         },
         {
             year: 2026,
-            content: "Ethiopia's Fayda ID has about 52.8 million people registered by July, up from 24 million in June 2025. Safaricom Ethiopia joins the programme to run enrolment in seven regions.",
+            content:
+                "Ethiopia's Fayda ID has about 52.8 million people registered by July, up from 24 million in June 2025. Safaricom Ethiopia joins the programme to run enrolment in seven regions.",
             color: "green",
             type: "enrollment-milestone",
             countries: ["Ethiopia"],
         },
         {
             year: 2026,
-            content: "Nigeria's NIN enrolment reaches 136 million in July, up from 123.9 million in October 2025, and a new NIMC Act repeals and replaces the 2007 law governing the commission.",
+            content:
+                "Nigeria's NIN enrolment reaches 136 million in July, up from 123.9 million in October 2025, and a new NIMC Act repeals and replaces the 2007 law governing the commission.",
             color: "green",
             type: "enrollment-milestone",
             countries: ["Nigeria"],
         },
         {
             year: 2026,
-            content: "Niger formally launches its biometric national ID card, branded the AES card, in Niamey on 27 March, starting with a pilot phase in the capital.",
+            content:
+                "Niger formally launches its biometric national ID card, branded the AES card, in Niamey on 27 March, starting with a pilot phase in the capital.",
             color: "green",
             type: "project-launch",
             countries: ["Niger"],
         },
         {
             year: 2026,
-            content: "Somalia's national ID authority (NIRA) opens an ID registration office at its embassy in Nairobi, its 30th office abroad.",
+            content:
+                "Somalia's national ID authority (NIRA) opens an ID registration office at its embassy in Nairobi, its 30th office abroad.",
             color: "green",
             type: "project-rollout",
             countries: ["Somalia"],
         },
         {
             year: 2025,
-            content: "Rwanda begins biometric enrolment for its new digital ID, following a 2023 law. More than 300,000 people had registered by 20 November, and residents are due to be able to use the digital ID from June 2026.",
+            content:
+                "Rwanda begins biometric enrolment for its new digital ID, following a 2023 law. More than 300,000 people had registered by 20 November, and residents are due to be able to use the digital ID from June 2026.",
             color: "green",
             type: "project-rollout",
             countries: ["Rwanda"],
         },
         {
             year: 2025,
-            content: "Uganda launches a nationwide mass enrolment and renewal of national ID cards on 27 May, across all 146 districts, aiming to renew about 15.8 million cards and register 17.2 million new people.",
+            content:
+                "Uganda launches a nationwide mass enrolment and renewal of national ID cards on 27 May, across all 146 districts, aiming to renew about 15.8 million cards and register 17.2 million new people.",
             color: "green",
             type: "enrollment-milestone",
             countries: ["Uganda"],
         },
         {
             year: 2025,
-            content: "Sierra Leone's National Civil Registration Authority reports 93% national ID registration coverage (self-reported).",
+            content:
+                "Sierra Leone's National Civil Registration Authority reports 93% national ID registration coverage (self-reported).",
             color: "green",
             type: "enrollment-milestone",
             countries: ["Sierra Leone"],
         },
         {
             year: 2024,
-            content: "Mauritius unveils its new national ID card on 26 February, a chip card built by a Thales-led consortium under a 10-year contract, with a companion digital ID wallet app.",
+            content:
+                "Mauritius unveils its new national ID card on 26 February, a chip card built by a Thales-led consortium under a 10-year contract, with a companion digital ID wallet app.",
             color: "green",
             type: "project-launch",
             countries: ["Mauritius"],
         },
         {
             year: 2024,
-            content: "Kenya's Maisha Namba digital ID rollout resumes after the High Court lifts a freeze on 12 August.",
+            content:
+                "Kenya's Maisha Namba digital ID rollout resumes after the High Court lifts a freeze on 12 August.",
             color: "green",
             type: "project-update",
             countries: ["Kenya"],
         },
         {
             year: 2023,
-            content: "The Malabo Convention on cybersecurity and data protection enters into force on June 8, providing a foundational legal framework for digital ID initiatives.",
+            content:
+                "The Malabo Convention on cybersecurity and data protection enters into force on June 8, providing a foundational legal framework for digital ID initiatives.",
             color: "green",
             type: "legal-framework",
         },
         {
             year: 2023,
-            content: "Mali begins handing over its new secure biometric national ID cards in April, starting in Bamako.",
+            content:
+                "Mali begins handing over its new secure biometric national ID cards in April, starting in Bamako.",
             color: "green",
             type: "project-rollout",
             countries: ["Mali"],
@@ -301,13 +328,15 @@ const PolicyHighlightsSection: React.FC = () => {
         },
         {
             year: 2020,
-            content: "The African Union adopts its Digital Transformation Strategy for Africa (2020-2030), highlighting digital ID as a crucial enabler for development.",
+            content:
+                "The African Union adopts its Digital Transformation Strategy for Africa (2020-2030), highlighting digital ID as a crucial enabler for development.",
             color: "purple",
             type: "policy-adoption",
         },
         {
             year: 2018,
-            content: "The World Bank approves the West Africa Unique Identification for Regional Integration and Inclusion (WURI) program on 5 June, starting with Côte d'Ivoire and Guinea, with Benin, Burkina Faso and Niger to follow.",
+            content:
+                "The World Bank approves the West Africa Unique Identification for Regional Integration and Inclusion (WURI) program on 5 June, starting with Côte d'Ivoire and Guinea, with Benin, Burkina Faso and Niger to follow.",
             color: "gray",
             type: "program-launch",
             countries: ["Côte d'Ivoire", "Guinea"],
@@ -328,14 +357,16 @@ const PolicyHighlightsSection: React.FC = () => {
         },
         {
             year: 2016,
-            content: "Senegal becomes the first ECOWAS country to issue the ECOWAS biometric identity card, on 4 October.",
+            content:
+                "Senegal becomes the first ECOWAS country to issue the ECOWAS biometric identity card, on 4 October.",
             color: "blue",
             type: "regional-project-launch",
             countries: ["Senegal"],
         },
         {
             year: 2014,
-            content: "ECOWAS heads of state approve a regional biometric identity card (ENBIC) to facilitate mobility across the region.",
+            content:
+                "ECOWAS heads of state approve a regional biometric identity card (ENBIC) to facilitate mobility across the region.",
             color: "blue",
             type: "regional-policy",
         },
@@ -357,94 +388,113 @@ const PolicyHighlightsSection: React.FC = () => {
         setCurrentPage(1);
     };
 
+    const firstShown = (currentPage - 1) * itemsPerPage + 1;
+    const lastShown = Math.min(currentPage * itemsPerPage, currentTimelineEvents.length);
+
+    const tabClass =
+        "flex items-center cursor-pointer gap-2.5 px-6 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 text-slate-600 hover:text-slate-900 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm";
+
     return (
-        <section className="py-16 bg-slate-50">
-            <div className="max-w-7xl container mx-auto px-4 sm:px-6">
+        <section className="relative overflow-hidden bg-slate-50 py-20">
+            {/* Soft brand wash behind the header */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-primary/[0.06] to-transparent"
+            />
+
+            <div className="relative container mx-auto max-w-7xl px-4 sm:px-6">
                 {/* Header */}
-                <div className="text-center mb-12">
-                    <h2 className="text-3xl font-bold text-slate-900 mb-4">
+                <div className="mb-10 text-center">
+                    <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
                         African {activeTimeline === "data-protection" ? "Data Protection" : "Digital Identity"}{" "}
                         Milestones
                     </h2>
-                    <p className="text-slate-600 max-w-2xl mx-auto">
+                    <p className="mx-auto mt-4 max-w-2xl text-slate-600">
                         Key developments in{" "}
                         {activeTimeline === "data-protection" ? "data protection" : "digital identity systems"} across
                         Africa
                     </p>
+                    <p className="mt-3 inline-flex items-center gap-1.5 text-sm text-slate-500">
+                        <CalendarClock className="h-4 w-4" aria-hidden="true" />
+                        Last updated {TIMELINE_LAST_UPDATED}
+                    </p>
                 </div>
 
                 {/* Timeline Tabs */}
-                <div className="flex justify-center mb-8">
+                <div className="mb-8 flex justify-center">
                     <Tabs
                         defaultValue="data-protection"
                         value={activeTimeline}
                         onValueChange={(value) => handleTimelineSwitch(value as "data-protection" | "digital-id")}
                     >
-                        <TabsList className="grid grid-cols-2 bg-slate-100 rounded-xl p-1 border-0 h-auto">
-                            <TabsTrigger
-                                value="data-protection"
-                                className="flex items-center cursor-pointer gap-3 px-8 py-3 text-md font-bold rounded-lg transition-all duration-200 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-600 hover:text-slate-800"
-                            >
-                                <Shield className="w-4 h-4" />
+                        <TabsList className="grid h-auto grid-cols-2 rounded-xl border border-slate-200 bg-slate-100 p-1">
+                            <TabsTrigger value="data-protection" className={tabClass}>
+                                <Shield className="h-4 w-4" />
                                 Data Protection
                             </TabsTrigger>
-                            <TabsTrigger
-                                value="digital-id"
-                                className="flex items-center cursor-pointer gap-3 px-8 py-3 text-md font-bold rounded-lg transition-all duration-200 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-600 hover:text-slate-800"
-                            >
-                                <Fingerprint className="w-4 h-4" />
+                            <TabsTrigger value="digital-id" className={tabClass}>
+                                <Fingerprint className="h-4 w-4" />
                                 Digital Identity
                             </TabsTrigger>
                         </TabsList>
                     </Tabs>
                 </div>
 
-                {/* Timeline Card */}
-                <Card>
-                    <CardHeader className="border-b bg-white">
-                        <CardTitle className="flex items-center justify-between">
-                            <span className="text-lg font-semibold">Implementation Timeline</span>
-                            <Badge variant="outline">{currentTimelineEvents.length} Events</Badge>
-                        </CardTitle>
-                    </CardHeader>
+                {/* Timeline */}
+                <div className="rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-sm backdrop-blur sm:p-8">
+                    <div key={`${activeTimeline}-${currentPage}`}>
+                        <TimelineComponent
+                            events={currentEvents}
+                            allEvents={currentTimelineEvents}
+                            offset={(currentPage - 1) * itemsPerPage}
+                            highlightLatest={currentPage === 1}
+                        />
+                    </div>
 
-                    <CardContent className="p-6">
-                        <div key={activeTimeline} className="transition-all duration-500 ease-in-out">
-                            <TimelineComponent events={currentEvents} />
-                        </div>
-                    </CardContent>
-
-                    {/* Simple Pagination */}
                     {totalPages > 1 && (
-                        <div className="border-t bg-slate-50/50 px-6 py-4">
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm text-slate-600">
-                                    Page {currentPage} of {totalPages}
-                                </span>
-                                <div className="flex gap-2">
+                        <nav
+                            aria-label="Timeline pages"
+                            className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-slate-200 pt-6 sm:flex-row"
+                        >
+                            <span className="text-sm text-slate-500">
+                                Showing {firstShown}–{lastShown} of {currentTimelineEvents.length} milestones
+                            </span>
+                            <div className="flex items-center gap-1.5">
+                                <Button
+                                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                                    disabled={currentPage === 1}
+                                    aria-label="Previous page"
+                                    variant="outline"
+                                    size="sm"
+                                >
+                                    <ArrowLeft className="h-4 w-4" />
+                                </Button>
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                                     <Button
-                                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                                        disabled={currentPage === 1}
-                                        aria-label="Previous page"
-                                        variant="outline"
+                                        key={page}
+                                        onClick={() => setCurrentPage(page)}
+                                        aria-label={`Page ${page}`}
+                                        aria-current={page === currentPage ? "page" : undefined}
+                                        variant={page === currentPage ? "default" : "ghost"}
                                         size="sm"
+                                        className="min-w-8 tabular-nums"
                                     >
-                                        <ArrowLeft className="h-4 w-4" />
+                                        {page}
                                     </Button>
-                                    <Button
-                                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                                        disabled={currentPage === totalPages}
-                                        aria-label="Next page"
-                                        variant="outline"
-                                        size="sm"
-                                    >
-                                        <ArrowRight className="h-4 w-4" />
-                                    </Button>
-                                </div>
+                                ))}
+                                <Button
+                                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                                    disabled={currentPage === totalPages}
+                                    aria-label="Next page"
+                                    variant="outline"
+                                    size="sm"
+                                >
+                                    <ArrowRight className="h-4 w-4" />
+                                </Button>
                             </div>
-                        </div>
+                        </nav>
                     )}
-                </Card>
+                </div>
             </div>
         </section>
     );

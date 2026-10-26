@@ -13,7 +13,7 @@ export function InsightsSection() {
                 <LI>
                     <B>Policy timeline.</B> The timeline on the Home page presents selected milestones in data
                     protection and digital identity across the continent, organised by year. Each entry is taken from a
-                    dated source, and figures are as reported on the date given.
+                    dated source, and figures are as reported on the date given. The date of the last update is shown on the timeline.
                 </LI>
                 <LI>
                     <B>Document-based findings.</B> An answer is a new synthesis of the evidence found for that

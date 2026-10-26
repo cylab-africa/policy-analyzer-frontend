@@ -22,7 +22,7 @@ export function AboutSection() {
                 <P>
                     This documentation explains the Policy Analyzer as a whole, so that readers can judge what it can
                     tell them, how far to trust it, and how to reuse it. It describes the tool’s features, design, data
-                    and method. It does not report policy findings; the tool itself does that.
+                    and method. For findings about a specific country, use the maps, the Sources library or the chat.
                 </P>
             </DocSubsection>
 
