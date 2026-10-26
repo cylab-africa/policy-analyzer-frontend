@@ -31,7 +31,7 @@ Follow the [Quick start](README.md#quick-start) in the README. The app needs the
 
 - **No secrets.** Never commit `.env` files or credentials. Everything prefixed `NEXT_PUBLIC_` is visible to every visitor of the site.
 - **Accessibility.** Use semantic HTML, keep everything usable with a keyboard, give images text alternatives, and keep text readable against its background.
-- **Documentation page text.** The text lives in [`src/content/documentation.md`](src/content/documentation.md). Describe only what the system actually does, and don't claim verification or evaluation that hasn't been done. Changes to how the analysis is described should say which behavior they reflect.
+- **Documentation page text.** The page is built from the components in [`src/components/docs/`](src/components/docs/), one file per section. Describe only what the system actually does, and don't claim verification or evaluation that hasn't been done. Changes to how the analysis is described should say which behavior they reflect.
 - **Reference data.** Changes to the country data in `src/data/` need a link to a primary source.
 - **Existing components.** Prefer the components in `src/components/ui/` and the existing Tailwind styling over adding new libraries.
 - **Style.** Match the surrounding code.

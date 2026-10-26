@@ -10,7 +10,7 @@ The web app for the Policy Analyzer, a tool for exploring and comparing data pro
 - **Country maps and statistics**: data protection legislation and digital identity systems across African countries.
 - **Policy Chat**: questions answered from a collection of policy documents, plus batch analysis of question sets.
 - **Sources**: reference documents and research for each country.
-- **Documentation** (`/docs`): the methodology behind the analysis.
+- **Documentation** (`/docs`): what the tool does, how it was built and produces results, and how to run or extend your own instance.
 
 | Repository | Purpose |
 | --- | --- |
@@ -129,7 +129,6 @@ Without Docker: `npm ci && npm run build && npm start`, with the `NEXT_PUBLIC_*`
 ├── src/
 │   ├── app/           # Pages (App Router): /, /chat, /resources, /docs
 │   ├── components/    # UI components by feature (home, chat, resources, docs, layout, ui)
-│   ├── content/       # Documentation page text (Markdown)
 │   ├── data/          # Static map geometry and data
 │   ├── lib/           # Utilities and analytics events
 │   ├── redux/         # API client (RTK Query) and store
@@ -145,7 +144,7 @@ Further reading: [functional requirements](./docs/functional-requirements.md), [
 
 ## Editing the documentation page
 
-The text of the `/docs` page lives in [`src/content/documentation.md`](src/content/documentation.md). Edit the Markdown; no code changes are needed. Each `##` and `###` heading appears automatically in the page's table of contents. The content is read at build time, so rebuild or restart `npm run dev` to see changes.
+The `/docs` page is built from components in [`src/components/docs/`](src/components/docs/), with one file per section in `sections/`. Section and sub-section titles are defined once in [`meta.ts`](src/components/docs/meta.ts), and the table of contents and in-page links are built from them. To add a section, add its titles to `meta.ts`, create the component, and list it in `sections/index.ts`. Shared building blocks (`DocSection`, `DocSubsection`, `P`, `UL`, `DocTable` and others) are in `primitives.tsx`.
 
 ---
 

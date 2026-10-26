@@ -3,10 +3,10 @@
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
+// The sidebar lists the main sections only; sub-headings stay on the page itself
 export interface DocsHeading {
     id: string;
     title: string;
-    children: { id: string; title: string }[];
 }
 
 export default function DocsSidebar({ headings }: { readonly headings: DocsHeading[] }) {
@@ -14,9 +14,8 @@ export default function DocsSidebar({ headings }: { readonly headings: DocsHeadi
 
     // Highlight the heading nearest the top of the viewport
     useEffect(() => {
-        const ids = headings.flatMap((heading) => [heading.id, ...heading.children.map((child) => child.id)]);
-        const elements = ids
-            .map((id) => document.getElementById(id))
+        const elements = headings
+            .map((heading) => document.getElementById(heading.id))
             .filter((element): element is HTMLElement => element !== null);
 
         const observer = new IntersectionObserver(
@@ -33,10 +32,9 @@ export default function DocsSidebar({ headings }: { readonly headings: DocsHeadi
         return () => observer.disconnect();
     }, [headings]);
 
-    const linkClass = (id: string, nested: boolean) =>
+    const linkClass = (id: string) =>
         cn(
-            "block border-l-2 py-1.5 text-sm transition-colors duration-200",
-            nested ? "pl-7" : "pl-4 font-medium",
+            "block border-l-2 py-1.5 pl-4 text-sm font-medium transition-colors duration-200",
             activeId === id
                 ? "border-primary text-primary"
                 : "border-transparent text-slate-600 hover:text-slate-900 hover:border-slate-300"
@@ -48,26 +46,11 @@ export default function DocsSidebar({ headings }: { readonly headings: DocsHeadi
                 <li key={heading.id} className="-ml-px">
                     <a
                         href={`#${heading.id}`}
-                        className={linkClass(heading.id, false)}
+                        className={linkClass(heading.id)}
                         aria-current={activeId === heading.id ? "location" : undefined}
                     >
                         {heading.title}
                     </a>
-                    {heading.children.length > 0 && (
-                        <ul>
-                            {heading.children.map((child) => (
-                                <li key={child.id}>
-                                    <a
-                                        href={`#${child.id}`}
-                                        className={linkClass(child.id, true)}
-                                        aria-current={activeId === child.id ? "location" : undefined}
-                                    >
-                                        {child.title}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
                 </li>
             ))}
         </ul>

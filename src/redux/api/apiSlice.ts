@@ -41,7 +41,7 @@ export const apiSlice = createApi({
             if (!formDataEndpoints.includes(endpoint)) {
                 headers.set("Content-Type", "application/json");
             }
-            const apiKey = process.env.NEXT_PUBLIC_API_KEY || "HpOfOIDyNljM7LlC5QYxKGXSjn0ZRhidTUYW6bgh";
+            const apiKey = process.env.NEXT_PUBLIC_API_KEY;
             if (apiKey) {
                 headers.set("X-API-Key", apiKey);
             }

@@ -53,6 +53,28 @@ const Footer = () => {
                                 <span>upanzi@andrew.cmu.edu</span>
                             </a>
                         </div>
+                        <div className="space-y-1 text-sm text-slate-300">
+                            <p className="font-semibold text-white">Source code</p>
+                            <p>
+                                <a
+                                    href="https://github.com/cylab-africa/policy-analyzer-frontend"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-blue-400 transition-colors underline underline-offset-2"
+                                >
+                                    Frontend on GitHub
+                                </a>
+                                {" · "}
+                                <a
+                                    href="https://github.com/cylab-africa/policy-analyzer-backend"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-blue-400 transition-colors underline underline-offset-2"
+                                >
+                                    Backend on GitHub
+                                </a>
+                            </p>
+                        </div>
                     </div>
                 </div>
 

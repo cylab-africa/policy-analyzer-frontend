@@ -1,77 +1,12 @@
-import fs from "fs";
-import path from "path";
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
-import ReactMarkdown, { type Components } from "react-markdown";
-import remarkGfm from "remark-gfm";
-import DocsSidebar, { type DocsHeading } from "@/components/docs/DocsSidebar";
-
-// Content is read at build time; the runtime image does not include src/.
-export const dynamic = "force-static";
+import DocsSidebar from "@/components/docs/DocsSidebar";
+import { docHeadings, docSections } from "@/components/docs/sections";
+import { IntroSection } from "@/components/docs/sections/IntroSection";
 
 export const metadata: Metadata = {
     title: "Documentation | Policy Analyzer",
     description:
-        "The method behind the Policy Analyzer: indicators, evidence base, information extraction and analysis of data protection and digital identity policy across Africa.",
-};
-
-const content = fs.readFileSync(path.join(process.cwd(), "src/content/documentation.md"), "utf8");
-
-const slugify = (text: string) =>
-    text
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "");
-
-const textOf = (node: ReactNode): string => {
-    if (typeof node === "string" || typeof node === "number") return String(node);
-    if (Array.isArray(node)) return node.map(textOf).join("");
-    return "";
-};
-
-// Build the table of contents from the ## and ### headings
-const headings: DocsHeading[] = [];
-for (const [, level, rawTitle] of content.matchAll(/^(#{2,3}) (.+)$/gm)) {
-    const title = rawTitle.replace(/[*_]/g, "");
-    const entry = { id: slugify(title), title };
-    if (level === "##") {
-        headings.push({ ...entry, children: [] });
-    } else {
-        headings.at(-1)?.children.push(entry);
-    }
-}
-
-const components: Components = {
-    h2: ({ children }) => (
-        <h2
-            id={slugify(textOf(children))}
-            className="scroll-mt-24 text-2xl font-bold text-slate-900 mt-12 mb-4 pt-8 border-t border-border"
-        >
-            {children}
-        </h2>
-    ),
-    h3: ({ children }) => (
-        <h3 id={slugify(textOf(children))} className="scroll-mt-24 text-lg font-semibold text-slate-900 mt-8 mb-3">
-            {children}
-        </h3>
-    ),
-    p: ({ children }) => <p className="text-slate-700 leading-relaxed mb-4">{children}</p>,
-    ul: ({ children }) => <ul className="list-disc pl-6 space-y-2 mb-4 text-slate-700">{children}</ul>,
-    ol: ({ children }) => <ol className="list-decimal pl-6 space-y-3 mb-4 text-slate-700">{children}</ol>,
-    li: ({ children }) => <li className="leading-relaxed pl-1">{children}</li>,
-    strong: ({ children }) => <strong className="font-semibold text-slate-900">{children}</strong>,
-    a: ({ href, children }) => {
-        const isExternal = href?.startsWith("http");
-        return (
-            <a
-                href={href}
-                className="text-primary font-medium underline underline-offset-2 hover:text-primary/80"
-                {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-            >
-                {children}
-            </a>
-        );
-    },
+        "What the Policy Analyzer does, how it was built and how it produces its results, how its information was collected and checked, and how to run or extend your own copy.",
 };
 
 export default function DocsPage() {
@@ -79,10 +14,10 @@ export default function DocsPage() {
         <div className="min-h-screen flex flex-col">
             <div className="bg-primary text-white py-12">
                 <div className="max-w-7xl container mx-auto px-6">
-                    <h1 className="text-3xl font-bold mb-2">Methodology</h1>
+                    <h1 className="text-3xl font-bold mb-2">Documentation</h1>
                     <p className="text-lg text-white/90 max-w-[700px]">
-                        How the Policy Analyzer gathers, extracts and analyses policy information, and the limits of
-                        its results
+                        What the Policy Analyzer does, how it was built and how it produces its results, and how to
+                        run or extend your own copy
                     </p>
                 </div>
             </div>
@@ -93,7 +28,7 @@ export default function DocsPage() {
                         <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
                             On this page
                         </p>
-                        <DocsSidebar headings={headings} />
+                        <DocsSidebar headings={docHeadings} />
                     </nav>
                 </aside>
 
@@ -102,14 +37,15 @@ export default function DocsPage() {
                         On this page
                     </summary>
                     <nav aria-label="Documentation contents" className="px-4 pb-4">
-                        <DocsSidebar headings={headings} />
+                        <DocsSidebar headings={docHeadings} />
                     </nav>
                 </details>
 
                 <article className="max-w-3xl min-w-0">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
-                        {content}
-                    </ReactMarkdown>
+                    <IntroSection />
+                    {docSections.map(({ key, Component }) => (
+                        <Component key={key} />
+                    ))}
                 </article>
             </div>
         </div>

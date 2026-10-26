@@ -278,7 +278,7 @@ const DataProtectionMap: React.FC = () => {
                                 >
                                     Natural Earth
                                 </a>
-                                <span className="ml-1">· Boundaries follow African Union membership</span>
+                                <span className="ml-1">· African Union members map</span>
                             </p>
                         </div>
                     </div>
