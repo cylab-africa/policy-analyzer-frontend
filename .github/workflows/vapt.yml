@@ -1,0 +1,32 @@
+name: VAPT Scan
+
+on:
+  push:
+    branches: [main, uat]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  call-vapt:
+    uses: cylab-africa/vapt-workflows/.github/workflows/vapt.yml@main
+    secrets: inherit
+    with:
+      codeql-languages: '"javascript"'
+      run-codeql: 'true'
+      run-semgrep: 'true'
+      run-dependency-audit: 'true'
+      run-trivy-image: 'true'
+      dockerfile-path: 'Dockerfile'
+      docker-context: '.'
+      run-hadolint: 'true'
+      docker-build-args: |
+        NEXT_PUBLIC_API_KEY=dummy
+        NEXT_PUBLIC_API_URL=http://localhost
+        NEXT_PUBLIC_APP_VERSION=0.0.0
+        NEXT_PUBLIC_POSTHOG_HOST=http://localhost
+        NEXT_PUBLIC_POSTHOG_KEY=dummy
+      run-k8s-scans: 'false'
+      fail-on-critical: 'false'
