@@ -3,7 +3,7 @@ FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
 # Install ALL dependencies (including devDependencies like TypeScript)
-# Next.js 16+ requires TypeScript at runtime for next.config.ts
+# Next.js reads next.config.ts at runtime, so TypeScript must be installed
 RUN npm ci --legacy-peer-deps && npm cache clean --force
 
 # --- Builder ---

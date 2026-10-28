@@ -5,8 +5,11 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
 import { Resource, ResourceType } from ".";
+import { getYearBadge } from "./utils";
 
 function ResourceCard({ resource }: { resource: Resource }) {
+    const yearBadge = getYearBadge(resource.type, resource.yearLaunched ?? resource.year);
+
     const handleLinkClick = (url: string) => {
         if (url && url !== "#") {
             window.open(url, "_blank", "noopener,noreferrer");
@@ -16,7 +19,7 @@ function ResourceCard({ resource }: { resource: Resource }) {
     return (
         <Card
             className={cn(
-                "border border-gray-200 overflow-hidden h-full transition-all hover:-translate-y-1 hover:shadow-lg relative group border-t-4"
+                "border border-gray-200 overflow-hidden p-0 h-full transition-all hover:-translate-y-1 hover:shadow-lg relative group border-t-4",
             )}
         >
             <div className="p-6 flex flex-col h-full">
@@ -28,23 +31,32 @@ function ResourceCard({ resource }: { resource: Resource }) {
                         </div>
                         <span className="font-medium text-gray-700">{resource.countryName}</span>
                     </div>
-                    {/* <span className="text-sm text-gray-500 px-2 py-1 bg-gray-100 rounded">
-                        {resource?.yearLaunched || resource?.year}
-                    </span> */}
+                    {yearBadge && (
+                        <span
+                            className="text-sm text-gray-500 px-2 py-1 bg-gray-100 rounded whitespace-nowrap"
+                            title={yearBadge.title}
+                        >
+                            {yearBadge.text}
+                        </span>
+                    )}
                 </div>
 
                 {/* Title */}
                 <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-start gap-2">
-                    <span className="text-primary mt-1">{resource.icon}</span>
+                    {/* <span className="text-primary mt-1">{resource.icon}</span> */}
                     <span>{resource.title}</span>
                 </h3>
 
                 {/* Description */}
-                <p className="text-gray-600 text-sm mb-4 flex-grow line-clamp-3">
-                    {resource.description.length > 150
-                        ? `${resource.description.slice(0, 150)}...`
-                        : resource.description}
+                <p className="text-gray-600 text-sm mb-4 flex-grow line-clamp-3" title={resource.description}>
+                    {resource.description}
                 </p>
+
+                {resource.systemSummary && (
+                    <p className="text-xs text-gray-600 mb-3 line-clamp-3" title={resource.systemSummary}>
+                        <span className="font-medium">About the system:</span> {resource.systemSummary}
+                    </p>
+                )}
 
                 {/* Additional info for Digital ID */}
                 {resource.type === ResourceType.DIGITAL_ID && (
@@ -90,8 +102,8 @@ function ResourceCard({ resource }: { resource: Resource }) {
                                         resource.malaboStatus === "Ratified"
                                             ? "bg-green-100 text-green-700"
                                             : resource.malaboStatus === "Signed"
-                                            ? "bg-yellow-100 text-yellow-700"
-                                            : "bg-gray-100 text-gray-700"
+                                              ? "bg-yellow-100 text-yellow-700"
+                                              : "bg-gray-100 text-gray-700",
                                     )}
                                 >
                                     {resource.malaboStatus}
@@ -105,27 +117,28 @@ function ResourceCard({ resource }: { resource: Resource }) {
                 <div className="flex gap-3 mt-auto">
                     {resource.documentUrl && resource.documentUrl !== "#" && (
                         <Button
-                            className="flex-1 flex items-center gap-2"
+                            variant="outline"
+                            className="flex-1 flex items-center gap-2 border-primary text-primary hover:bg-primary hover:text-white"
                             onClick={() => handleLinkClick(resource.documentUrl!)}
                         >
+                            View Resource
                             <ExternalLink className="h-4 w-4" />
-                            <span>View Resource</span>
                         </Button>
                     )}
                     {resource.websiteUrl && resource.websiteUrl !== "#" && (
                         <Button
                             variant="outline"
-                            className="flex-1 flex items-center gap-2"
+                            className="flex-1 flex items-center gap-2 border-primary text-primary hover:bg-primary hover:text-white"
                             onClick={() => handleLinkClick(resource.websiteUrl!)}
                         >
+                            Visit Website
                             <ExternalLink className="h-4 w-4" />
-                            <span>Visit Website</span>
                         </Button>
                     )}
                     {(!resource.documentUrl || resource.documentUrl === "#") &&
                         (!resource.websiteUrl || resource.websiteUrl === "#") && (
                             <Button variant="outline" className="flex-1" disabled>
-                                <span>No Document Available</span>
+                                <span className="text-primary">No Document Available</span>
                             </Button>
                         )}
                 </div>
