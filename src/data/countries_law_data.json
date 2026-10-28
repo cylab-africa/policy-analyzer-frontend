@@ -9,7 +9,7 @@
         "links": [
             {
                 "title": "Algeria Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/algeria/",
+                "url": "https://dataprotection.africa/algeria/",
                 "type": "Data Protection"
             },
             {
@@ -29,7 +29,7 @@
         "links": [
             {
                 "title": "Angola Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/angola/",
+                "url": "https://dataprotection.africa/angola/",
                 "type": "Data Protection"
             },
             {
@@ -41,7 +41,7 @@
     },
     {
         "country": "Benin",
-        "yearLegislationEnacted": "2009",
+        "yearLegislationEnacted": "2017",
         "malaboConventionStatus": "Signed",
         "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "BJ",
@@ -49,7 +49,7 @@
         "links": [
             {
                 "title": "Benin Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/benin/",
+                "url": "https://dataprotection.africa/benin/",
                 "type": "Data Protection"
             }
         ]
@@ -64,7 +64,7 @@
         "links": [
             {
                 "title": "Botswana Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/botswana/",
+                "url": "https://dataprotection.africa/botswana/",
                 "type": "Data Protection"
             },
             {
@@ -84,22 +84,22 @@
         "links": [
             {
                 "title": "Burkina Faso Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/burkina-faso/",
+                "url": "https://dataprotection.africa/burkina-faso/",
                 "type": "Data Protection"
             }
         ]
     },
     {
         "country": "Burundi",
-        "yearLegislationEnacted": "-",
+        "yearLegislationEnacted": "2026",
         "malaboConventionStatus": "No",
-        "dataProtectionLegislationStatus": "No Law",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "BI",
         "flagEmoji": "🇧🇮",
         "links": [
             {
                 "title": "Burundi Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/burundi/",
+                "url": "https://dataprotection.africa/burundi/",
                 "type": "Data Protection"
             }
         ]
@@ -114,7 +114,7 @@
         "links": [
             {
                 "title": "Cabo Verde Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/cabo-verde/",
+                "url": "https://dataprotection.africa/cabo-verde/",
                 "type": "Data Protection"
             }
         ]
@@ -129,22 +129,27 @@
         "links": [
             {
                 "title": "Cameroon Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/cameroon/",
+                "url": "https://dataprotection.africa/cameroon/",
                 "type": "Data Protection"
             }
         ]
     },
     {
         "country": "Central African Republic",
-        "yearLegislationEnacted": "-",
+        "yearLegislationEnacted": "2024",
         "malaboConventionStatus": "No",
-        "dataProtectionLegislationStatus": "No Law",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "CF",
         "flagEmoji": "🇨🇫",
         "links": [
             {
                 "title": "Central African Republic Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/central-african-republic/",
+                "url": "https://dataprotection.africa/central-african-republic/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "Loi n° 24/001 portant protection des données à caractère personnel",
+                "url": "https://blog.africadataprotection.org/wp-content/uploads/2025/07/Loi_24_001_portant_protection_des_donnes_a_caractere__personnel.pdf",
                 "type": "Data Protection"
             }
         ]
@@ -159,7 +164,7 @@
         "links": [
             {
                 "title": "Chad Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/chad/",
+                "url": "https://dataprotection.africa/chad/",
                 "type": "Data Protection"
             }
         ]
@@ -174,22 +179,27 @@
         "links": [
             {
                 "title": "Comoros Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/comoros/",
+                "url": "https://dataprotection.africa/comoros/",
                 "type": "Data Protection"
             }
         ]
     },
     {
         "country": "Democratic Republic of the Congo",
-        "yearLegislationEnacted": "-",
-        "malaboConventionStatus": "No",
-        "dataProtectionLegislationStatus": "No Law",
+        "yearLegislationEnacted": "2023",
+        "malaboConventionStatus": "Ratified",
+        "dataProtectionLegislationStatus": "Lite",
         "isoAlpha2": "CD",
         "flagEmoji": "🇨🇩",
         "links": [
             {
                 "title": "DRC Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/democratic-republic-of-congo/",
+                "url": "https://dataprotection.africa/democratic-republic-of-the-congo/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "Ordonnance-loi n° 23/010 du 13 mars 2023 portant Code du numérique",
+                "url": "https://are.gouv.cd/wp-content/uploads/2023/05/04042023-ORDONNANCE-LOI-23-010-DU-13-MARS-PORTANT-CODE-DU-NUMERIQUE_compressed.pdf",
                 "type": "Data Protection"
             }
         ]
@@ -198,13 +208,13 @@
         "country": "Republic of Congo",
         "yearLegislationEnacted": "2019",
         "malaboConventionStatus": "Ratified",
-        "dataProtectionLegislationStatus": "Lite",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "CG",
         "flagEmoji": "🇨🇬",
         "links": [
             {
                 "title": "Republic of Congo Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/republic-of-congo/",
+                "url": "https://dataprotection.africa/republic-of-congo/",
                 "type": "Data Protection"
             }
         ]
@@ -219,7 +229,7 @@
         "links": [
             {
                 "title": "Cote d'Ivoire Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/cote-divoire/",
+                "url": "https://dataprotection.africa/cote-divoire/",
                 "type": "Data Protection"
             },
             {
@@ -231,15 +241,15 @@
     },
     {
         "country": "Djibouti",
-        "yearLegislationEnacted": "-",
+        "yearLegislationEnacted": "2025",
         "malaboConventionStatus": "Signed",
-        "dataProtectionLegislationStatus": "No Law",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "DJ",
         "flagEmoji": "🇩🇯",
         "links": [
             {
                 "title": "Djibouti Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/djibouti/",
+                "url": "https://dataprotection.africa/djibouti/",
                 "type": "Data Protection"
             }
         ]
@@ -248,13 +258,13 @@
         "country": "Egypt",
         "yearLegislationEnacted": "2020",
         "malaboConventionStatus": "No",
-        "dataProtectionLegislationStatus": "Lite",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "EG",
         "flagEmoji": "🇪🇬",
         "links": [
             {
                 "title": "Egypt Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/egypt/",
+                "url": "https://dataprotection.africa/egypt/",
                 "type": "Data Protection"
             },
             {
@@ -268,13 +278,13 @@
         "country": "Equatorial Guinea",
         "yearLegislationEnacted": "2016",
         "malaboConventionStatus": "No",
-        "dataProtectionLegislationStatus": "Lite",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "GQ",
         "flagEmoji": "🇬🇶",
         "links": [
             {
                 "title": "Equatorial Guinea Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/equatorial-guinea/",
+                "url": "https://dataprotection.africa/equatorial-guinea/",
                 "type": "Data Protection"
             }
         ]
@@ -289,7 +299,7 @@
         "links": [
             {
                 "title": "Eritrea Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/eritrea/",
+                "url": "https://dataprotection.africa/eritrea/",
                 "type": "Data Protection"
             }
         ]
@@ -304,7 +314,7 @@
         "links": [
             {
                 "title": "Eswatini Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/eswatini/",
+                "url": "https://dataprotection.africa/eswatini/",
                 "type": "Data Protection"
             }
         ]
@@ -319,7 +329,7 @@
         "links": [
             {
                 "title": "Ethiopia Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/ethiopia/",
+                "url": "https://dataprotection.africa/ethiopia/",
                 "type": "Data Protection"
             }
         ]
@@ -334,22 +344,22 @@
         "links": [
             {
                 "title": "Gabon Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/gabon/",
+                "url": "https://dataprotection.africa/gabon/",
                 "type": "Data Protection"
             }
         ]
     },
     {
         "country": "Gambia",
-        "yearLegislationEnacted": "Draft",
+        "yearLegislationEnacted": "2025",
         "malaboConventionStatus": "Signed",
-        "dataProtectionLegislationStatus": "Draft",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "GM",
         "flagEmoji": "🇬🇲",
         "links": [
             {
                 "title": "Gambia Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/gambia/",
+                "url": "https://dataprotection.africa/the-gambia/",
                 "type": "Data Protection"
             }
         ]
@@ -364,7 +374,7 @@
         "links": [
             {
                 "title": "Ghana Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/ghana/",
+                "url": "https://dataprotection.africa/ghana/",
                 "type": "Data Protection"
             },
             {
@@ -384,7 +394,7 @@
         "links": [
             {
                 "title": "Guinea Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/guinea/",
+                "url": "https://dataprotection.africa/guinea/",
                 "type": "Data Protection"
             }
         ]
@@ -399,7 +409,7 @@
         "links": [
             {
                 "title": "Guinea-Bissau Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/guinea-bissau/",
+                "url": "https://dataprotection.africa/guinea-bissau/",
                 "type": "Data Protection"
             }
         ]
@@ -414,7 +424,7 @@
         "links": [
             {
                 "title": "Kenya Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/kenya/",
+                "url": "https://dataprotection.africa/kenya/",
                 "type": "Data Protection"
             },
             {
@@ -427,14 +437,14 @@
     {
         "country": "Lesotho",
         "yearLegislationEnacted": "2011",
-        "malaboConventionStatus": "No",
-        "dataProtectionLegislationStatus": "Lite",
+        "malaboConventionStatus": "Signed",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "LS",
         "flagEmoji": "🇱🇸",
         "links": [
             {
                 "title": "Lesotho Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/lesotho/",
+                "url": "https://dataprotection.africa/lesotho/",
                 "type": "Data Protection"
             }
         ]
@@ -449,7 +459,7 @@
         "links": [
             {
                 "title": "Liberia Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/liberia/",
+                "url": "https://dataprotection.africa/liberia/",
                 "type": "Data Protection"
             }
         ]
@@ -464,7 +474,7 @@
         "links": [
             {
                 "title": "Libya Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/libya/",
+                "url": "https://dataprotection.africa/libya/",
                 "type": "Data Protection"
             }
         ]
@@ -473,13 +483,13 @@
         "country": "Madagascar",
         "yearLegislationEnacted": "2014",
         "malaboConventionStatus": "No",
-        "dataProtectionLegislationStatus": "Lite",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "MG",
         "flagEmoji": "🇲🇬",
         "links": [
             {
                 "title": "Madagascar Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/madagascar/",
+                "url": "https://dataprotection.africa/madagascar/",
                 "type": "Data Protection"
             }
         ]
@@ -494,7 +504,7 @@
         "links": [
             {
                 "title": "Malawi Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/malawi/",
+                "url": "https://dataprotection.africa/malawi/",
                 "type": "Data Protection"
             }
         ]
@@ -509,7 +519,7 @@
         "links": [
             {
                 "title": "Mali Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/mali/",
+                "url": "https://dataprotection.africa/mali/",
                 "type": "Data Protection"
             }
         ]
@@ -524,7 +534,7 @@
         "links": [
             {
                 "title": "Mauritania Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/mauritania/",
+                "url": "https://dataprotection.africa/mauritania/",
                 "type": "Data Protection"
             }
         ]
@@ -539,7 +549,7 @@
         "links": [
             {
                 "title": "Mauritius Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/mauritius/",
+                "url": "https://dataprotection.africa/mauritius/",
                 "type": "Data Protection"
             },
             {
@@ -559,7 +569,7 @@
         "links": [
             {
                 "title": "Morocco Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/morocco/",
+                "url": "https://dataprotection.africa/morocco/",
                 "type": "Data Protection"
             },
             {
@@ -579,7 +589,7 @@
         "links": [
             {
                 "title": "Mozambique Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/mozambique/",
+                "url": "https://dataprotection.africa/mozambique/",
                 "type": "Data Protection"
             }
         ]
@@ -594,7 +604,7 @@
         "links": [
             {
                 "title": "Namibia Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/namibia/",
+                "url": "https://dataprotection.africa/namibia/",
                 "type": "Data Protection"
             }
         ]
@@ -609,7 +619,7 @@
         "links": [
             {
                 "title": "Niger Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/niger/",
+                "url": "https://dataprotection.africa/niger/",
                 "type": "Data Protection"
             }
         ]
@@ -624,7 +634,7 @@
         "links": [
             {
                 "title": "Nigeria Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/nigeria/",
+                "url": "https://dataprotection.africa/nigeria/",
                 "type": "Data Protection"
             },
             {
@@ -644,7 +654,7 @@
         "links": [
             {
                 "title": "Rwanda Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/rwanda/",
+                "url": "https://dataprotection.africa/rwanda/",
                 "type": "Data Protection"
             },
             {
@@ -664,7 +674,7 @@
         "links": [
             {
                 "title": "Sao Tome & Principe Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/sao-tome-and-principe/",
+                "url": "https://dataprotection.africa/sao-tome-and-principe/",
                 "type": "Data Protection"
             }
         ]
@@ -679,7 +689,7 @@
         "links": [
             {
                 "title": "Senegal Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/senegal/",
+                "url": "https://dataprotection.africa/senegal/",
                 "type": "Data Protection"
             },
             {
@@ -691,15 +701,20 @@
     },
     {
         "country": "Seychelles",
-        "yearLegislationEnacted": "2003",
+        "yearLegislationEnacted": "2023",
         "malaboConventionStatus": "No",
-        "dataProtectionLegislationStatus": "Lite",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "SC",
         "flagEmoji": "🇸🇨",
         "links": [
             {
                 "title": "Seychelles Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/seychelles/",
+                "url": "https://dataprotection.africa/seychelles/",
+                "type": "Data Protection"
+            },
+            {
+                "title": "Data Protection Act, 2023 (Act 24 of 2023): Official Gazette",
+                "url": "https://www.gazette.sc/sites/default/files/2023-12/Act%2024%20-%202023%20-%20Data%20Protection%20Act%202023.pdf",
                 "type": "Data Protection"
             }
         ]
@@ -714,7 +729,7 @@
         "links": [
             {
                 "title": "Sierra Leone Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/sierra-leone/",
+                "url": "https://dataprotection.africa/sierra-leone/",
                 "type": "Data Protection"
             }
         ]
@@ -729,7 +744,7 @@
         "links": [
             {
                 "title": "Somalia Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/somalia/",
+                "url": "https://dataprotection.africa/somalia/",
                 "type": "Data Protection"
             }
         ]
@@ -744,7 +759,7 @@
         "links": [
             {
                 "title": "South Africa Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/south-africa/",
+                "url": "https://dataprotection.africa/south-africa/",
                 "type": "Data Protection"
             },
             {
@@ -764,7 +779,7 @@
         "links": [
             {
                 "title": "South Sudan Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/south-sudan/",
+                "url": "https://dataprotection.africa/south-sudan/",
                 "type": "Data Protection"
             }
         ]
@@ -779,7 +794,7 @@
         "links": [
             {
                 "title": "Sudan Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/sudan/",
+                "url": "https://dataprotection.africa/sudan/",
                 "type": "Data Protection"
             }
         ]
@@ -794,7 +809,7 @@
         "links": [
             {
                 "title": "Tanzania Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/tanzania/",
+                "url": "https://dataprotection.africa/tanzania/",
                 "type": "Data Protection"
             },
             {
@@ -808,13 +823,13 @@
         "country": "Togo",
         "yearLegislationEnacted": "2019",
         "malaboConventionStatus": "Ratified",
-        "dataProtectionLegislationStatus": "Lite",
+        "dataProtectionLegislationStatus": "Enacted",
         "isoAlpha2": "TG",
         "flagEmoji": "🇹🇬",
         "links": [
             {
                 "title": "Togo Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/togo/",
+                "url": "https://dataprotection.africa/togolese-republic/",
                 "type": "Data Protection"
             }
         ]
@@ -829,7 +844,7 @@
         "links": [
             {
                 "title": "Tunisia Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/tunisia/",
+                "url": "https://dataprotection.africa/tunisia/",
                 "type": "Data Protection"
             },
             {
@@ -849,7 +864,7 @@
         "links": [
             {
                 "title": "Uganda Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/uganda/",
+                "url": "https://dataprotection.africa/uganda/",
                 "type": "Data Protection"
             },
             {
@@ -869,7 +884,7 @@
         "links": [
             {
                 "title": "Zambia Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/zambia/",
+                "url": "https://dataprotection.africa/zambia/",
                 "type": "Data Protection"
             }
         ]
@@ -884,12 +899,27 @@
         "links": [
             {
                 "title": "Zimbabwe Data Protection Fact Sheet",
-                "url": "https://dataprotection.africa/country-factsheet/zimbabwe/",
+                "url": "https://dataprotection.africa/zimbabwe/",
                 "type": "Data Protection"
             },
             {
                 "title": "DLA Piper - Zimbabwe Data Protection Laws",
                 "url": "https://www.dlapiperdataprotection.com/index.html?t=law&c=ZW",
+                "type": "Data Protection"
+            }
+        ]
+    },
+    {
+        "country": "Sahrawi Arab Democratic Republic",
+        "yearLegislationEnacted": "-",
+        "malaboConventionStatus": "No",
+        "dataProtectionLegislationStatus": "No Law",
+        "isoAlpha2": "EH",
+        "flagEmoji": "🇪🇭",
+        "links": [
+            {
+                "title": "Sahrawi Arab Democratic Republic Data Protection Fact Sheet",
+                "url": "https://dataprotection.africa/sahrawi-arab-democratic-republic/",
                 "type": "Data Protection"
             }
         ]

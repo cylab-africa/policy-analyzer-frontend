@@ -309,8 +309,9 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
                                     <div>
                                         {/* <h4 className="text-sm font-medium text-slate-700 mb-1">How it works</h4> */}
                                         <p className="text-xs text-slate-500 leading-relaxed">
-                                            Your documents will be processed and indexed into the knowledge base. Once
-                                            complete, you can ask questions and get answers based on your content.
+                                            Your documents are split into passages and indexed under the category you
+                                            choose. Public documents become searchable for every user of the Policy
+                                            Analyzer. Please upload only documents you are allowed to share.
                                         </p>
                                     </div>
                                 </div>

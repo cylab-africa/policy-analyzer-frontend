@@ -4,8 +4,11 @@ import africanCountries from "@/data/world-map.json";
 import { usePolicyLawData } from "@/redux/api/apiSlice";
 import { AlertCircle, Loader2 } from "lucide-react";
 import React, { useState } from "react";
-import { ComposableMap, Geographies, Geography } from "react-simple-maps";
-import { Tooltip as ReactTooltip } from "react-tooltip";
+import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
+import { ISLAND_STATES } from "@/lib/island-states";
+import { MapPopoverCard, useMapPopover } from "./MapPopover";
+import MapLegend from "./MapLegend";
+import DataProtectionCard from "./DataProtectionCard";
 
 // Country name mapping to handle inconsistencies between map data and API data
 const COUNTRY_NAME_MAPPING: Record<string, string> = {
@@ -18,6 +21,7 @@ const COUNTRY_NAME_MAPPING: Record<string, string> = {
     Swaziland: "Eswatini",
     "The Gambia": "Gambia",
     "São Tomé and Príncipe": "Sao Tome & Principe",
+    "São Tomé and Principe": "Sao Tome & Principe",
     "Sao Tome and Principe": "Sao Tome & Principe",
     "Ivory Coast": "Cote d'Ivoire",
     "Côte d'Ivoire": "Cote d'Ivoire",
@@ -75,8 +79,9 @@ const findCountryData = <T extends { country: string }>(data: T[], mapCountryNam
 };
 
 const DataProtectionMap: React.FC = () => {
-    const [tooltipContent, setTooltipContent] = useState<string>("");
-    const [hoveredCountry, setHoveredCountry] = useState<string>("");
+    const popover = useMapPopover();
+    // Status picked in the legend; every other country is dimmed while it is set
+    const [activeStatus, setActiveStatus] = useState<string | null>(null);
     const { policyLaws, isLoading, error } = usePolicyLawData();
 
     // Professional color palette for data protection legislation status
@@ -110,123 +115,12 @@ const DataProtectionMap: React.FC = () => {
         }
     };
 
-    const handleMouseEnter = (countryName: string) => {
-        setHoveredCountry(countryName);
-        const countryData = findCountryData(policyLaws, countryName);
-
-        if (countryData) {
-            const statusColor = getColor(countryData.dataProtectionLegislationStatus);
-            const malaboColor = getMalaboColor(countryData.malaboConventionStatus);
-
-            setTooltipContent(`
-                <div class="font-sans max-w-sm bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-200 cursor-default">
-                    <div class="p-4 bg-gradient-to-r from-slate-50 to-gray-50 border-b border-gray-100">
-                        <div class="flex items-center gap-3">
-                            <div class="text-2xl">${countryData.flagEmoji || "🏳️"}</div>
-                            <div>
-                                <h3 class="text-lg font-bold text-gray-900 leading-tight">${countryData.country}</h3>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <div class="w-2 h-2 rounded-full" style="background: ${statusColor};"></div>
-                                    <span class="text-sm font-medium text-gray-600">${
-                                        countryData.dataProtectionLegislationStatus
-                                    }</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="p-4 space-y-3">
-                        ${
-                            countryData.yearLegislationEnacted &&
-                            countryData.yearLegislationEnacted !== "-" &&
-                            countryData.yearLegislationEnacted !== "Unknown"
-                                ? `
-                        <div class="flex items-center justify-between p-2.5 bg-emerald-50 rounded-lg border border-emerald-100">
-                            <div class="flex items-center gap-2">
-                                <div class="w-6 h-6 bg-emerald-100 rounded-md flex items-center justify-center">
-                                    <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                </div>
-                                <span class="text-xs font-medium text-gray-700">Year Enacted</span>
-                            </div>
-                            <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">${countryData.yearLegislationEnacted}</span>
-                        </div>`
-                                : ""
-                        }
-                        
-                        <div class="flex items-center justify-between p-2.5 bg-blue-50 rounded-lg border border-blue-100">
-                            <div class="flex items-center gap-2">
-                                <div class="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center">
-                                    <svg class="w-3 h-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
-                                    </svg>
-                                </div>
-                                <span class="text-xs font-medium text-gray-700">Malabo Convention</span>
-                            </div>
-                            <span class="text-xs font-bold px-2 py-0.5 rounded" style="color: ${malaboColor}; background: ${malaboColor}20;">
-                                ${countryData.malaboConventionStatus}
-                            </span>
-                        </div>
-                        
-                        ${
-                            countryData.links && countryData.links.length > 0
-                                ? `
-                        <div class="pt-2 space-y-2">
-                            ${countryData.links
-                                .slice(0, 2)
-                                .map(
-                                    (link) => `
-                                <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 w-full bg-slate-600 hover:bg-primary text-white py-2 px-3 rounded-lg text-xs font-medium transition-all duration-200 no-underline group hover:scale-105 hover:shadow-lg">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                                    </svg>
-                                    <span class="truncate">${link.title}</span>
-                                </a>`
-                                )
-                                .join("")}
-                            ${
-                                countryData.links.length > 2
-                                    ? `<div class="text-xs text-gray-500 text-center">+${
-                                          countryData.links.length - 2
-                                      } more resources</div>`
-                                    : ""
-                            }
-                        </div>`
-                                : ""
-                        }
-                    </div>
-                </div>
-            `);
-        } else {
-            setTooltipContent(`
-                <div class="font-sans max-w-xs bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-200 cursor-default">
-                    <div class="p-4 bg-gradient-to-r from-slate-50 to-gray-50 border-b border-gray-100">
-                        <h3 class="text-lg font-bold text-gray-900">${countryName}</h3>
-                    </div>
-                    <div class="p-4 text-center">
-                        <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                        </div>
-                        <p class="text-gray-600 text-sm font-medium mb-1">No Data Available</p>
-                        <p class="text-gray-500 text-xs">Information not currently tracked</p>
-                    </div>
-                </div>
-            `);
-        }
-    };
-
-    const handleMouseLeave = () => {
-        // The tooltip's delayHide prop will handle the delay automatically
-        setHoveredCountry("");
-    };
-
     const getCountryStatus = (countryName: string): string => {
         const countryData = findCountryData(policyLaws, countryName);
         return countryData?.dataProtectionLegislationStatus || "Unknown";
     };
+
+    const activeCountry = popover.state ? findCountryData(policyLaws, popover.state.name) : undefined;
 
     if (isLoading) {
         return (
@@ -255,29 +149,35 @@ const DataProtectionMap: React.FC = () => {
         );
     }
 
-    // Add this function to check if a country is African
-    const isAfricanCountry = (countryName: string): boolean => {
-        // Check if we have data for this country OR if it's in our mapping
-        const hasData = policyLaws.some((law) => law.country === countryName);
-        const hasMapping = COUNTRY_NAME_MAPPING[countryName] !== undefined;
-        const normalizedData = findCountryData(policyLaws, countryName);
-
-        return hasData || hasMapping || normalizedData !== undefined;
-    };
-
     const legendData = [
         { status: "Enacted", color: getColor("Enacted"), label: "Comprehensive Law" },
         { status: "Draft", color: getColor("Draft"), label: "Draft Legislation" },
         { status: "Lite", color: getColor("Lite"), label: "Limited Framework" },
         { status: "No Law", color: getColor("No Law"), label: "No Legislation" },
-    ];
+    ].map((item) => ({
+        ...item,
+        count: policyLaws.filter((law) => law.dataProtectionLegislationStatus === item.status).length,
+    }));
 
     return (
-        <div className="w-full space-y-6">
+        <div className="w-full">
+            <MapLegend items={legendData} active={activeStatus} onChange={setActiveStatus} />
             <div className="relative">
-                <div className="w-full h-[600px] lg:h-[700px] rounded-xl overflow-hidden relative bg-gradient-to-br from-slate-50/50 to-blue-50/30 border border-slate-100">
+                <div className="w-full h-[600px] lg:h-[700px] overflow-hidden relative bg-gradient-to-br from-slate-50/50 to-blue-50/30"
+                    ref={popover.containerRef}
+                    onClick={popover.close}
+                >
+                    {/* Faint dot grid, like graph paper */}
+                    <div
+                        className="absolute inset-0 pointer-events-none opacity-60"
+                        style={{
+                            backgroundImage: "radial-gradient(rgb(148 163 184 / 0.35) 1px, transparent 1px)",
+                            backgroundSize: "22px 22px",
+                        }}
+                    />
                     {/* Professional background pattern */}
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(34,197,94,0.05)_0%,transparent_70%)] pointer-events-none"></div>
+
 
                     <ComposableMap
                         projectionConfig={{
@@ -287,140 +187,103 @@ const DataProtectionMap: React.FC = () => {
                         style={{ width: "100%", height: "100%" }}
                         className="drop-shadow-sm"
                     >
-                        <defs>
-                            <filter id="dataProtectionFilter" x="-50%" y="-50%" width="200%" height="200%">
-                                <feGaussianBlur in="SourceGraphic" stdDeviation="0" />
-                                <feOffset dx="0" dy="1" result="offset" />
-                                <feFlood floodColor="rgba(0,0,0,0.06)" />
-                                <feComposite in2="offset" operator="in" />
-                                <feMerge>
-                                    <feMergeNode />
-                                    <feMergeNode in="SourceGraphic" />
-                                </feMerge>
-                            </filter>
-                        </defs>
                         <Geographies geography={africanCountries}>
                             {({ geographies }) =>
                                 geographies.map((geo) => {
                                     const countryName = geo.properties.geounit;
+                                    const interactive = geo.properties.au_member === true;
                                     const status = getCountryStatus(countryName);
                                     const fillColor = getColor(status);
-                                    const isHovered = hoveredCountry === countryName;
+                                    const isHovered = popover.state?.name === countryName;
+                                    const dimmed = activeStatus !== null && status !== activeStatus;
 
                                     return (
                                         <Geography
                                             key={geo.rsmKey}
+                                            aria-label={interactive ? countryName : undefined}
                                             geography={geo}
                                             fill={fillColor}
-                                            // stroke={isHovered ? "rgba(34, 197, 94, 0.8)" : "rgba(255,255,255,0.8)"}
-                                            stroke="rgba(255,255,255,0.8)"
-                                            strokeWidth={isHovered ? 2.5 : 0.8}
+                                            stroke={isHovered ? "#1e293b" : "rgba(255,255,255,0.8)"}
+                                            strokeWidth={isHovered ? 1.6 : 0.7}
                                             style={{
                                                 default: {
                                                     outline: "none",
-                                                    filter: "url(#dataProtectionFilter) drop-shadow(0 2px 4px rgba(0,0,0,0.06))",
-                                                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                                                    cursor: isAfricanCountry(countryName) ? "pointer" : "default",
-                                                    transformOrigin: "center",
+                                                    filter: isHovered ? "brightness(1.12)" : "none",
+                                                    transition: "filter 0.15s ease, opacity 0.25s ease",
+                                                    opacity: dimmed ? 0.18 : 1,
+                                                    cursor: interactive ? "pointer" : "default",
                                                 },
-                                                hover: isAfricanCountry(countryName)
-                                                    ? {
-                                                          outline: "none",
-                                                          fill: fillColor,
-                                                          //   filter: "url(#dataProtectionFilter) drop-shadow(0 4px 12px rgba(0,0,0,0.55)) brightness(1.1)",
-                                                          filter: "url(#digitalIdFilter) drop-shadow(0 4px 12px rgba(59, 130, 246, 0.3)) brightness(1.1)",
-
-                                                          //   stroke: "rgba(34, 197, 94, 0.9)",
-                                                          strokeWidth: 2.5,
-                                                      }
+                                                hover: interactive
+                                                    ? { outline: "none", fill: fillColor, filter: "brightness(1.12)", opacity: dimmed ? 0.4 : 1 }
                                                     : {},
-                                                pressed: isAfricanCountry(countryName)
-                                                    ? {
-                                                          outline: "none",
-                                                          fill: fillColor,
-                                                          filter: "brightness(0.95)",
-                                                      }
+                                                pressed: interactive
+                                                    ? { outline: "none", fill: fillColor, filter: "brightness(0.95)", opacity: dimmed ? 0.4 : 1 }
                                                     : {},
                                             }}
-                                            onMouseEnter={
-                                                isAfricanCountry(countryName)
-                                                    ? () => handleMouseEnter(countryName)
-                                                    : undefined
-                                            }
-                                            onMouseLeave={isAfricanCountry(countryName) ? handleMouseLeave : undefined}
-                                            data-tooltip-id={
-                                                isAfricanCountry(countryName) ? "data-protection-tooltip" : undefined
-                                            }
-                                            data-tooltip-html={
-                                                isAfricanCountry(countryName) ? tooltipContent : undefined
-                                            }
+                                            onMouseEnter={interactive ? (event) => popover.hover(countryName, event) : undefined}
+                                            onMouseMove={interactive ? popover.move : undefined}
+                                            onMouseLeave={interactive ? popover.leave : undefined}
+                                            onClick={interactive ? (event) => popover.pin(countryName, event) : undefined}
                                             className={
-                                                isAfricanCountry(countryName) ? "cursor-pointer" : "cursor-default"
+                                                interactive ? "cursor-pointer" : "cursor-default"
                                             }
                                         />
                                     );
                                 })
                             }
                         </Geographies>
+                        {ISLAND_STATES.map(({ name, coordinates }) => (
+                            <Marker key={name} coordinates={coordinates}>
+                                <circle
+                                    r={5}
+                                    aria-label={name}
+                                    fill={getColor(getCountryStatus(name))}
+                                    stroke="rgba(255,255,255,0.9)"
+                                    strokeWidth={1.5}
+                                    className="cursor-pointer transition-opacity duration-200"
+                                    opacity={activeStatus !== null && getCountryStatus(name) !== activeStatus ? 0.25 : 1}
+                                    onMouseEnter={(event) => popover.hover(name, event)}
+                                    onMouseMove={popover.move}
+                                    onMouseLeave={popover.leave}
+                                    onClick={(event) => popover.pin(name, event)}
+                                />
+                            </Marker>
+                        ))}
                     </ComposableMap>
+                    {popover.state && activeCountry && (
+                        <MapPopoverCard
+                            pinned={popover.state.pinned}
+                            label={activeCountry.country}
+                            cardRef={popover.cardRef}
+                            onClose={popover.close}
+                        >
+                            <DataProtectionCard
+                                                    country={activeCountry}
+                                                    pinned={popover.state.pinned}
+                                                    statusColor={getColor(activeCountry.dataProtectionLegislationStatus)}
+                                                    malaboColor={getMalaboColor(activeCountry.malaboConventionStatus)}
+                                                />
+                        </MapPopoverCard>
+                    )}
                     {/* Source Reference */}
                     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
                         <div className="bg-black/5 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-white/20">
                             <p className="text-xs text-gray-500 font-medium">
                                 Source:
                                 <a
-                                    href="https://geojson-maps.kyd.au/"
+                                    href="https://www.naturalearthdata.com/"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-gray-600 hover:text-blue-900 ml-1 transition-colors duration-200"
                                 >
                                     Natural Earth
                                 </a>
+                                <span className="ml-1">· African Union members map</span>
                             </p>
-                        </div>
-                    </div>
-
-                    {/* Enhanced Legend */}
-                    <div className="absolute bottom-4 right-0 bg-white/95 backdrop-blur-md rounded-tl-md rounded-bl-md p-5 border border-white/60 shadow-xs max-w-xs">
-                        <div className="flex items-center gap-2.5 mb-4">
-                            <h4 className="text-sm font-bold text-gray-800">Data Protection</h4>
-                        </div>
-                        <div className="space-y-3">
-                            {legendData.map((item) => (
-                                <div key={item.status} className="flex items-center gap-3">
-                                    <div
-                                        className="w-3 h-3 rounded-full border-2 border-white shadow-sm"
-                                        style={{ backgroundColor: item.color }}
-                                    ></div>
-                                    <div className="flex-1">
-                                        <div className="text-xs font-medium text-gray-800">{item.label}</div>
-                                    </div>
-                                </div>
-                            ))}
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* Enhanced Tooltip */}
-            <ReactTooltip
-                id="data-protection-tooltip"
-                className="z-50 opacity-100 !bg-transparent"
-                style={{
-                    backgroundColor: "transparent",
-                    maxWidth: "400px",
-                    padding: "0",
-                    border: "none",
-                    borderRadius: "0",
-                    boxShadow: "none",
-                }}
-                place="top"
-                offset={10}
-                noArrow={true}
-                delayHide={300}
-                delayShow={100}
-                clickable={true}
-            />
         </div>
     );
 };

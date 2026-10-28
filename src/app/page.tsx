@@ -115,11 +115,11 @@ export default function Home() {
                                     Analyze Policies with AI
                                 </Link>
                                 <Link
-                                    href="/resources"
+                                    href="/sources"
                                     onClick={() => handleCTAClick("explore_resources")}
                                     className="inline-flex items-center justify-center px-6 py-3 bg-transparent text-white border-2 border-white rounded-lg hover:bg-white/10 focus-ring transition-all duration-300 font-semibold text-base"
                                 >
-                                    Explore Resources
+                                    Explore Sources
                                 </Link>
                             </div>
                         </div>
