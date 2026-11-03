@@ -1993,7 +1993,7 @@ Comprehensive observability stack for performance monitoring, error tracking, us
      - Error grouping (identify patterns)
    - **Alerting**: Slack/email for new errors or error spikes
 
-3. **User Analytics** (Enhanced PostHog)
+3. **User Analytics**
    - **Product Analytics**:
      - User flows (how do users navigate?)
      - Feature usage (which features are popular?)
@@ -2048,7 +2048,7 @@ Comprehensive observability stack for performance monitoring, error tracking, us
    - **Retention**: 90 days for operational logs, 7 years for audit logs
 
 #### Analytics Privacy
-- **GDPR Compliant**: PostHog self-hosted option, or Plausible (privacy-first analytics)
+- **GDPR Compliant**: a privacy-first analytics tool such as Plausible, or a self-hosted one
 - **User Consent**: Respect Do Not Track preferences
 - **Anonymization**: No personally identifiable information in analytics
 - **Opt-Out**: Users can disable analytics

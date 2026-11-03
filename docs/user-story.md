@@ -428,7 +428,7 @@ For any user story to be considered complete:
 
 ## Technology Stack Implemented
 
--   **Frontend**: Next.js 15.3.2 with React 19
+-   **Frontend**: Next.js 16 with React 19
 -   **Styling**: Tailwind CSS 4.0 with responsive design
 -   **UI Components**: Radix UI with custom design system
 -   **State Management**: Redux Toolkit with RTK Query

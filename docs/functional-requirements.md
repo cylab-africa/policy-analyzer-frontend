@@ -423,7 +423,7 @@ Sources currently listed in the country records:
 ## Technical Architecture
 
 ### Frontend Stack ✅
-- **Framework**: Next.js 15.3.2 with App Router
+- **Framework**: Next.js 16 with App Router
 - **Language**: TypeScript 5.0 with strict mode
 - **Styling**: Tailwind CSS 4.0
 - **Components**: Radix UI with custom design system

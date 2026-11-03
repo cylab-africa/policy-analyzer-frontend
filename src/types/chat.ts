@@ -6,8 +6,9 @@ export interface ChatMessage {
     user: string;
     bot: string;
     timestamp: Date;
-    sources?: string[];
     isStreaming?: boolean;
+    /** When the answer finished generating, as epoch milliseconds. */
+    answeredAt?: number;
     error?: boolean;
 }
 

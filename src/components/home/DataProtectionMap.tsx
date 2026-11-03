@@ -79,7 +79,7 @@ const findCountryData = <T extends { country: string }>(data: T[], mapCountryNam
 };
 
 const DataProtectionMap: React.FC = () => {
-    const popover = useMapPopover();
+    const { state: popoverState, containerRef, cardRef, hover, move, leave, pin, close } = useMapPopover();
     // Status picked in the legend; every other country is dimmed while it is set
     const [activeStatus, setActiveStatus] = useState<string | null>(null);
     const { policyLaws, isLoading, error } = usePolicyLawData();
@@ -120,7 +120,7 @@ const DataProtectionMap: React.FC = () => {
         return countryData?.dataProtectionLegislationStatus || "Unknown";
     };
 
-    const activeCountry = popover.state ? findCountryData(policyLaws, popover.state.name) : undefined;
+    const activeCountry = popoverState ? findCountryData(policyLaws, popoverState.name) : undefined;
 
     if (isLoading) {
         return (
@@ -164,8 +164,8 @@ const DataProtectionMap: React.FC = () => {
             <MapLegend items={legendData} active={activeStatus} onChange={setActiveStatus} />
             <div className="relative">
                 <div className="w-full h-[600px] lg:h-[700px] overflow-hidden relative bg-gradient-to-br from-slate-50/50 to-blue-50/30"
-                    ref={popover.containerRef}
-                    onClick={popover.close}
+                    ref={containerRef}
+                    onClick={close}
                 >
                     {/* Faint dot grid, like graph paper */}
                     <div
@@ -178,6 +178,10 @@ const DataProtectionMap: React.FC = () => {
                     {/* Professional background pattern */}
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(34,197,94,0.05)_0%,transparent_70%)] pointer-events-none"></div>
 
+
+                    <p className="pointer-events-none absolute left-4 top-6 z-10 rounded-full bg-white/90 px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm ring-1 ring-slate-200">
+                        Hover a country to preview it, click to pin.
+                    </p>
 
                     <ComposableMap
                         projectionConfig={{
@@ -194,7 +198,7 @@ const DataProtectionMap: React.FC = () => {
                                     const interactive = geo.properties.au_member === true;
                                     const status = getCountryStatus(countryName);
                                     const fillColor = getColor(status);
-                                    const isHovered = popover.state?.name === countryName;
+                                    const isHovered = popoverState?.name === countryName;
                                     const dimmed = activeStatus !== null && status !== activeStatus;
 
                                     return (
@@ -220,10 +224,10 @@ const DataProtectionMap: React.FC = () => {
                                                     ? { outline: "none", fill: fillColor, filter: "brightness(0.95)", opacity: dimmed ? 0.4 : 1 }
                                                     : {},
                                             }}
-                                            onMouseEnter={interactive ? (event) => popover.hover(countryName, event) : undefined}
-                                            onMouseMove={interactive ? popover.move : undefined}
-                                            onMouseLeave={interactive ? popover.leave : undefined}
-                                            onClick={interactive ? (event) => popover.pin(countryName, event) : undefined}
+                                            onMouseEnter={interactive ? (event) => hover(countryName, event) : undefined}
+                                            onMouseMove={interactive ? move : undefined}
+                                            onMouseLeave={interactive ? leave : undefined}
+                                            onClick={interactive ? (event) => pin(countryName, event) : undefined}
                                             className={
                                                 interactive ? "cursor-pointer" : "cursor-default"
                                             }
@@ -242,24 +246,24 @@ const DataProtectionMap: React.FC = () => {
                                     strokeWidth={1.5}
                                     className="cursor-pointer transition-opacity duration-200"
                                     opacity={activeStatus !== null && getCountryStatus(name) !== activeStatus ? 0.25 : 1}
-                                    onMouseEnter={(event) => popover.hover(name, event)}
-                                    onMouseMove={popover.move}
-                                    onMouseLeave={popover.leave}
-                                    onClick={(event) => popover.pin(name, event)}
+                                    onMouseEnter={(event) => hover(name, event)}
+                                    onMouseMove={move}
+                                    onMouseLeave={leave}
+                                    onClick={(event) => pin(name, event)}
                                 />
                             </Marker>
                         ))}
                     </ComposableMap>
-                    {popover.state && activeCountry && (
+                    {popoverState && activeCountry && (
                         <MapPopoverCard
-                            pinned={popover.state.pinned}
+                            pinned={popoverState.pinned}
                             label={activeCountry.country}
-                            cardRef={popover.cardRef}
-                            onClose={popover.close}
+                            cardRef={cardRef}
+                            onClose={close}
                         >
                             <DataProtectionCard
                                                     country={activeCountry}
-                                                    pinned={popover.state.pinned}
+                                                    pinned={popoverState.pinned}
                                                     statusColor={getColor(activeCountry.dataProtectionLegislationStatus)}
                                                     malaboColor={getMalaboColor(activeCountry.malaboConventionStatus)}
                                                 />

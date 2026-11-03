@@ -1,106 +1,73 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Upload, FileSpreadsheet } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { ChatTab } from ".";
 
+const linkClass = "cursor-pointer font-medium text-primary underline underline-offset-2 hover:text-primary/80";
+
 export function WelcomeScreen({
+    wide,
     activeTab,
     setInput,
     suggestedQuestions,
     onUploadClick,
     onBatchClick,
 }: {
+    wide?: boolean;
     activeTab: ChatTab;
     setInput: (input: string) => void;
     suggestedQuestions: Record<ChatTab, string[]>;
     onUploadClick?: () => void;
     onBatchClick?: () => void;
 }) {
+    // Read ChatTab at render time: this file and the chat index import each other
+    const { title, blurb } =
+        activeTab === ChatTab.DATA_PROTECTION
+            ? {
+                  title: "Explore data protection policy",
+                  blurb: "Ask what each country's law requires, who enforces it, and how countries compare.",
+              }
+            : {
+                  title: "Explore digital identity systems",
+                  blurb: "Ask how national ID systems work, how far they have rolled out, and which laws govern them across Africa.",
+              };
+
     return (
-        <div className="h-full flex flex-col items-center justify-center text-center p-4 sm:p-6 max-w-4xl mx-auto">
-            {/* Title with better typography */}
-            <div className="mb-8 space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-                    {activeTab === ChatTab.DATA_PROTECTION
-                        ? "Explore Data Protection Policies"
-                        : "Discover Digital ID Systems"}
-                </h2>
-                <p className="text-gray-600 text-sm sm:text-base max-w-lg">
-                    {activeTab === ChatTab.DATA_PROTECTION
-                        ? "Ask what each country's law requires, who enforces it, and how countries compare. Answers cite the laws they draw on where they can."
-                        : "Ask how national ID systems work, how far they have rolled out, and which laws govern them across Africa."}
-                </p>
-            </div>
+        <div
+            className={cn(
+                "mx-auto flex min-h-full flex-col justify-center px-4 py-10 transition-[max-width] duration-300 ease-in-out sm:px-8",
+                wide ? "max-w-4xl" : "max-w-3xl"
+            )}
+        >
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">{title}</h2>
+            <p className="mt-3 max-w-xl leading-relaxed text-slate-600">{blurb}</p>
 
-            {/* Action Cards */}
-            <div className="w-full max-w-2xl grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-                <button
-                    onClick={onUploadClick}
-                    className="group flex items-start gap-4 p-5 bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/15 border border-primary/20 hover:border-primary/30 rounded-2xl text-left transition-all duration-300"
-                >
-                    <div className="p-3 bg-white rounded-xl shadow-sm group-hover:shadow-md transition-shadow">
-                        <Upload className="w-6 h-6 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <h3 className="text-base font-semibold text-slate-800 mb-1">Upload Documents</h3>
-                        <p className="text-sm text-slate-500 leading-relaxed">
-                            Add a law or policy document so it can be searched and cited
-                        </p>
-                    </div>
-                </button>
-
-                <button
-                    onClick={onBatchClick}
-                    className="group flex items-start gap-4 p-5 bg-gradient-to-br from-green-50 to-emerald-50 hover:from-green-100/80 hover:to-emerald-100/80 border border-green-200 hover:border-green-300 rounded-2xl text-left transition-all duration-300"
-                >
-                    <div className="p-3 bg-white rounded-xl shadow-sm group-hover:shadow-md transition-shadow">
-                        <FileSpreadsheet className="w-6 h-6 text-green-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <h3 className="text-base font-semibold text-slate-800 mb-1">Batch Analysis</h3>
-                        <p className="text-sm text-slate-500 leading-relaxed">
-                            Run up to 100 questions from a spreadsheet and get a PDF report
-                        </p>
-                    </div>
-                </button>
-            </div>
-
-            {/* Enhanced suggestion tags */}
-            <div className="w-full max-w-3xl">
-                <div className="flex items-center gap-2 mb-4">
-                    <span className="text-sm font-medium text-gray-700">Or try asking:</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                    {suggestedQuestions[activeTab].map((question, index) => (
-                        <Button
-                            key={index}
-                            className="group cursor-pointer relative h-auto w-full justify-start whitespace-normal bg-gradient-to-r from-gray-50 to-gray-100/90 
-                            border border-gray-200 hover:border-primary/30 rounded-xl p-4 text-left transition-all duration-300 
-                            focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2"
+            <h3 className="mt-10 text-sm font-semibold text-slate-900">Sample questions</h3>
+            <ul className="mt-3 divide-y divide-slate-200 overflow-hidden rounded-xl border border-slate-200">
+                {suggestedQuestions[activeTab].map((question) => (
+                    <li key={question}>
+                        <button
+                            type="button"
                             onClick={() => setInput(question)}
+                            className="w-full cursor-pointer px-4 py-3 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900 focus-visible:bg-slate-50 focus-visible:outline-none"
                         >
-                            {/* Content */}
-                            <div className="flex w-full min-w-0 items-center gap-3">
-                                <div className="flex-shrink-0 w-2 h-2 bg-primary/60 rounded-full transition-colors"></div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs lg:text-sm text-gray-600 group-hover:text-gray-700 leading-relaxed">
-                                        {question}
-                                    </p>
-                                </div>
-                                <ArrowRight
-                                    size={16}
-                                    className="text-gray-400 group-hover:text-primary transition-colors opacity-0 group-hover:opacity-100 transform translate-x-1 group-hover:translate-x-0"
-                                />
-                            </div>
+                            {question}
+                        </button>
+                    </li>
+                ))}
+            </ul>
 
-                            {/* Hover effect border */}
-                            <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-primary/20 transition-all duration-300"></div>
-                        </Button>
-                    ))}
-                </div>
-            </div>
+            <p className="mt-8 text-sm leading-relaxed text-slate-600">
+                You can also{" "}
+                <button type="button" onClick={onUploadClick} className={linkClass}>
+                    upload a document
+                </button>{" "}
+                so answers can draw on it, or{" "}
+                <button type="button" onClick={onBatchClick} className={linkClass}>
+                    run a batch of up to 100 questions
+                </button>{" "}
+                from a spreadsheet and get a PDF report.
+            </p>
         </div>
     );
 }

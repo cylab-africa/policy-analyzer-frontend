@@ -3,8 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { ChevronLeft, Menu } from "lucide-react";
+import { PanelLeftOpen } from "lucide-react";
 import { ChatTab } from ".";
+
+const TRIGGER_CLASS =
+    "cursor-pointer px-4 text-sm font-medium text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm";
 
 export function ChatHeader({
     activeTab,
@@ -18,38 +21,30 @@ export function ChatHeader({
     readonly setShowChatHistory: (show: boolean) => void;
 }) {
     return (
-        <div className="bg-white/80 backdrop-blur-md border-b border-gray-200/60 p-3 lg:px-6 lg:py-3 flex items-center justify-between shrink-0 z-10">
-            <div className="flex items-center gap-3">
-                {/* Sidebar Toggle */}
+        <div className="z-10 flex shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-4 py-3 lg:px-6">
+            {!showChatHistory && (
                 <Button
                     variant="ghost"
-                    size="sm"
-                    className="text-slate-500 hover:text-slate-900 hover:bg-slate-100"
-                    onClick={() => setShowChatHistory(!showChatHistory)}
-                    title={showChatHistory ? "Close Sidebar" : "Open Sidebar"}
+                    size="icon"
+                    className="h-9 w-9 text-slate-600"
+                    onClick={() => setShowChatHistory(true)}
+                    aria-label="Show history"
+                    title="Show history"
                 >
-                    {showChatHistory ? <ChevronLeft size={18} /> : <Menu size={18} />}
+                    <PanelLeftOpen size={18} />
                 </Button>
+            )}
 
-                {/* Context Switcher (Tabs) */}
-                <Tabs value={activeTab} onValueChange={(value) => handleTabChange(value as ChatTab)}>
-                    <TabsList className="bg-gradient-to-r from-slate-50 to-slate-100/90 p-1 h-10 border border-slate-200 rounded-lg shadow-none">
-                        <TabsTrigger
-                            className="text-xs cursor-pointer font-semibold px-5 py-2 rounded-md data-[state=active]:bg-white data-[state=active]:text-emerald-600 data-[state=active]:shadow-md data-[state=inactive]:text-slate-600 data-[state=inactive]:hover:text-slate-900 data-[state=inactive]:hover:bg-slate-50/50 transition-all duration-200"
-                            value={ChatTab.DATA_PROTECTION}
-                        >
-                            Data Protection
-                        </TabsTrigger>
-                        <TabsTrigger
-                            className="text-xs cursor-pointer font-semibold px-5 py-2 rounded-md data-[state=active]:bg-white data-[state=active]:text-emerald-600 data-[state=active]:shadow-md data-[state=inactive]:text-slate-600 data-[state=inactive]:hover:text-slate-900 data-[state=inactive]:hover:bg-slate-50/50 transition-all duration-200"
-                            value={ChatTab.DIGITAL_ID}
-                        >
-                            Digital ID
-                        </TabsTrigger>
-                    </TabsList>
-                </Tabs>
-            </div>
-
+            <Tabs value={activeTab} onValueChange={(value) => handleTabChange(value as ChatTab)}>
+                <TabsList className="bg-slate-100">
+                    <TabsTrigger className={TRIGGER_CLASS} value={ChatTab.DATA_PROTECTION}>
+                        Data Protection
+                    </TabsTrigger>
+                    <TabsTrigger className={TRIGGER_CLASS} value={ChatTab.DIGITAL_ID}>
+                        Digital ID
+                    </TabsTrigger>
+                </TabsList>
+            </Tabs>
         </div>
     );
 }

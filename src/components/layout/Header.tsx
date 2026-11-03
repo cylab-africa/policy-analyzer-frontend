@@ -12,9 +12,9 @@ import { useEffect, useState } from "react";
 
 const navItems = [
     { href: "/", label: "Home" },
-    { href: "/chat", label: "Policy Chat" },
+    { href: "/chat", label: "Chat" },
     { href: "/sources", label: "Sources" },
-    { href: "/docs", label: "Documentation" },
+    { href: "/docs", label: "Docs" },
 ];
 
 export default function Header() {
@@ -67,7 +67,7 @@ export default function Header() {
                                 width={35}
                                 height={35}
                                 alt="Policy Analyzer Logo"
-                                className="mr-2 transition-transform duration-300 group-hover:scale-105"
+                                className="mr-2 h-[35px] w-[35px] shrink-0 object-contain transition-transform duration-300 group-hover:scale-105"
                             />
                             <div className="flex items-baseline space-x-1">
                                 <div

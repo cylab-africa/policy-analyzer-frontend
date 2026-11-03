@@ -2,8 +2,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-import { AlertCircle } from "lucide-react";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { ChatHeader } from "./ChatHeader";
 import { ChatHistorySidebar } from "./ChatHistorySidebar";
@@ -27,8 +27,8 @@ export interface Message {
     bot: string;
     timestamp: Date;
     tab: ChatTab;
-    sources?: string[];
     isStreaming?: boolean;
+    answeredAt?: number;
     error?: boolean;
 }
 
@@ -41,11 +41,12 @@ const generateId = (): string => {
     return `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 };
 
-// Generate conversation title from first message (truncate to ~50 chars)
+// Generate conversation title from first message. The sidebar fades long titles at its edge,
+// so this only caps the length and adds no ellipsis.
 const generateTitle = (firstMessage: string): string => {
-    const maxLength = 50;
-    if (firstMessage.length <= maxLength) return firstMessage;
-    return firstMessage.substring(0, maxLength).trim() + "...";
+    const maxLength = 80;
+    const title = firstMessage.replace(/\s+/g, " ").trim();
+    return title.length <= maxLength ? title : title.substring(0, maxLength).trim();
 };
 
 // Load conversations from localStorage
@@ -97,6 +98,22 @@ const saveActiveConversationId = (id: string | null): void => {
     }
 };
 
+// Suggested questions
+const SUGGESTED_QUESTIONS: Record<ChatTab, string[]> = {
+    [ChatTab.DATA_PROTECTION]: [
+        "Which African countries have enacted data protection laws?",
+        "What is the Malabo Convention, and which countries have ratified it?",
+        "Compare Ghana and Nigeria's data protection laws",
+        "What rights do individuals have under Kenya's Data Protection Act?",
+    ],
+    [ChatTab.DIGITAL_ID]: [
+        "Which African countries have a national digital ID system?",
+        "How does Ethiopia's Fayda ID work?",
+        "Compare Nigeria's NIN and the Ghana Card",
+        "How is biometric data protected in national ID systems?",
+    ],
+};
+
 // Error Alert Component
 function ErrorAlert({
     streamError,
@@ -108,10 +125,9 @@ function ErrorAlert({
     if (!streamError) return null;
 
     return (
-        <div className="p-3 sm:p-4 bg-red-50 border-b border-red-200 shrink-0">
-            <div className="flex items-center gap-2 text-red-700">
-                <AlertCircle size={16} />
-                <span className="text-sm flex-1">Connection error: {streamError}</span>
+        <div role="alert" className="shrink-0 border-b border-red-200 bg-red-50 px-4 py-3">
+            <div className="flex items-center gap-3 text-red-800">
+                <span className="flex-1 text-sm">Connection error: {streamError}</span>
                 <Button variant="outline" size="sm" onClick={() => setStreamError(null)} className="shrink-0">
                     Dismiss
                 </Button>
@@ -136,8 +152,10 @@ export default function ChatPage() {
     const [isInitialized, setIsInitialized] = useState(false);
 
     const chatBodyRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
+    const stickToBottomRef = useRef(true);
+    const lastSavedRef = useRef(0);
     const abortControllerRef = useRef<AbortController | null>(null);
-    const accumulatedResponseRef = useRef<string>("");
 
     // Get current conversation
     const currentConversation = conversations.find((c) => c.id === activeConversationId);
@@ -167,18 +185,18 @@ export default function ChatPage() {
         setShowBatchPanel(true);
     };
 
-    // Check if mobile
+    // Track the mobile breakpoint; the history drawer starts closed on mobile
     useEffect(() => {
-        const checkIsMobile = () => {
-            setIsMobile(window.innerWidth < 1024);
-            if (window.innerWidth < 1024) {
-                setShowChatHistory(false);
-            }
+        const query = window.matchMedia("(max-width: 1023px)");
+        const apply = (matches: boolean) => {
+            setIsMobile(matches);
+            if (matches) setShowChatHistory(false);
         };
 
-        checkIsMobile();
-        window.addEventListener("resize", checkIsMobile);
-        return () => window.removeEventListener("resize", checkIsMobile);
+        apply(query.matches);
+        const onChange = (event: MediaQueryListEvent) => apply(event.matches);
+        query.addEventListener("change", onChange);
+        return () => query.removeEventListener("change", onChange);
     }, []);
 
     // Initialize from localStorage
@@ -186,6 +204,8 @@ export default function ChatPage() {
         const loadedConversations = loadConversations();
         const loadedActiveId = loadActiveConversationId();
 
+        // Read after mount: localStorage does not exist on the server, so reading it earlier would mismatch
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setConversations(loadedConversations);
 
         // Verify the active conversation exists
@@ -203,10 +223,12 @@ export default function ChatPage() {
 
     // Save conversations whenever they change
     useEffect(() => {
-        if (isInitialized && conversations.length > 0) {
-            saveConversations(conversations);
-        }
-    }, [conversations, isInitialized]);
+        if (!isInitialized) return;
+        // While an answer streams, write at most every two seconds instead of on every chunk
+        if (isStreaming && Date.now() - lastSavedRef.current < 2000) return;
+        lastSavedRef.current = Date.now();
+        saveConversations(conversations);
+    }, [conversations, isInitialized, isStreaming]);
 
     // Save active conversation ID whenever it changes
     useEffect(() => {
@@ -215,19 +237,32 @@ export default function ChatPage() {
         }
     }, [activeConversationId, isInitialized]);
 
-    // Auto-scroll to bottom
-    useEffect(() => {
-        if (chatBodyRef.current) {
-            chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
-        }
-    }, [currentConversation?.messages]);
+    // Keep the newest text in view while it grows, unless the reader has scrolled up
+    const hasMessages = (currentConversation?.messages.length ?? 0) > 0;
 
-    // Format timestamp
-    const formatTime = (date: Date) => {
-        return new Date(date).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
+    useEffect(() => {
+        const body = chatBodyRef.current;
+        const content = contentRef.current;
+        if (!body || !content) return;
+
+        const observer = new ResizeObserver(() => {
+            if (stickToBottomRef.current) body.scrollTop = body.scrollHeight;
         });
+        observer.observe(content);
+        return () => observer.disconnect();
+    }, [hasMessages]);
+
+    // Opening another conversation starts at its end
+    useEffect(() => {
+        stickToBottomRef.current = true;
+        const body = chatBodyRef.current;
+        if (body) body.scrollTop = body.scrollHeight;
+    }, [activeConversationId]);
+
+    const handleChatScroll = () => {
+        const body = chatBodyRef.current;
+        if (!body) return;
+        stickToBottomRef.current = body.scrollHeight - body.scrollTop - body.clientHeight < 80;
     };
 
     // Create new conversation
@@ -288,7 +323,6 @@ export default function ChatPage() {
 
         setIsStreaming(true);
         setStreamError(null);
-        accumulatedResponseRef.current = "";
 
         const newMessageId = generateId();
 
@@ -332,9 +366,14 @@ export default function ChatPage() {
             addMessageToConversation(conversationId!, newMessage);
         }
 
-        abortControllerRef.current = new AbortController();
+        // Each stream keeps its own controller and text, so a stream that was cancelled
+        // can never overwrite the one that replaced it.
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
 
-        let finalSources: string[] = [];
+        let failed = false;
+        let accumulated = "";
+        let buffer = "";
         let hasReceivedContent = false;
 
         try {
@@ -345,7 +384,7 @@ export default function ChatPage() {
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "text/event-stream",
-                    "X-API-Key": process.env.NEXT_PUBLIC_API_KEY ?? "",
+                    ...(process.env.NEXT_PUBLIC_API_KEY ? { "X-API-Key": process.env.NEXT_PUBLIC_API_KEY } : {}),
                 },
                 body: JSON.stringify({
                     query,
@@ -357,7 +396,7 @@ export default function ChatPage() {
                     max_total_docs: 4,
                     enable_country_filter: false,
                 }),
-                signal: abortControllerRef.current.signal,
+                signal: controller.signal,
             });
 
             if (!response.ok) {
@@ -372,16 +411,74 @@ export default function ChatPage() {
             const decoder = new TextDecoder();
             let streamCompleted = false;
 
+            const applyData = (data: string) => {
+                try {
+                    let parsedData;
+                    try {
+                        parsedData = JSON.parse(data);
+                    } catch {
+                        const jsonString = data
+                            .replaceAll("'", '"')
+                            .replaceAll("True", "true")
+                            .replaceAll("False", "false")
+                            .replaceAll("None", "null");
+                        parsedData = JSON.parse(jsonString);
+                    }
+
+                    if (parsedData.type === "content" || parsedData.content) {
+                        let contentText = "";
+
+                        if (parsedData.content?.content) {
+                            contentText = parsedData.content.content;
+                        } else if (parsedData.content) {
+                            contentText = parsedData.content;
+                        } else if (parsedData.text) {
+                            contentText = parsedData.text;
+                        } else if (typeof parsedData === "string") {
+                            contentText = parsedData;
+                        }
+
+                        if (contentText?.trim()) {
+                            hasReceivedContent = true;
+                            accumulated += contentText;
+
+                            updateMessageInConversation(conversationId!, newMessageId, {
+                                bot: accumulated,
+                                isStreaming: true,
+                            });
+                        }
+                    }
+                } catch (parseError) {
+                    console.error("Error parsing SSE data:", parseError, "Raw data:", data);
+
+                    if (data?.trim() && !data.includes("{") && !data.includes("[DONE]")) {
+                        hasReceivedContent = true;
+                        accumulated += data;
+
+                        updateMessageInConversation(conversationId!, newMessageId, {
+                            bot: accumulated,
+                            isStreaming: true,
+                        });
+                    }
+                }
+            };
+
             while (true) {
                 const { done, value } = await reader.read();
 
                 if (done) {
-                    streamCompleted = true;
+                    // Whatever is left in the buffer is a final line without a trailing newline
+                    if (buffer.startsWith("data: ")) {
+                        const data = buffer.slice(6).trim();
+                        if (data && data !== "[DONE]") applyData(data);
+                    }
                     break;
                 }
 
-                const chunk = decoder.decode(value, { stream: true });
-                const lines = chunk.split("\n").filter((line) => line.trim() !== "");
+                // A network chunk can end in the middle of a line, so only whole lines are processed
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split("\n");
+                buffer = lines.pop() ?? "";
 
                 for (const line of lines) {
                     if (!line.startsWith("data: ")) continue;
@@ -393,62 +490,7 @@ export default function ChatPage() {
                         break;
                     }
 
-                    try {
-                        let parsedData;
-                        try {
-                            parsedData = JSON.parse(data);
-                        } catch {
-                            const jsonString = data
-                                .replaceAll("'", '"')
-                                .replaceAll("True", "true")
-                                .replaceAll("False", "false")
-                                .replaceAll("None", "null");
-                            parsedData = JSON.parse(jsonString);
-                        }
-
-                        if (parsedData.type === "content" || parsedData.content) {
-                            let contentText = "";
-
-                            if (parsedData.content?.content) {
-                                contentText = parsedData.content.content;
-                            } else if (parsedData.content) {
-                                contentText = parsedData.content;
-                            } else if (parsedData.text) {
-                                contentText = parsedData.text;
-                            } else if (typeof parsedData === "string") {
-                                contentText = parsedData;
-                            }
-
-                            if (contentText?.trim()) {
-                                hasReceivedContent = true;
-                                accumulatedResponseRef.current += contentText;
-
-                                updateMessageInConversation(conversationId!, newMessageId, {
-                                    bot: accumulatedResponseRef.current,
-                                    isStreaming: true,
-                                });
-                            }
-                        }
-
-                        if (parsedData.type === "sources" && parsedData.sources) {
-                            finalSources = [...new Set([...finalSources, ...parsedData.sources])];
-                            updateMessageInConversation(conversationId!, newMessageId, {
-                                sources: finalSources,
-                            });
-                        }
-                    } catch (parseError) {
-                        console.error("Error parsing SSE data:", parseError, "Raw data:", data);
-
-                        if (data?.trim() && !data.includes("{") && !data.includes("[DONE]")) {
-                            hasReceivedContent = true;
-                            accumulatedResponseRef.current += data;
-
-                            updateMessageInConversation(conversationId!, newMessageId, {
-                                bot: accumulatedResponseRef.current,
-                                isStreaming: true,
-                            });
-                        }
-                    }
+                    applyData(data);
                 }
 
                 if (streamCompleted) break;
@@ -459,35 +501,36 @@ export default function ChatPage() {
             }
 
             console.error("Stream error:", error);
+            failed = true;
             setStreamError(error.message);
 
             const errorMessage = hasReceivedContent
-                ? accumulatedResponseRef.current
+                ? accumulated
                 : "I apologize, but I encountered an issue processing your request. Please try rephrasing your question or try again.";
 
             updateMessageInConversation(conversationId!, newMessageId, {
                 bot: errorMessage,
                 error: !hasReceivedContent,
                 isStreaming: false,
-                sources: finalSources,
             });
         } finally {
-            setIsStreaming(false);
+            // Only the stream that is still current may change the shared state
+            if (abortControllerRef.current === controller) {
+                abortControllerRef.current = null;
+                setIsStreaming(false);
+            }
 
-            const finalResponse = accumulatedResponseRef.current;
-
+            // A question the user cancelled is not an error: keep what arrived, or nothing
+            const cancelled = controller.signal.aborted;
             updateMessageInConversation(conversationId!, newMessageId, {
-                bot: finalResponse || "I apologize, but I didn't receive a proper response. Please try again.",
+                bot:
+                    accumulated ||
+                    (cancelled ? "" : "I apologize, but I didn't receive a proper response. Please try again."),
                 isStreaming: false,
-                sources: finalSources,
-                error: !finalResponse,
+                error: !accumulated && !cancelled,
+                // Only a complete answer gets a time; a cancelled or broken one would show a misleading stamp
+                answeredAt: accumulated && !failed && !controller.signal.aborted ? Date.now() : undefined,
             });
-
-            setTimeout(() => {
-                accumulatedResponseRef.current = "";
-            }, 100);
-
-            abortControllerRef.current = null;
         }
     };
 
@@ -497,6 +540,8 @@ export default function ChatPage() {
 
         const trimmedInput = input.trim();
         if (!trimmedInput || isStreaming) return;
+
+        stickToBottomRef.current = true;
 
         const query = trimmedInput;
         setInput("");
@@ -549,6 +594,13 @@ export default function ChatPage() {
         }
     };
 
+    // Rename a conversation; the order in the list does not change
+    const handleRenameConversation = (id: string, title: string) => {
+        const trimmed = title.trim();
+        if (!trimmed) return;
+        setConversations((prev) => prev.map((c) => (c.id === id ? { ...c, title: trimmed } : c)));
+    };
+
     // Clear all history for current tab
     const clearAllHistory = () => {
         setConversations((prev) => prev.filter((c) => c.tab !== activeTab));
@@ -557,31 +609,11 @@ export default function ChatPage() {
         }
     };
 
-    // Suggested questions
-    const suggestedQuestions = {
-        [ChatTab.DATA_PROTECTION]: [
-            "Which African countries have enacted data protection laws?",
-            "What is the Malabo Convention, and which countries have ratified it?",
-            "Compare Ghana and Nigeria's data protection laws",
-            "What rights do individuals have under Kenya's Data Protection Act?",
-        ],
-        [ChatTab.DIGITAL_ID]: [
-            "Which African countries have a national digital ID system?",
-            "How does Ethiopia's Fayda ID work?",
-            "Compare Nigeria's NIN and the Ghana Card",
-            "How is biometric data protected in national ID systems?",
-        ],
-    };
+    const displayMessages = getDisplayMessages();
 
     return (
         <>
-            <div
-                className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm"
-                style={{
-                    height: "calc(100vh - 160px)",
-                    minHeight: "600px",
-                }}
-            >
+            <div className="h-[calc(100dvh-16rem)] min-h-[34rem] overflow-hidden rounded-xl border border-slate-200 bg-white">
                 <div className="flex h-full">
                     {/* Chat History Sidebar */}
                     <ChatHistorySidebar
@@ -591,6 +623,7 @@ export default function ChatPage() {
                         activeConversationId={activeConversationId}
                         onSelectConversation={handleSelectConversation}
                         onDeleteConversation={handleDeleteConversation}
+                        onRenameConversation={handleRenameConversation}
                         clearAllHistory={clearAllHistory}
                         isMobile={isMobile}
                         onNewChat={handleNewChat}
@@ -600,7 +633,7 @@ export default function ChatPage() {
                     />
 
                     {/* Main Content */}
-                    <div className="flex-1 flex flex-col min-w-0 bg-white relative">
+                    <div className="relative flex min-w-0 flex-1 flex-col bg-white">
                         {/* Header with Action Buttons */}
                         <ChatHeader
                             activeTab={activeTab}
@@ -613,25 +646,26 @@ export default function ChatPage() {
                         <ErrorAlert streamError={streamError} setStreamError={setStreamError} />
 
                         {/* Chat Messages Area */}
-                        <div
-                            ref={chatBodyRef}
-                            className="flex-1 overflow-y-auto bg-white"
-                            style={{
-                                scrollBehavior: "smooth",
-                            }}
-                        >
-                            {getDisplayMessages().length === 0 ? (
+                        <div ref={chatBodyRef} onScroll={handleChatScroll} className="flex-1 overflow-y-auto bg-white">
+                            {displayMessages.length === 0 ? (
                                 <WelcomeScreen
+                                    wide={!showChatHistory}
                                     activeTab={activeTab}
                                     setInput={setInput}
-                                    suggestedQuestions={suggestedQuestions}
+                                    suggestedQuestions={SUGGESTED_QUESTIONS}
                                     onUploadClick={openUploadPanel}
                                     onBatchClick={openBatchPanel}
                                 />
                             ) : (
-                                <div className="w-full mx-auto py-6 px-4 max-w-6xl">
-                                    {getDisplayMessages().map((message) => (
-                                        <MessageBubble key={message.id} message={message} formatTime={formatTime} />
+                                <div
+                                    ref={contentRef}
+                                    className={cn(
+                                        "mx-auto w-full px-4 py-8 transition-[max-width] duration-300 ease-in-out sm:px-6",
+                                        showChatHistory ? "max-w-3xl" : "max-w-4xl"
+                                    )}
+                                >
+                                    {displayMessages.map((message) => (
+                                        <MessageBubble key={message.id} message={message} />
                                     ))}
                                 </div>
                             )}
@@ -643,6 +677,7 @@ export default function ChatPage() {
                             <UploadPanel isOpen={showUploadPanel} onClose={() => setShowUploadPanel(false)} />
 
                             <ChatInput
+                                wide={!showChatHistory}
                                 input={input}
                                 setInput={setInput}
                                 handleSend={handleSend}
