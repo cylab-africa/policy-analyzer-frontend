@@ -29,7 +29,7 @@ export default function DocsPage() {
                     <DocsSidebar groups={docGroups} />
                 </aside>
 
-                <article className="min-w-0 max-w-3xl pt-6 lg:pt-0">
+                <article className="min-w-0 max-w-[50rem] pt-6 lg:pt-0">
                     <IntroSection />
                     {docSections.map(({ key, Component }) => (
                         <Component key={key} />

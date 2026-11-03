@@ -1,3 +1,4 @@
+import { AnalysisFlowDiagram } from "../diagrams/AnalysisFlowDiagram";
 import { docMeta } from "../meta";
 import { B, DocSection, DocSubsection, LI, P, UL } from "../primitives";
 
@@ -11,6 +12,7 @@ export function AnalysisSection() {
                 evidence. The answer is not drawn from the general knowledge of an AI model alone. This approach is
                 often called <em>retrieval-augmented generation</em>.
             </P>
+            <AnalysisFlowDiagram />
 
             <DocSubsection title={parts.framing}>
                 <UL>

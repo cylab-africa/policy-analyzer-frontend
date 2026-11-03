@@ -1,3 +1,4 @@
+import { ArchitectureDiagram } from "../diagrams/ArchitectureDiagram";
 import { docMeta } from "../meta";
 import { B, DocSection, LI, P, UL } from "../primitives";
 
@@ -5,6 +6,7 @@ export function BuiltSection() {
     return (
         <DocSection title={docMeta.built.title}>
             <P>The Policy Analyzer is made of two applications and a few supporting services.</P>
+            <ArchitectureDiagram />
             <UL>
                 <LI>
                     <B>Frontend (website).</B> A Next.js application written in TypeScript. It draws the maps,

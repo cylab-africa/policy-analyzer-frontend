@@ -108,8 +108,8 @@ export function DocsMobileNav({ groups }: { readonly groups: DocsGroup[] }) {
                 aria-controls="docs-mobile-nav"
                 className="flex w-full cursor-pointer items-center justify-between gap-3 px-6 py-3 text-left text-sm"
             >
-                <span className="font-semibold text-slate-700">On this page</span>
-                <span className="truncate text-slate-500">{current?.title}</span>
+                <span className="shrink-0 font-semibold text-slate-700">On this page</span>
+                <span className="min-w-0 truncate text-slate-500">{current?.title}</span>
             </button>
             {open && (
                 <nav

@@ -55,6 +55,18 @@ After reading this page you should be able to:
 
 The Policy Analyzer is made of two applications and a few supporting services.
 
+```text
+Website (Next.js)  <-->  Backend API (FastAPI)  <-->  Data stores
+                                                      - Qdrant: document passages, searched by meaning
+                                                      - MongoDB: country data, document tasks, batch jobs
+                                                      - SQLite: conversation history
+                                                      - Redis: cache of repeated questions
+                                                <-->  AI provider: language and embedding models
+                                                <-->  Optional: web search, email, Amazon S3
+```
+
+Figure 1. How the parts connect. The website only talks to the backend; the backend talks to the data stores and to the AI provider.
+
 - **Frontend (website).** A Next.js application written in TypeScript. It draws the maps, statistics and Sources library, and it provides the chat and upload screens. It talks to the backend through an API.
 - **Backend (API).** A Python application built with FastAPI. It answers questions, processes uploaded documents, runs batch jobs, and serves the country reference data.
 - **Vector database (Qdrant).** Stores the passages of each document in a form that can be searched by meaning, separately for each topic area.
@@ -128,6 +140,12 @@ The country, title and description are detected automatically and are not manual
 ## Analysis method
 
 Questions are answered by finding the relevant evidence first and then writing an answer from that evidence. The answer is not drawn from the general knowledge of an AI model alone. This approach is often called *retrieval-augmented generation*.
+
+```text
+1. Question  ->  2. Check and frame  ->  3. Find evidence  ->  (4. Web results, only when needed)  ->  5. Write the answer
+```
+
+Figure 2. From question to answer. Step 4 happens only when little evidence is found or the question is about recent developments.
 
 ### Framing the question
 

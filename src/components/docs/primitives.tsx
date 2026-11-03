@@ -13,12 +13,22 @@ export function DocSection({ title, children }: { readonly title: string; readon
         <section>
             <h2
                 id={slugify(title)}
-                className="scroll-mt-24 text-2xl font-bold text-slate-900 mt-12 mb-4 pt-8 border-t border-border"
+                className="scroll-mt-32 text-2xl font-bold lg:scroll-mt-24 text-slate-900 mt-12 mb-4 pt-8 border-t border-border"
             >
                 {title}
             </h2>
             {children}
         </section>
+    );
+}
+
+// A diagram with a caption. The caption says what the figure shows, so the text carries the meaning.
+export function Figure({ caption, children }: { readonly caption: string; readonly children: ReactNode }) {
+    return (
+        <figure className="mb-6 rounded-lg border border-slate-200 bg-slate-50 p-4 sm:p-5">
+            {children}
+            <figcaption className="mt-4 text-sm text-slate-600">{caption}</figcaption>
+        </figure>
     );
 }
 
@@ -64,7 +74,10 @@ export function Note({ children }: { readonly children: ReactNode }) {
 export function DocSubsection({ title, children }: { readonly title: string; readonly children: ReactNode }) {
     return (
         <>
-            <h3 id={slugify(title)} className="scroll-mt-24 text-lg font-semibold text-slate-900 mt-8 mb-3">
+            <h3
+                id={slugify(title)}
+                className="scroll-mt-32 text-lg font-semibold lg:scroll-mt-24 text-slate-900 mt-8 mb-3"
+            >
                 {title}
             </h3>
             {children}
@@ -93,7 +106,9 @@ export const B = ({ children }: { readonly children: ReactNode }) => (
 );
 
 export const Code = ({ children }: { readonly children: ReactNode }) => (
-    <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[0.85em] text-slate-800">{children}</code>
+    <code className="break-words rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[0.85em] text-slate-800">
+        {children}
+    </code>
 );
 
 // Links starting with http open in a new tab; in-page anchors and mailto links stay in the same tab
@@ -102,7 +117,7 @@ export function A({ href, children }: { readonly href: string; readonly children
     return (
         <a
             href={href}
-            className="text-primary font-medium underline underline-offset-2 hover:text-primary/80"
+            className="break-words text-primary font-medium underline underline-offset-2 hover:text-primary/80"
             {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
         >
             {children}
