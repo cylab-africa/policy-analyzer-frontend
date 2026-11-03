@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import DocsSidebar, { DocsMobileNav } from "@/components/docs/DocsSidebar";
+import { DocsLayout } from "@/components/docs/DocsSidebar";
 import { DOCS_LAST_UPDATED } from "@/components/docs/meta";
 import { docGroups, docSections } from "@/components/docs/sections";
 import { IntroSection } from "@/components/docs/sections/IntroSection";
@@ -22,20 +22,14 @@ export default function DocsPage() {
                 <p className="mt-3 text-sm text-slate-500">Last updated {DOCS_LAST_UPDATED}</p>
             </header>
 
-            <DocsMobileNav groups={docGroups} />
-
-            <div className="lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-12">
-                <aside className="hidden lg:block">
-                    <DocsSidebar groups={docGroups} />
-                </aside>
-
+            <DocsLayout groups={docGroups}>
                 <article className="min-w-0 max-w-[50rem] pt-6 lg:pt-0">
                     <IntroSection />
                     {docSections.map(({ key, Component }) => (
                         <Component key={key} />
                     ))}
                 </article>
-            </div>
+            </DocsLayout>
         </div>
     );
 }

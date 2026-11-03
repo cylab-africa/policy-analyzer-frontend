@@ -26,8 +26,10 @@ const markdownComponents: React.ComponentProps<typeof Markdown>["components"] = 
     ul: (props) => <ul className="mb-4 list-disc space-y-1.5 pl-6" {...props} />,
     ol: (props) => <ol className="mb-4 list-decimal space-y-1.5 pl-6" {...props} />,
     li: (props) => <li className="leading-relaxed text-slate-700" {...props} />,
-    code: ({ className, children, ...props }) =>
-        className ? (
+    code: ({ className, children, ...props }) => {
+        // A fenced block with no language has no className, but its text always ends in a newline
+        const isBlock = Boolean(className) || String(children).includes("\n");
+        return isBlock ? (
             <code
                 className="block overflow-x-auto rounded-lg bg-slate-900 p-4 font-mono text-sm text-slate-100"
                 {...props}
@@ -38,7 +40,8 @@ const markdownComponents: React.ComponentProps<typeof Markdown>["components"] = 
             <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[0.85em] text-slate-800" {...props}>
                 {children}
             </code>
-        ),
+        );
+    },
     pre: (props) => <pre className="mb-4 overflow-x-auto" {...props} />,
     blockquote: (props) => <blockquote className="mb-4 border-l-2 border-slate-300 pl-4 text-slate-600" {...props} />,
     table: (props) => (
@@ -124,13 +127,13 @@ export function MessageBubble({ message }: Readonly<MessageBubbleProps>) {
             {showAnswer && (
                 <div className="mt-6">
                     <div className="mb-4 border-b border-slate-200 pb-2.5">
-                        <span className="text-sm font-semibold text-primary text-uppercase">Policy Analyzer</span>
+                        <span className="text-sm font-semibold text-primary uppercase">Policy Analyzer</span>
                     </div>
 
                     <div
                         className={cn(
                             "min-w-0",
-                            message.error && "rounded-lg border border-red-200 bg-red-50 p-4 text-red-800",
+                            message.error && "rounded-lg border border-red-200 bg-red-50 p-4 text-red-800"
                         )}
                     >
                         {visibleText && (

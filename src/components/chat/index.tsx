@@ -154,6 +154,7 @@ export default function ChatPage() {
     const chatBodyRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
     const stickToBottomRef = useRef(true);
+    const lastSavedRef = useRef(0);
     const abortControllerRef = useRef<AbortController | null>(null);
 
     // Get current conversation
@@ -222,9 +223,11 @@ export default function ChatPage() {
 
     // Save conversations whenever they change
     useEffect(() => {
-        if (isInitialized && !isStreaming) {
-            saveConversations(conversations);
-        }
+        if (!isInitialized) return;
+        // While an answer streams, write at most every two seconds instead of on every chunk
+        if (isStreaming && Date.now() - lastSavedRef.current < 2000) return;
+        lastSavedRef.current = Date.now();
+        saveConversations(conversations);
     }, [conversations, isInitialized, isStreaming]);
 
     // Save active conversation ID whenever it changes
@@ -381,7 +384,7 @@ export default function ChatPage() {
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "text/event-stream",
-                    "X-API-Key": process.env.NEXT_PUBLIC_API_KEY ?? "",
+                    ...(process.env.NEXT_PUBLIC_API_KEY ? { "X-API-Key": process.env.NEXT_PUBLIC_API_KEY } : {}),
                 },
                 body: JSON.stringify({
                     query,
@@ -517,10 +520,14 @@ export default function ChatPage() {
                 setIsStreaming(false);
             }
 
+            // A question the user cancelled is not an error: keep what arrived, or nothing
+            const cancelled = controller.signal.aborted;
             updateMessageInConversation(conversationId!, newMessageId, {
-                bot: accumulated || "I apologize, but I didn't receive a proper response. Please try again.",
+                bot:
+                    accumulated ||
+                    (cancelled ? "" : "I apologize, but I didn't receive a proper response. Please try again."),
                 isStreaming: false,
-                error: !accumulated,
+                error: !accumulated && !cancelled,
                 // Only a complete answer gets a time; a cancelled or broken one would show a misleading stamp
                 answeredAt: accumulated && !failed && !controller.signal.aborted ? Date.now() : undefined,
             });

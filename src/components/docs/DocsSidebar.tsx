@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 // The contents list shows the main sections only, in labelled groups; sub-headings stay on the page itself
 export interface DocsHeading {
@@ -14,28 +14,37 @@ export interface DocsGroup {
     headings: DocsHeading[];
 }
 
-// Highlight the heading nearest the top of the viewport
+// Highlight the last heading that has reached the band under the site header, and the last one at the bottom of
+// the page, where short final sections could never get that far up
 function useActiveHeading(groups: DocsGroup[]) {
     const [activeId, setActiveId] = useState(groups[0]?.headings[0]?.id);
 
     useEffect(() => {
-        const elements = groups
-            .flatMap((group) => group.headings)
-            .map((heading) => document.getElementById(heading.id))
-            .filter((element): element is HTMLElement => element !== null);
+        const ids = groups.flatMap((group) => group.headings.map((heading) => heading.id));
+        let frame = 0;
 
-        const observer = new IntersectionObserver(
-            (entries) => {
-                const visible = entries.filter((entry) => entry.isIntersecting);
-                if (visible.length > 0) {
-                    setActiveId(visible[0].target.id);
-                }
-            },
-            { rootMargin: "-80px 0px -70% 0px" }
-        );
+        const update = () => {
+            frame = 0;
+            const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+            let current = ids[0];
+            for (const id of ids) {
+                const element = document.getElementById(id);
+                if (element && element.getBoundingClientRect().top <= 120) current = id;
+            }
+            setActiveId(atBottom ? ids[ids.length - 1] : current);
+        };
+        const onScroll = () => {
+            if (!frame) frame = requestAnimationFrame(update);
+        };
 
-        elements.forEach((element) => observer.observe(element));
-        return () => observer.disconnect();
+        onScroll();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll);
+        return () => {
+            cancelAnimationFrame(frame);
+            window.removeEventListener("scroll", onScroll);
+            window.removeEventListener("resize", onScroll);
+        };
     }, [groups]);
 
     return activeId;
@@ -80,9 +89,13 @@ function DocsNavList({
     );
 }
 
+interface NavProps {
+    readonly groups: DocsGroup[];
+    readonly activeId: string | undefined;
+}
+
 // Beside the page on wide screens
-export default function DocsSidebar({ groups }: { readonly groups: DocsGroup[] }) {
-    const activeId = useActiveHeading(groups);
+function DocsSidebar({ groups, activeId }: NavProps) {
     return (
         <nav
             aria-label="Documentation contents"
@@ -94,9 +107,8 @@ export default function DocsSidebar({ groups }: { readonly groups: DocsGroup[] }
 }
 
 // A bar that stays under the site header on small screens and opens the same list
-export function DocsMobileNav({ groups }: { readonly groups: DocsGroup[] }) {
+function DocsMobileNav({ groups, activeId }: NavProps) {
     const [open, setOpen] = useState(false);
-    const activeId = useActiveHeading(groups);
     const current = groups.flatMap((group) => group.headings).find((heading) => heading.id === activeId);
 
     return (
@@ -121,5 +133,21 @@ export function DocsMobileNav({ groups }: { readonly groups: DocsGroup[] }) {
                 </nav>
             )}
         </div>
+    );
+}
+
+// The page body with its contents list. One scroll listener serves both the sidebar and the mobile bar.
+export function DocsLayout({ groups, children }: { readonly groups: DocsGroup[]; readonly children: ReactNode }) {
+    const activeId = useActiveHeading(groups);
+    return (
+        <>
+            <DocsMobileNav groups={groups} activeId={activeId} />
+            <div className="lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-12">
+                <aside className="hidden lg:block">
+                    <DocsSidebar groups={groups} activeId={activeId} />
+                </aside>
+                {children}
+            </div>
+        </>
     );
 }

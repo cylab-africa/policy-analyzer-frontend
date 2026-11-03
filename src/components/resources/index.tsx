@@ -24,7 +24,7 @@ import React, { useMemo, useState } from "react";
 // Import API hooks
 import { useGetDigitalIdsQuery, useGetPolicyLawsQuery } from "@/redux/api/apiSlice";
 import FolderTabs from "@/components/home/FolderTabs";
-import { FLAG_EMOJIS, describeLink, getDocumentLanguage, getRegion } from "./utils";
+import { FLAG_EMOJIS, describeLink, getRegion } from "./utils";
 import ResourceCard from "./ResourceCard";
 
 // Enum for resource type
@@ -48,7 +48,6 @@ export interface Resource {
     documentUrl?: string;
     websiteUrl?: string;
     year?: string;
-    language: string;
     fileType?: string;
     isOfficial: boolean;
     docType?: string;
@@ -136,7 +135,6 @@ export default function ResourcesPage() {
                                         type: ResourceType.DATA_PROTECTION,
                                         documentUrl: linkObj.url,
                                         year: law.yearLegislationEnacted,
-                                        language: getDocumentLanguage(law.country),
                                         fileType: linkObj.type || "PDF",
                                         isOfficial: true,
                                         icon: getResourceIcon(ResourceType.DATA_PROTECTION),
@@ -160,7 +158,6 @@ export default function ResourcesPage() {
                                 type: ResourceType.DATA_PROTECTION,
                                 documentUrl: "#",
                                 year: law.yearLegislationEnacted,
-                                language: getDocumentLanguage(law.country),
                                 fileType: "Legislation",
                                 isOfficial: true,
                                 icon: getResourceIcon(ResourceType.DATA_PROTECTION),
@@ -185,6 +182,7 @@ export default function ResourcesPage() {
 
                     // Process each link in the digital ID record
                     if (digitalId.links && Array.isArray(digitalId.links) && digitalId.links.length > 0) {
+                        let summaryShown = false;
                         digitalId.links.forEach((linkObj: any, index: number) => {
                             if (linkObj.url && linkObj.url.trim() !== "") {
                                 const resource: Resource = {
@@ -195,10 +193,9 @@ export default function ResourcesPage() {
                                     region,
                                     title: linkObj.title || `${digitalId.country} Digital ID Resources`,
                                     description: describeLink(linkObj, "digital-id"),
-                                    systemSummary: index === 0 ? digitalId.description : undefined,
+                                    systemSummary: summaryShown ? undefined : digitalId.description,
                                     type: ResourceType.DIGITAL_ID,
                                     documentUrl: linkObj.url,
-                                    language: getDocumentLanguage(digitalId.country),
                                     fileType: linkObj.type || "Research",
                                     isOfficial: linkObj.type === "Government" || linkObj.type === "Official",
                                     icon: getResourceIcon(ResourceType.DIGITAL_ID, linkObj.type),
@@ -209,6 +206,7 @@ export default function ResourcesPage() {
                                     linkType: linkObj.type,
                                 };
                                 allResources.push(resource);
+                                summaryShown = true;
                             }
                         });
                     } else if (digitalId.status && digitalId.status !== "No Data") {
@@ -223,7 +221,6 @@ export default function ResourcesPage() {
                             description: digitalId.description || `Digital identity system in ${digitalId.country}`,
                             type: ResourceType.DIGITAL_ID,
                             documentUrl: "#",
-                            language: getDocumentLanguage(digitalId.country),
                             fileType: "System Info",
                             isOfficial: true,
                             icon: getResourceIcon(ResourceType.DIGITAL_ID),
