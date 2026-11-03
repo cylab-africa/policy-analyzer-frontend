@@ -90,11 +90,11 @@ export default function Home() {
                         {/* Left side - Hero content */}
                         <div className="space-y-6">
                             <h1 className="text-2xl lg:text-3xl font-bold mb-2">
-                                Insights on Data Protection & Digital Identity Across Africa
+                                Data protection and digital identity across Africa, country by country.
                             </h1>
                             <p className="text-white/90 text-md lg:text-lg py-3 leading-relaxed max-w-lg ">
-                                Compare data protection and digital identity policy across the 55 African Union
-                                member states, and ask questions answered from legal and policy documents.
+                                Compare all 55 African Union member states, then ask questions answered from legal and policy
+                                documents.
                             </p>
                             <div className="flex gap-4 mt-8 md:flex-row flex-col">
                                 <Link
