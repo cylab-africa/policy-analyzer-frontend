@@ -5,8 +5,8 @@ export function ExtractionSection() {
     return (
         <DocSection title={docMeta.extraction.title}>
             <P>
-                Before a document can be analysed, it is broken down into pieces of evidence that can be found and
-                cited:
+                Before a document can be analysed, it is broken down into passages that can be searched and used as
+                evidence:
             </P>
             <OL>
                 <LI>
@@ -17,8 +17,8 @@ export function ExtractionSection() {
                     title and a short description.
                 </LI>
                 <LI>
-                    <B>Topic labelling.</B> Whoever adds the document chooses its topic area: data protection or
-                    digital identity, or general when none is chosen.
+                    <B>Topic labelling.</B> Whoever adds the document chooses its topic area: data protection or digital
+                    identity, or general when none is chosen.
                 </LI>
                 <LI>
                     <B>Division into passages.</B> The text is divided into short, overlapping passages of a few
@@ -27,8 +27,8 @@ export function ExtractionSection() {
             </OL>
             <P>
                 As a result, each piece of evidence is a specific passage of a document rather than the document as a
-                whole. It can be found by country and topic, and an analysis can focus on the provisions that matter
-                for a question.
+                whole. It can be found by country and topic, and an analysis can focus on the provisions that matter for
+                a question.
             </P>
             <P>
                 The country, title and description are detected automatically and are not manually checked, so a

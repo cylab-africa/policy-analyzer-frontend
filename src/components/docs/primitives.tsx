@@ -22,6 +22,45 @@ export function DocSection({ title, children }: { readonly title: string; readon
     );
 }
 
+// A numbered, step-by-step guide: a number on a line that joins the steps, then the step's title and content
+export function Steps({ children }: { readonly children: ReactNode }) {
+    return <ol className="mb-6 list-none">{children}</ol>;
+}
+
+export function Step({
+    n,
+    title,
+    children,
+}: {
+    readonly n: number;
+    readonly title: string;
+    readonly children: ReactNode;
+}) {
+    return (
+        <li className="group flex gap-4 pb-8 last:pb-0">
+            <div className="flex flex-col items-center">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white">
+                    {n}
+                </span>
+                <span aria-hidden="true" className="mt-2 w-px flex-1 bg-slate-200 group-last:hidden" />
+            </div>
+            <div className="min-w-0 flex-1 pt-1 [&>*:last-child]:mb-0">
+                <h4 className="mb-2 font-semibold text-slate-900">{title}</h4>
+                {children}
+            </div>
+        </li>
+    );
+}
+
+// A short callout for the points a reader should not miss
+export function Note({ children }: { readonly children: ReactNode }) {
+    return (
+        <aside className="mb-6 rounded-lg border border-slate-200 border-l-4 border-l-primary bg-slate-50 px-4 py-3 text-sm leading-relaxed text-slate-700">
+            {children}
+        </aside>
+    );
+}
+
 export function DocSubsection({ title, children }: { readonly title: string; readonly children: ReactNode }) {
     return (
         <>
@@ -71,13 +110,7 @@ export function A({ href, children }: { readonly href: string; readonly children
     );
 }
 
-export function DocTable({
-    head,
-    rows,
-}: {
-    readonly head: string[];
-    readonly rows: ReactNode[][];
-}) {
+export function DocTable({ head, rows }: { readonly head: string[]; readonly rows: ReactNode[][] }) {
     return (
         <div className="mb-6 overflow-x-auto rounded-lg border border-border">
             <table className="w-full text-left text-sm">
@@ -94,7 +127,10 @@ export function DocTable({
                     {rows.map((cells, index) => (
                         <tr key={index}>
                             {cells.map((cell, cellIndex) => (
-                                <td key={cellIndex} className="border-t border-border px-4 py-2.5 align-top text-slate-700">
+                                <td
+                                    key={cellIndex}
+                                    className="border-t border-border px-4 py-2.5 align-top text-slate-700"
+                                >
                                     {cell}
                                 </td>
                             ))}

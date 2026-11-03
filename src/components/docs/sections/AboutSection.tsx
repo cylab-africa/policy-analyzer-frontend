@@ -4,16 +4,20 @@ import { A, B, DocSection, DocSubsection, DocTable, LI, P, UL } from "../primiti
 const { title, parts } = docMeta.about;
 
 // Rows of the "How to use it" table: what the reader wants, and where to go
-const readerPaths: [string, string][] = [
-    ["Understand what the tool does", docMeta.features.title],
-    ["See how it is built", docMeta.built.title],
-    ["Know where the information comes from", docMeta.collection.title],
-    ["Understand a country’s classification", docMeta.indicators.title],
-    ["Understand how an answer is produced", docMeta.analysis.title],
-    ["Decide how far to rely on the results", docMeta.verification.title],
-    ["Run your own copy", docMeta.run.title],
-    ["Change or extend the tool", docMeta.extend.title],
+const readerPaths: [string, string[]][] = [
+    ["Know what the tool does", [docMeta.features.title]],
+    ["Understand where the data and the answers come from", [docMeta.collection.title, docMeta.analysis.title]],
+    ["Decide how far to rely on the results", [docMeta.verification.title]],
+    ["Run or change your own copy", [docMeta.run.title, docMeta.extend.title]],
 ];
+
+const pathLinks = (titles: string[]) =>
+    titles.map((target, index) => (
+        <span key={target}>
+            {index > 0 && ", "}
+            <A href={anchor(target)}>{target}</A>
+        </span>
+    ));
 
 export function AboutSection() {
     return (
@@ -50,7 +54,7 @@ export function AboutSection() {
             <DocSubsection title={parts.usage}>
                 <DocTable
                     head={["If you want to...", "Read"]}
-                    rows={readerPaths.map(([goal, target]) => [goal, <A key={target} href={anchor(target)}>{target}</A>])}
+                    rows={readerPaths.map(([goal, targets]) => [goal, pathLinks(targets)])}
                 />
             </DocSubsection>
 
@@ -59,8 +63,8 @@ export function AboutSection() {
                 <UL>
                     <LI>describe what the Policy Analyzer does and what it does not do;</LI>
                     <LI>
-                        explain how a country classification and an answer to a question are produced, and what
-                        evidence they rest on;
+                        explain how a country classification and an answer to a question are produced, and what evidence
+                        they rest on;
                     </LI>
                     <LI>judge how far to rely on the results, and what to check before you use them;</LI>
                     <LI>run your own instance, connect it to your own AI provider, and extend it.</LI>

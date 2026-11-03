@@ -53,8 +53,11 @@ export const docMeta = {
         title: "Run your own instance",
         parts: {
             need: "What you need",
-            setup: "Set-up in outline",
+            backend: "Step 1: Set up the backend",
+            frontend: "Step 2: Set up the website (Frontend)",
+            documents: "Step 3: Add documents",
             gateway: "Connect an AI gateway",
+            trouble: "If something goes wrong",
             online: "Before you put it online",
         },
     },
@@ -63,6 +66,9 @@ export const docMeta = {
 } as const;
 
 export type DocKey = keyof typeof docMeta;
+
+// When the documentation was last reviewed. Update it whenever the content changes.
+export const DOCS_LAST_UPDATED = "November 2026";
 
 // Link to a section of this page
 export const anchor = (title: string) => `#${slugify(title)}`;

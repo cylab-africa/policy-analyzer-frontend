@@ -8,16 +8,16 @@ export function BuiltSection() {
             <UL>
                 <LI>
                     <B>Frontend (website).</B> A Next.js application written in TypeScript. It draws the maps,
-                    statistics and Sources library, and it provides the chat and upload screens. It talks to the
-                    backend through an API.
+                    statistics and Sources library, and it provides the chat and upload screens. It talks to the backend
+                    through an API.
                 </LI>
                 <LI>
                     <B>Backend (API).</B> A Python application built with FastAPI. It answers questions, processes
                     uploaded documents, runs batch jobs, and serves the country reference data.
                 </LI>
                 <LI>
-                    <B>Vector database (Qdrant).</B> Stores the passages of each document in a form that can be
-                    searched by meaning, separately for each topic area.
+                    <B>Vector database (Qdrant).</B> Stores the passages of each document in a form that can be searched
+                    by meaning, separately for each topic area.
                 </LI>
                 <LI>
                     <B>MongoDB.</B> Stores the country reference data, document-processing tasks and batch jobs.
@@ -47,8 +47,8 @@ export function BuiltSection() {
                 </LI>
                 <LI>
                     <B>Topics, prompts and models are mostly configuration.</B> They are set in configuration files
-                    rather than buried in the code. The two current topics are also named in a few places in the
-                    code, so pointing the tool at another subject needs small code changes as well.
+                    rather than buried in the code. The two current topics are also named in a few places in the code,
+                    so pointing the tool at another subject needs small code changes as well.
                 </LI>
                 <LI>
                     <B>The AI provider is replaceable.</B> Any OpenAI-compatible service can be used.

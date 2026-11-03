@@ -34,8 +34,8 @@ export function AnalysisSection() {
                         African countries the question names.
                     </LI>
                     <LI>
-                        <B>Selecting passages.</B> The passages closest in meaning to the question are selected:
-                        usually a handful, and more for comparisons and questions that involve counting.
+                        <B>Selecting passages.</B> The passages closest in meaning to the question are selected: usually
+                        a handful, and more for comparisons and questions that involve counting.
                     </LI>
                     <LI>
                         <B>Comparisons.</B> Comparative questions gather evidence for each country named, so that every
@@ -59,13 +59,15 @@ export function AnalysisSection() {
             <DocSubsection title={parts.writing}>
                 <P>The answer is written from the evidence collected. It follows these rules:</P>
                 <UL>
-                    <LI>Base the answer on the evidence, and say when information is not available rather than guess.</LI>
+                    <LI>
+                        Base the answer on the evidence, and say when information is not available rather than guess.
+                    </LI>
                     <LI>Cite specific laws and documents where possible.</LI>
                     <LI>Focus on African countries and their own legal frameworks.</LI>
                     <LI>Keep legal definitions precise rather than paraphrasing them.</LI>
                     <LI>
-                        Reply in the language the question was asked in. When a source is in another language, quote
-                        the legal text in its original language with a translation.
+                        Reply in the language the question was asked in. When a source is in another language, quote the
+                        legal text in its original language with a translation.
                     </LI>
                 </UL>
             </DocSubsection>
@@ -74,8 +76,8 @@ export function AnalysisSection() {
                 <P>
                     Batch analysis applies the same method to a list of up to 100 questions supplied as a spreadsheet,
                     and compiles the answers into a PDF report. Because every question is phrased once and asked the
-                    same way, batch analysis suits systematic comparisons, such as running the same set of questions
-                    for several countries or repeating it over time.
+                    same way, batch analysis suits systematic comparisons, such as running the same set of questions for
+                    several countries or repeating it over time.
                 </P>
             </DocSubsection>
         </DocSection>

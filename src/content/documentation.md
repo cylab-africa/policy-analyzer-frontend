@@ -1,5 +1,25 @@
 The Policy Analyzer is an open-source web tool for exploring and comparing data protection and digital identity policy across Africa. This page documents the whole tool: what it is for, what it does, how it was built, how its information was collected and checked, how its results are produced, and how to run or extend your own copy. The source code is on GitHub, in two repositories: the [backend](https://github.com/cylab-africa/policy-analyzer-backend) and the [frontend](https://github.com/cylab-africa/policy-analyzer-frontend).
 
+*Last updated November 2026.*
+
+## What the Policy Analyzer does
+
+The tool has six parts:
+
+- **Home: continental overview.** Two interactive maps of the 55 African Union member states, one for data protection legislation and one for digital identity implementation. Filter a map by status, or click a country to see its details and sources. The page also shows headline statistics and a timeline of key milestones for each topic.
+- **Sources.** A library of reference documents and research for each country, which you can browse by country and region. Each source has a short description of who published it and what kind of source it is.
+- **Chat.** Write your question in plain language, in data protection or digital identity mode. Answers are written from a collection of policy documents, with web results added when the collection has too little. Your conversations are saved in your own browser.
+- **Document upload.** Add a law or policy document, and choose its topic area, so that it can be drawn on in answers.
+- **Batch analysis.** Run up to 100 questions at once from a spreadsheet and receive the answers as a PDF report. You can ask to be notified by email when the report is ready.
+- **Documentation.** This page.
+
+The tool works at two levels:
+
+- **Country indicators**: the same set of indicators is recorded for every country. The maps and statistics let you compare countries by category across the continent, and each country's card gives the detail.
+- **Document analysis**: questions are answered from the text of legal and policy documents. Use it for questions the indicators can't answer, such as what a law requires, what rights it gives, or how two countries' rules differ.
+
+The analysis covers two topic areas: data protection and digital identity. Documents added without a topic are catalogued as general.
+
 ## About this documentation
 
 ### Purpose
@@ -17,14 +37,10 @@ This documentation explains the Policy Analyzer as a whole, so that readers can 
 
 | If you want to... | Read |
 | --- | --- |
-| Understand what the tool does | [What the Policy Analyzer does](#what-the-policy-analyzer-does) |
-| See how it is built | [How it is built](#how-it-is-built) |
-| Know where the information comes from | [How information was collected](#how-information-was-collected) |
-| Understand a country's classification | [Country indicators](#country-indicators) |
-| Understand how an answer is produced | [Analysis method](#analysis-method) |
+| Know what the tool does | [What the Policy Analyzer does](#what-the-policy-analyzer-does) |
+| Understand where the data and the answers come from | [How information was collected](#how-information-was-collected), [Analysis method](#analysis-method) |
 | Decide how far to rely on the results | [Verification and limitations](#verification-and-limitations) |
-| Run your own copy | [Run your own instance](#run-your-own-instance) |
-| Change or extend the tool | [Fork and extend](#fork-and-extend) |
+| Run or change your own copy | [Run your own instance](#run-your-own-instance), [Fork and extend](#fork-and-extend) |
 
 ### What you should take away
 
@@ -34,24 +50,6 @@ After reading this page you should be able to:
 - explain how a country classification and an answer to a question are produced, and what evidence they rest on;
 - judge how far to rely on the results, and what to check before you use them;
 - run your own instance, connect it to your own AI provider, and extend it.
-
-## What the Policy Analyzer does
-
-The tool has six parts:
-
-- **Home: continental overview.** Two interactive maps of the 55 African Union member states, one for data protection legislation and one for digital identity implementation. Filter a map by status, or click a country to see its details and sources. The page also shows headline statistics and a timeline of key milestones for each topic.
-- **Sources.** A library of reference documents and research for each country, which you can browse by country and region. Each source has a short description of who published it and what kind of source it is.
-- **Chat.** Write your question in plain language, in data protection or digital identity mode. Answers are written from a collection of policy documents, with web results added when the collection has too little. Your conversations are saved in your own browser.
-- **Document upload.** Add a law or policy document, and choose its topic area, so that it can be searched and cited in answers.
-- **Batch analysis.** Run up to 100 questions at once from a spreadsheet and receive the answers as a PDF report. You can ask to be notified by email when the report is ready.
-- **Documentation.** This page.
-
-The tool works at two levels:
-
-- **Country indicators**: the same set of indicators is recorded for every country. The maps and statistics let you compare countries by category across the continent, and each country's card gives the detail.
-- **Document analysis**: questions are answered from the text of legal and policy documents. Use it for questions the indicators can't answer, such as what a law requires, what rights it gives, or how two countries' rules differ.
-
-The analysis covers two topic areas: data protection and digital identity. Documents added without a topic are catalogued as general.
 
 ## How it is built
 
@@ -116,7 +114,7 @@ Categories such as "limited framework" or "partially implemented" involve judgem
 
 ## Information extraction
 
-Before a document can be analysed, it is broken down into pieces of evidence that can be found and cited:
+Before a document can be analysed, it is broken down into passages that can be searched and used as evidence:
 
 1. **Text extraction.** The full text is extracted from the original document.
 2. **Cataloguing.** The opening part of the document is read to record the country it concerns, a title and a short description.
@@ -169,6 +167,8 @@ Batch analysis applies the same method to a list of up to 100 questions supplied
 
 ## Verification and limitations
 
+> Answers are generated by an AI model. They have not been systematically evaluated, and they are not legal advice. Verify anything you rely on against the original law.
+
 ### What has been checked
 
 - **Country records.** The country records were reviewed against published sources in October 2026, including the African Union's official Malabo Convention status list. Records that were out of date were corrected.
@@ -183,34 +183,174 @@ Some of these checks work through instructions given to the AI model, so they ca
 
 ### What has not been checked
 
-- **Answers have not been systematically evaluated.** Answers are generated by an AI model, and their accuracy has not been formally assessed. Check the cited law or document before relying on an answer.
+- **Answers have not been systematically evaluated.** Answers are generated by an AI model, and their accuracy has not been formally assessed. Check important points against the original law or document before relying on an answer.
 - **Automatic extraction is not reviewed.** The country, title and description detected for each document are not manually checked.
 - **Some classifications rest on secondary sources.** Where a law was reported by news or a legal guide, it may not have been confirmed against the text of the law itself.
 
 ### Limitations to keep in mind
 
 - **Coverage depends on the collection.** An answer can only be as complete and current as the documents it draws on. Laws are amended, and new instruments are adopted.
-- **Check that the answer is about the right country.** When no evidence is found for a named country, the search widens, so an answer may draw on general material or other countries' laws. Check that the answer cites the country's own instrument.
+- **Check that the answer is about the right country.** When no evidence is found for a named country, the search widens, so an answer may draw on general material or other countries' laws. Check that the answer is about the country's own law, and confirm it against the text of that law.
 - **Web results are not reviewed.** Answers that include web results rely on external sources the project team has not checked.
 - **Indicators simplify.** One category per indicator can hide nuance, such as sector-specific rules or laws that are enacted but not yet in force. Legislation status records that a law has been enacted, not whether a regulator is operating or enforcing it. Use the reference sources to see the detail.
 - **Not legal advice.** The Policy Analyzer is a research and information tool. It does not replace advice from a qualified legal professional.
 
 ## Run your own instance
 
-The Policy Analyzer is open source under the MIT licence. Anyone can run a copy with their own documents and their own AI provider. Each repository's README has the full step-by-step instructions, and the quick start takes about 10 minutes with Docker, most of it the first build.
+The Policy Analyzer is open source under the MIT licence. This guide takes you from nothing installed to a working copy on your own computer, with the steps in the order they must be done. It takes about 15 to 20 minutes, most of it waiting for the first Docker build. The backend comes first, because the website needs it to be running.
 
 ### What you need
 
-- Git and Docker. Node.js 20 or newer is needed only to run the frontend without Docker.
-- Access to a language model and an embedding model through an OpenAI-compatible API (see [Connect an AI gateway](#connect-an-ai-gateway)).
-- A MongoDB database. The Docker setup can start one for you, along with the vector store (Qdrant) and the cache (Redis).
+| Tool | What it is for | Check that it is installed |
+| --- | --- | --- |
+| Git | Downloading the code | `git --version` |
+| Docker, with Compose | Running the backend and its databases | `docker compose version` |
+| Python 3 | Running two small setup commands | `python --version` |
+| Node.js 20.9 or newer | Running the website | `node --version` |
 
-### Set-up in outline
+Install Docker Desktop (Windows and macOS) or Docker Engine (Linux), and make sure it is running before you start. If a check prints "command not found", install that tool first. On some systems Python is called `python3`.
 
-1. **Start the backend.** Clone the [backend](https://github.com/cylab-africa/policy-analyzer-backend), copy `.env.example` to `.env`, set the values marked required, and start the stack with Docker Compose.
-2. **Load the country data.** Run the seed script to fill the maps and the Sources page.
-3. **Start the frontend.** Clone the [frontend](https://github.com/cylab-africa/policy-analyzer-frontend) and point `NEXT_PUBLIC_API_URL` at your backend. Set `NEXT_PUBLIC_API_KEY` to the same value as the backend's `API_KEY`.
-4. **Add documents.** The document collection starts empty. Upload laws and policies from the chat page, choosing a topic area for each.
+You also need an AI provider. The simplest is an OpenAI API key, which you can create at [platform.openai.com/api-keys](https://platform.openai.com/api-keys). OpenAI charges for its use. To use another provider instead, see [Connect an AI gateway](#connect-an-ai-gateway).
+
+> The commands in this guide work in a terminal on macOS and Linux, and in Git Bash on Windows. In Windows PowerShell, use `Copy-Item` where the guide says `cp`.
+
+### Step 1: Set up the backend
+
+**1. Download the code**
+
+```bash
+git clone https://github.com/cylab-africa/policy-analyzer-backend.git
+cd policy-analyzer-backend
+```
+
+**2. Create your settings file**
+
+The backend reads its settings from a file named `.env`. Copy the template, then open the new file in any text editor. You will fill in three values in the next two steps.
+
+```bash
+cp .env.example .env
+```
+
+**3. Generate your API key**
+
+The API key is a password that protects your backend. No website issues it to you: you make it up. This command generates a strong one:
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+Copy the long text it prints and paste it after `API_KEY=` in your `.env` file. Keep it at hand, because you will use the same value for the website in Step 2. The `.env` file is already excluded from Git, so it will not be committed by accident.
+
+**4. Add your OpenAI key and the database address**
+
+In the same `.env` file, set these three values. Leave every other value as it is.
+
+```bash
+API_KEY=the-key-you-generated-in-step-3
+OPENAI_API_KEY=your-openai-key
+MONGODB_CONNECTION_STRING=mongodb://mongo:27017
+```
+
+`MONGODB_CONNECTION_STRING` tells the backend to use the MongoDB container that Docker starts in step 6.
+
+**5. Point the model names at OpenAI**
+
+The project's model settings are written for a gateway. If you call OpenAI directly, run this once. It only edits `config/llm_providers.json`.
+
+```bash
+python scripts/use_openai_models.py
+```
+
+If you use a gateway instead, skip this step and follow [Connect an AI gateway](#connect-an-ai-gateway).
+
+**6. Start the backend and its databases**
+
+```bash
+docker compose --profile local-db up -d --build
+```
+
+This builds the backend and starts four containers: the backend, MongoDB, Qdrant (which stores the document passages) and Redis (a cache). The first run takes several minutes. When the command returns, check that all four are running:
+
+```bash
+docker compose ps
+```
+
+**7. Load the country data**
+
+This fills the maps and the Sources page. Run it once, after the containers are up.
+
+```bash
+docker compose exec backend uv run python scripts/seed_reference_data.py
+```
+
+**8. Check that it works**
+
+```bash
+curl http://localhost:8000/api/monitoring/health -H "X-API-Key: YOUR_API_KEY"
+```
+
+Replace `YOUR_API_KEY` with your key. You should get a short JSON reply, not an error. You can also open `http://localhost:8000/api/docs` in your browser to see the API.
+
+### Step 2: Set up the website (Frontend)
+
+Leave the backend running and open a new terminal window. The website needs Node.js 20.9 or newer.
+
+**1. Download the code**
+
+```bash
+git clone https://github.com/cylab-africa/policy-analyzer-frontend.git
+cd policy-analyzer-frontend
+```
+
+**2. Install the website's packages**
+
+This downloads the libraries the website uses. It can take a few minutes.
+
+```bash
+npm install
+```
+
+**3. Create the settings file**
+
+```bash
+cp .env.example .env
+```
+
+Open the new file and set these two values:
+
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+NEXT_PUBLIC_API_KEY=the-same-API_KEY-as-in-the-backend
+```
+
+`NEXT_PUBLIC_API_URL` is where the backend answers. The value above is right when the backend runs on your computer. `NEXT_PUBLIC_API_KEY` must be exactly the same as `API_KEY` in the backend's `.env`, or the backend will refuse the website's requests.
+
+**4. Start the website**
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:3000`. The maps should load. If they are empty, the country data was not loaded: repeat step 7 of the backend.
+
+**Prefer Docker for the website?** Skip steps 2 to 4 and build an image instead. The settings are built into the image, so editing `.env` later changes nothing: rebuild the image after any change.
+
+```bash
+docker build \
+  --build-arg NEXT_PUBLIC_API_URL=http://localhost:8000/api \
+  --build-arg NEXT_PUBLIC_API_KEY=the-same-API_KEY-as-in-the-backend \
+  -t policy-analyzer-frontend .
+
+docker run -d --name policy-analyzer-frontend -p 3000:3000 policy-analyzer-frontend
+```
+
+### Step 3: Add documents
+
+The chat answers from a collection of documents, and the collection starts empty. To add your first laws or policies:
+
+1. **Open the chat.** On the website, open **Chat** and choose **Upload documents** in the sidebar.
+2. **Choose the files and the topic.** Select PDF, Word, text or Markdown files, then choose whether they concern Data Protection or Digital ID.
+3. **Upload and wait.** Processing runs in the background. The AI model reads each document to record its country, title and description, then splits it into passages that can be searched. When it has finished, ask a question in the chat.
 
 ### Connect an AI gateway
 
@@ -223,22 +363,39 @@ The analysis uses two AI services: a language model, which rewrites questions an
 
 Keep the keys in the backend's `.env` and out of the repository.
 
+### If something goes wrong
+
+| What you see | What to do |
+| --- | --- |
+| The backend log says `Failed to connect to MongoDB` | Run `docker compose ps` and check that MongoDB is running, and that `MONGODB_CONNECTION_STRING` is `mongodb://mongo:27017`. |
+| The maps or the Sources page are empty | Load the country data (step 7 of the backend). |
+| The website cannot reach the backend | Check that `NEXT_PUBLIC_API_KEY` matches `API_KEY` exactly. After editing the website's `.env`, stop `npm run dev` and start it again. |
+| You changed the backend's .env and nothing happened | Run `docker compose up -d --force-recreate backend`. A plain restart does not reload `.env`. |
+| You want to see what the backend is doing | Run `docker compose logs -f backend`. |
+| `permission denied` when running Docker on Linux | Put sudo in front of the Docker commands, or add your user to the docker group. |
+
+To stop the backend and keep your data, run `docker compose --profile local-db down`. Do not add `-v` unless you want to delete all the data.
+
 ### Before you put it online
 
 The default set-up shares a single API key with the browser, so anyone who can open the site can read it. Keep the admin and document-upload routes off the public internet, and restrict CORS. The backend README lists what to do before exposing an instance publicly.
 
 ## Fork and extend
 
-You are free to fork, change and redistribute the code under the MIT licence. Where to start depends on what you want to change:
+The code is released under the MIT licence, so you may copy it, change it and share it, including in your own projects. Where to start depends on what you want to change:
 
-- **A different topic or region.** Edit `config/application.json` for the topic areas, `config/prompts.json` for the instructions given to the model, and `supported_tabs` in `.env`. Data protection and digital identity are also named in a few places in the code, so a new topic needs small code changes too, in the backend and in the frontend. The backend README lists them under [Adapting to another topic](https://github.com/cylab-africa/policy-analyzer-backend#adapting-to-another-topic).
-- **Different models or providers.** See [Connect an AI gateway](#connect-an-ai-gateway).
-- **Country indicators and sources.** The records are JSON files in `app/data` in the backend. Edit them and load them with `scripts/seed_reference_data.py --update`. Use `--dry-run` first to see what would change. The backend README explains the process.
-- **The website.** Pages are in `src/app` and components in `src/components` in the frontend. This page is built from the components in `src/components/docs`, with one file for each section.
-- **Running it locally or on a server.** The backend README has a Docker quick start, a local development guide and a deployment section. See [Run your own instance](#run-your-own-instance).
-- **Contributing back.** Read `CONTRIBUTING.md` in each repository. Corrections to country data can be sent as a "data correction" issue. Please do not commit API keys, passwords or documents you are not allowed to redistribute.
-- **Citing the tool.** Each repository includes a `CITATION.cff` file with the details to cite.
+| If you want to... | Do this |
+| --- | --- |
+| Use a different AI provider or model | Follow [Connect an AI gateway](#connect-an-ai-gateway). No code changes are needed. |
+| Change or add country data | The country records are plain data files in the backend. Edit them, then load them again with the setup script. The backend README explains the steps. |
+| Cover a different topic or region | This is possible but takes more work, because a few settings files and places in the code mention data protection and digital identity. The backend README lists them under [Adapting to another topic](https://github.com/cylab-africa/policy-analyzer-backend#adapting-to-another-topic). |
+| Change how the website looks | The pages and components are in the `src` folder of the frontend. This documentation is built from the files in `src/components/docs`, one for each section. |
+| Share your improvements | Read `CONTRIBUTING.md` in each repository. To report wrong country data, open a "data correction" issue. Never commit API keys, passwords or documents you are not allowed to share. |
+
+To cite the tool, use the `CITATION.cff` file in each repository.
 
 ## Feedback and corrections
 
 If you notice an error, an outdated classification or a missing document, please write to [upanzi@andrew.cmu.edu](mailto:upanzi@andrew.cmu.edu), or open an issue in the [backend](https://github.com/cylab-africa/policy-analyzer-backend/issues) or [frontend](https://github.com/cylab-africa/policy-analyzer-frontend/issues) repository. Corrections from users help keep the indicators and the document collection accurate.
+
+To correct this documentation itself, you can [edit its sections on GitHub](https://github.com/cylab-africa/policy-analyzer-frontend/tree/main/src/components/docs/sections) and open a pull request.

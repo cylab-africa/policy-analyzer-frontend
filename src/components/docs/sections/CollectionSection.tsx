@@ -13,18 +13,18 @@ export function CollectionSection() {
                     Most country records list reference material so that the classification can be checked against
                     published sources. This includes country fact sheets, legal guides, the text of laws where we have
                     found it, government and official sources, academic and policy research, reports by development
-                    partners and research institutes, and news reports on recent developments. All of it is collected
-                    in the <B>Sources</B> library, where readers can browse it by country and region.
+                    partners and research institutes, and news reports on recent developments. All of it is collected in
+                    the <B>Sources</B> library, where readers can browse it by country and region.
                 </P>
                 <P>
                     In practice, every data protection record cites a country fact sheet from Data Protection Africa
                     (ALT Advisory). Some also cite DLA Piper’s overview of the country’s law, and for a few countries
-                    the text of the law itself is linked. Malabo Convention status follows the African Union’s
-                    official status list, updated with later ratifications reported in the news. Digital identity
-                    records cite World Bank ID4D diagnostics and other development-partner reports, research from
-                    organisations such as ECDPM, DiploFoundation and Research ICT Africa, and news reports on recent
-                    developments. Some digital identity records do not yet list a source. Most of these sources
-                    summarise the law rather than replace it, so check the law itself for anything you rely on.
+                    the text of the law itself is linked. Malabo Convention status follows the African Union’s official
+                    status list, updated with later ratifications reported in the news. Digital identity records cite
+                    World Bank ID4D diagnostics and other development-partner reports, research from organisations such
+                    as ECDPM, DiploFoundation and Research ICT Africa, and news reports on recent developments. Some
+                    digital identity records do not yet list a source. Most of these sources summarise the law rather
+                    than replace it, so check the law itself for anything you rely on.
                 </P>
             </DocSubsection>
 
