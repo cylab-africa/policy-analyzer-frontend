@@ -41,7 +41,7 @@ The tool has six parts:
 
 - **Home: continental overview.** Two interactive maps of the 55 African Union member states, one for data protection legislation and one for digital identity implementation. Filter a map by status, or click a country to see its details and sources. The page also shows headline statistics and a timeline of key milestones for each topic.
 - **Sources.** A library of reference documents and research for each country, which you can browse by country and region. Each source has a short description of who published it and what kind of source it is.
-- **Policy Chat.** Ask questions in plain language, in data protection or digital identity mode. Answers are written from a collection of policy documents, with web results added when the collection has too little. Your conversations are saved in your own browser.
+- **Chat.** Write your question in plain language, in data protection or digital identity mode. Answers are written from a collection of policy documents, with web results added when the collection has too little. Your conversations are saved in your own browser.
 - **Document upload.** Add a law or policy document, and choose its topic area, so that it can be searched and cited in answers.
 - **Batch analysis.** Run up to 100 questions at once from a spreadsheet and receive the answers as a PDF report. You can ask to be notified by email when the report is ready.
 - **Documentation.** This page.

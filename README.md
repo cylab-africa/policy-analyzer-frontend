@@ -8,7 +8,7 @@
 The web app for the Policy Analyzer, a tool for exploring and comparing data protection and digital identity policy across Africa. It is built for policymakers, implementers and researchers.
 
 - **Country maps and statistics**: data protection legislation and digital identity systems across African countries.
-- **Policy Chat**: questions answered from a collection of policy documents, plus batch analysis of question sets.
+- **Chat**: questions answered from a collection of policy documents, plus batch analysis of question sets.
 - **Sources**: reference documents and research for each country.
 - **Documentation** (`/docs`): what the tool does, how it was built and produces results, and how to run or extend your own instance.
 

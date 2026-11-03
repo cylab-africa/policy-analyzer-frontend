@@ -18,9 +18,9 @@ export function FeaturesSection() {
                     kind of source it is.
                 </LI>
                 <LI>
-                    <B>Policy Chat.</B> Ask questions in plain language, in data protection or digital identity mode.
-                    Answers are written from a collection of policy documents, with web results added when the
-                    collection has too little. Your conversations are saved in your own browser.
+                    <B>Chat.</B> Write your question in plain language, in data protection or digital
+                    identity mode. Answers are written from a collection of policy documents, with web results added
+                    when the collection has too little. Your conversations are saved in your own browser.
                 </LI>
                 <LI>
                     <B>Document upload.</B> Add a law or policy document, and choose its topic area, so that it can be

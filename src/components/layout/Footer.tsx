@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 
 const EXPLORE_LINKS = [
-    { href: "/chat", label: "Policy Chat" },
+    { href: "/chat", label: "Chat" },
     { href: "/sources", label: "Sources" },
     { href: "/docs", label: "Documentation" },
 ];
