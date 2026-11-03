@@ -33,6 +33,8 @@ export function BatchAnalysisPanel({ isOpen, onClose }: BatchAnalysisPanelProps)
         if (jobStatus && jobStatus.status !== toastShownRef.current) {
             if (jobStatus.status === "completed") {
                 toastShownRef.current = "completed";
+                // The job status comes from polling; stopping the poll is a response to it
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setIsPollingActive(false); // Stop polling
                 toast.success("Batch analysis complete! Your report is ready.");
             } else if (jobStatus.status === "failed") {

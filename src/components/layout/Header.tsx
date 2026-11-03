@@ -14,7 +14,7 @@ const navItems = [
     { href: "/", label: "Home" },
     { href: "/chat", label: "Policy Chat" },
     { href: "/sources", label: "Sources" },
-    { href: "/docs", label: "Documentation" },
+    { href: "/docs", label: "Docs" },
 ];
 
 export default function Header() {

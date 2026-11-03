@@ -20,7 +20,11 @@ export function BuiltSection() {
                     searched by meaning, separately for each topic area.
                 </LI>
                 <LI>
-                    <B>MongoDB.</B> Stores the country reference data, batch jobs and conversation records.
+                    <B>MongoDB.</B> Stores the country reference data, document-processing tasks and batch jobs.
+                </LI>
+                <LI>
+                    <B>SQLite.</B> A small file database on the backend server that keeps conversation history, so
+                    follow-up questions can be understood in context.
                 </LI>
                 <LI>
                     <B>Redis.</B> A cache that keeps the results of repeated questions.

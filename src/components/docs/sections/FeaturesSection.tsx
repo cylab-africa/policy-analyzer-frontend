@@ -38,8 +38,9 @@ export function FeaturesSection() {
             <P>The tool works at two levels:</P>
             <UL>
                 <LI>
-                    <B>Country indicators</B>: the same set of indicators is recorded for every country, so the whole
-                    continent can be compared at a glance.
+                    <B>Country indicators</B>: the same set of indicators is recorded for every country. The maps and
+                    statistics let you compare countries by category across the continent, and each country’s card
+                    gives the detail.
                 </LI>
                 <LI>
                     <B>Document analysis</B>: questions are answered from the text of legal and policy documents. Use it

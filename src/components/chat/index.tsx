@@ -186,6 +186,8 @@ export default function ChatPage() {
         const loadedConversations = loadConversations();
         const loadedActiveId = loadActiveConversationId();
 
+        // Read after mount: localStorage does not exist on the server, so reading it earlier would mismatch
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setConversations(loadedConversations);
 
         // Verify the active conversation exists

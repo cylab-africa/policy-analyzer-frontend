@@ -1,6 +1,6 @@
 # Policy Analyzer: Frontend
 
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
@@ -34,7 +34,7 @@ The web app for the Policy Analyzer, a tool for exploring and comparing data pro
 
 The frontend needs a running backend for the maps, Sources and chat. Set up the [backend](https://github.com/cylab-africa/policy-analyzer-backend#quick-start-with-docker) first; it takes about 10 minutes with Docker. Then:
 
-**You need:** [Node.js](https://nodejs.org/) 20 LTS or newer (18.18 is the minimum) and Git.
+**You need:** [Node.js](https://nodejs.org/) 20.9 or newer (20 LTS is fine) and Git.
 
 ```bash
 # 1. Clone and install
@@ -121,6 +121,24 @@ containers:
 
 Without Docker: `npm ci && npm run build && npm start`, with the `NEXT_PUBLIC_*` variables set in the environment at build time.
 
+### Updating a deployed frontend
+
+- **`NEXT_PUBLIC_*` values are compiled in.** Docker ignores `.env` files (see `.dockerignore`), so editing `.env` has no effect on a Docker build. Pass each value as a `--build-arg` and rebuild. To avoid retyping them, keep the values in a file outside the repository and read them in a small script:
+
+  ```bash
+  set -a; . ./.env.production; set +a
+  docker build \
+    --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
+    --build-arg NEXT_PUBLIC_API_KEY="$NEXT_PUBLIC_API_KEY" \
+    -t policy-analyzer-frontend .
+  ```
+
+- **Building an image does not change a running container.** Remove the old container and start a new one from the new image.
+- **Behind a reverse proxy in Docker?** If the proxy reaches the frontend by name, start the new container with the same `--name` and on the same Docker network (`--network <proxy network>`), then restart the proxy. A container started without the network flag works on its own but the proxy cannot reach it, and the site shows `502`.
+- **Keep the previous image** (note its ID with `docker ps`) until the new one is confirmed working, so you can roll back. Do not run `docker image prune` before then.
+- **Changing the API key?** Follow [Rotating the API key](https://github.com/cylab-africa/policy-analyzer-backend#rotating-the-api-key) in the backend README, because both sides must change together.
+- **`permission denied` on the Docker socket?** Run the Docker commands with `sudo`, or add your user to the `docker` group.
+
 ---
 
 ## Project structure
@@ -154,7 +172,8 @@ The `/docs` page is built from components in [`src/components/docs/`](src/compon
 | --- | --- |
 | Maps and Sources are empty | Check the backend is running and its reference data is loaded (backend README, Quick start step 5) |
 | `401`/`403` errors in the browser console | `NEXT_PUBLIC_API_KEY` doesn't match the backend's `API_KEY` |
-| Changed `.env` but nothing happened | Restart `npm run dev`; for Docker, rebuild the image |
+| Changed `.env` but nothing happened | Restart `npm run dev`. For Docker, `.env` is ignored: pass `--build-arg` values and rebuild the image ([Updating a deployed frontend](#updating-a-deployed-frontend)) |
+| `502 Bad Gateway` after replacing the container | The new container is not on the proxy's Docker network or has a different name. Start it with the same `--name` and `--network` as before, then restart the proxy |
 | `npm install` reports `ERESOLVE` | Make sure `.npmrc` (with `legacy-peer-deps=true`) is present; `react-simple-maps` declares peer support only up to React 18 |
 | CORS errors | Allow the frontend's origin in the backend |
 

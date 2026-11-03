@@ -13,8 +13,15 @@ for how versions are chosen and releases are cut.
 
 ## [Unreleased]
 
+### Security
+- Pinned `d3-color` to 3.1 or newer through an npm override. The map library pulled in 2.0, which has a known ReDoS weakness.
+
+### Removed
+- Safeguards pages (`/safeguards`, `/safeguards/kenya`), their components and data files.
+
 ### Changed
-- _Nothing yet._
+- Documentation page is built from components and covers the whole tool.
+- Upgraded to Next.js 16 (Node.js 20.9 or newer). `next lint` no longer exists, so `npm run lint` now calls ESLint 9 directly, with the flat config from `eslint-config-next` 16.
 
 ---
 

@@ -48,7 +48,7 @@ The tool has six parts:
 
 The tool works at two levels:
 
-- **Country indicators**: the same set of indicators is recorded for every country, so the whole continent can be compared at a glance.
+- **Country indicators**: the same set of indicators is recorded for every country. The maps and statistics let you compare countries by category across the continent, and each country's card gives the detail.
 - **Document analysis**: questions are answered from the text of legal and policy documents. Use it for questions the indicators can't answer, such as what a law requires, what rights it gives, or how two countries' rules differ.
 
 The analysis covers two topic areas: data protection and digital identity. Documents added without a topic are catalogued as general.
@@ -60,7 +60,8 @@ The Policy Analyzer is made of two applications and a few supporting services.
 - **Frontend (website).** A Next.js application written in TypeScript. It draws the maps, statistics and Sources library, and it provides the chat and upload screens. It talks to the backend through an API.
 - **Backend (API).** A Python application built with FastAPI. It answers questions, processes uploaded documents, runs batch jobs, and serves the country reference data.
 - **Vector database (Qdrant).** Stores the passages of each document in a form that can be searched by meaning, separately for each topic area.
-- **MongoDB.** Stores the country reference data, batch jobs and conversation records.
+- **MongoDB.** Stores the country reference data, document-processing tasks and batch jobs.
+- **SQLite.** A small file database on the backend server that keeps conversation history, so follow-up questions can be understood in context.
 - **Redis.** A cache that keeps the results of repeated questions.
 - **AI provider.** The analysis uses a language model and an embedding model, reached through an OpenAI-compatible API. This can be OpenAI directly or an AI gateway you run.
 - **Optional services.** A web search service for recent developments, an email server for batch notifications, and Amazon S3 for storing uploaded files.

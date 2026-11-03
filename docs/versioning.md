@@ -11,7 +11,7 @@ The project is pre-1.0 (`0.y.z`). While it stays there:
 
 | Bump | When | Example |
 | --- | --- | --- |
-| **MINOR** (`0.7.0 → 0.8.0`) | New page, feature or visible UI change; any breaking change, such as a renamed env var, a changed backend API contract or a removed route | Safeguards page, batch analysis |
+| **MINOR** (`0.7.0 → 0.8.0`) | New page, feature or visible UI change; any breaking change, such as a renamed env var, a changed backend API contract or a removed route | Batch analysis, documentation page |
 | **PATCH** (`0.8.0 → 0.8.1`) | Bug fixes, copy and styling tweaks, dependency or security updates with no behaviour change | `jobId` guard, React security bump |
 
 **1.0.0** is released when the platform is declared production-stable for external users.

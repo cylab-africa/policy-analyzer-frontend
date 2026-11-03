@@ -2,85 +2,80 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+const EXPLORE_LINKS = [
+    { href: "/chat", label: "Policy Chat" },
+    { href: "/sources", label: "Sources" },
+    { href: "/docs", label: "Documentation" },
+];
+
+const PROJECT_LINKS = [
+    { href: "https://github.com/cylab-africa/policy-analyzer-frontend", label: "Frontend repository" },
+    { href: "https://github.com/cylab-africa/policy-analyzer-backend", label: "Backend repository" },
+    { href: "mailto:upanzi@andrew.cmu.edu", label: "upanzi@andrew.cmu.edu" },
+];
+
+const linkClass = "text-slate-400 transition-colors hover:text-white focus-visible:text-white";
+
 const Footer = () => {
     return (
-        <footer className="bg-slate-700 text-white border-t border-slate-200/10">
-            <div className="max-w-7xl container mx-auto px-6 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                    {/* Brand Section */}
-                    <div className="space-y-4">
-                        <div className="flex items-center space-x-3">
-                            <Link href="/" className="flex items-center transition-colors duration-300 group">
-                                <Image
-                                    src="/images/Policy_Analyzer-white.png"
-                                    width={35}
-                                    height={35}
-                                    alt="Policy Analyzer Logo"
-                                    className="transition-transform duration-300 hover:scale-105"
-                                />
-                                <div className="flex items-baseline space-x-1">
-                                    <div className="text-xl uppercase tracking-tight text-white">Policy</div>
-                                    <div className="text-xl font-bold tracking-tight uppercase text-white">
-                                        Analyzer
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
-                        <p className="text-slate-300 text-sm max-w-md leading-relaxed">
-                            Upanzi Network is an Africa-based collaboration of engineering research labs working toward
-                            a secure and resilient digital transformation on the continent.
+        <footer className="border-t border-slate-800 bg-slate-900 text-slate-300">
+            <div className="container mx-auto max-w-7xl px-6 py-14">
+                <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.6fr_1fr_1fr]">
+                    <div>
+                        <Link href="/" className="inline-flex items-center gap-2" aria-label="Policy Analyzer home">
+                            <Image
+                                src="/images/Policy_Analyzer-white.png"
+                                width={32}
+                                height={32}
+                                alt=""
+                                aria-hidden="true"
+                            />
+                            <span className="text-lg uppercase tracking-tight text-white">
+                                Policy <span className="font-bold">Analyzer</span>
+                            </span>
+                        </Link>
+                        <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-400">
+                            Data protection and digital identity policy across the African Union, in one searchable
+                            place. Built by Upanzi Network, an Africa-based collaboration of engineering research labs.
                         </p>
                     </div>
 
-                    {/* Contact Section */}
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold text-white">Contact</h3>
-                        <div>
-                            <a
-                                href="mailto:upanzi@andrew.cmu.edu"
-                                className="flex items-center text-slate-300 hover:text-blue-400 transition-colors text-sm group"
-                                aria-label="Email Upanzi Network"
-                            >
-                                <svg
-                                    className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    aria-hidden="true"
-                                >
-                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                                </svg>
-                                <span>upanzi@andrew.cmu.edu</span>
-                            </a>
-                        </div>
-                        <div className="space-y-1 text-sm text-slate-300">
-                            <p className="font-semibold text-white">Source code</p>
-                            <p>
-                                <a
-                                    href="https://github.com/cylab-africa/policy-analyzer-frontend"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="hover:text-blue-400 transition-colors underline underline-offset-2"
-                                >
-                                    Frontend on GitHub
-                                </a>
-                                {" · "}
-                                <a
-                                    href="https://github.com/cylab-africa/policy-analyzer-backend"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="hover:text-blue-400 transition-colors underline underline-offset-2"
-                                >
-                                    Backend on GitHub
-                                </a>
-                            </p>
-                        </div>
-                    </div>
+                    <nav aria-label="Explore">
+                        <h2 className="text-sm font-semibold text-white">Explore</h2>
+                        <ul className="mt-4 space-y-3 text-sm">
+                            {EXPLORE_LINKS.map((link) => (
+                                <li key={link.href}>
+                                    <Link href={link.href} className={linkClass}>
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+
+                    <nav aria-label="Project">
+                        <h2 className="text-sm font-semibold text-white">Project</h2>
+                        <ul className="mt-4 space-y-3 text-sm">
+                            {PROJECT_LINKS.map((link) => {
+                                const external = link.href.startsWith("http");
+                                return (
+                                    <li key={link.href}>
+                                        <a
+                                            href={link.href}
+                                            className={linkClass}
+                                            {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                                        >
+                                            {link.label}
+                                        </a>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </nav>
                 </div>
 
-                {/* Optional: Footer Bottom Bar */}
-                <div className="mt-10 border-t border-slate-700 pt-6 text-xs text-slate-400 text-center">
-                    &copy; {new Date().getFullYear()} Upanzi Network. All rights reserved.
+                <div className="mt-12 flex flex-col gap-2 border-t border-slate-800 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+                    <p>&copy; {new Date().getFullYear()} Upanzi Network. All rights reserved.</p>
                 </div>
             </div>
         </footer>
