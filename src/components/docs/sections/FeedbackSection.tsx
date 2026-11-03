@@ -10,6 +10,11 @@ export function FeedbackSection() {
                 <A href={`${REPOS.backend}/issues`}>backend</A> or <A href={`${REPOS.frontend}/issues`}>frontend</A>{" "}
                 repository. Corrections from users help keep the indicators and the document collection accurate.
             </P>
+            <P>
+                To correct this documentation itself, you can{" "}
+                <A href={`${REPOS.frontend}/tree/main/src/components/docs/sections`}>edit its sections on GitHub</A> and
+                open a pull request.
+            </P>
         </DocSection>
     );
 }

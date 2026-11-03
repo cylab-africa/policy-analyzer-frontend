@@ -3,7 +3,6 @@ import HeroStatsSection from "@/components/home/HeroStatsSection";
 import PolicyHighlightsSection from "@/components/home/PolicyHighlightsSection";
 import TabSection from "@/components/home/TabSection";
 import { useSmoothScroll, ScrollReveal } from "@/components/ui/smooth-scroll";
-import { usePostHog } from "posthog-js/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -76,15 +75,6 @@ const ScrollArrow = () => {
 export default function Home() {
     // Enable smooth scrolling enhancements
     useSmoothScroll();
-    const posthog = usePostHog();
-
-    const handleCTAClick = (ctaName: string) => {
-        posthog?.capture("cta_button_clicked", {
-            button_name: ctaName,
-            location: "home_hero",
-            timestamp: new Date().toISOString(),
-        });
-    };
 
     return (
         <div className="w-full scroll-smooth">
@@ -100,26 +90,24 @@ export default function Home() {
                         {/* Left side - Hero content */}
                         <div className="space-y-6">
                             <h1 className="text-2xl lg:text-3xl font-bold mb-2">
-                                Insights on Data Protection & Digital Identity Across Africa
+                                Data protection and digital identity across Africa, country by country.
                             </h1>
                             <p className="text-white/90 text-md lg:text-lg py-3 leading-relaxed max-w-lg ">
-                                Leverage AI to explore, compare, and understand the evolving landscape of digital
-                                identity and data protection policies shaping governance across Africa.
+                                Compare all 55 African Union member states, then ask questions answered from legal and policy
+                                documents.
                             </p>
                             <div className="flex gap-4 mt-8 md:flex-row flex-col">
                                 <Link
                                     href="/chat"
-                                    onClick={() => handleCTAClick("analyze_policies")}
                                     className="inline-flex items-center justify-center px-6 py-3 bg-white text-primary border-2 border-white rounded-lg hover:bg-white/90 focus-ring transition-all duration-300 font-bold text-base shadow-lg"
                                 >
-                                    Analyze Policies with AI
+                                    Ask a policy question
                                 </Link>
                                 <Link
                                     href="/sources"
-                                    onClick={() => handleCTAClick("explore_resources")}
                                     className="inline-flex items-center justify-center px-6 py-3 bg-transparent text-white border-2 border-white rounded-lg hover:bg-white/10 focus-ring transition-all duration-300 font-semibold text-base"
                                 >
-                                    Explore Sources
+                                    Browse country sources
                                 </Link>
                             </div>
                         </div>

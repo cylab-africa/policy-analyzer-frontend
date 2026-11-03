@@ -1,3 +1,4 @@
+import { ArchitectureDiagram } from "../diagrams/ArchitectureDiagram";
 import { docMeta } from "../meta";
 import { B, DocSection, LI, P, UL } from "../primitives";
 
@@ -5,22 +6,27 @@ export function BuiltSection() {
     return (
         <DocSection title={docMeta.built.title}>
             <P>The Policy Analyzer is made of two applications and a few supporting services.</P>
+            <ArchitectureDiagram />
             <UL>
                 <LI>
                     <B>Frontend (website).</B> A Next.js application written in TypeScript. It draws the maps,
-                    statistics and Sources library, and it provides the chat and upload screens. It talks to the
-                    backend through an API.
+                    statistics and Sources library, and it provides the chat and upload screens. It talks to the backend
+                    through an API.
                 </LI>
                 <LI>
                     <B>Backend (API).</B> A Python application built with FastAPI. It answers questions, processes
                     uploaded documents, runs batch jobs, and serves the country reference data.
                 </LI>
                 <LI>
-                    <B>Vector database (Qdrant).</B> Stores the passages of each document in a form that can be
-                    searched by meaning, separately for each topic area.
+                    <B>Vector database (Qdrant).</B> Stores the passages of each document in a form that can be searched
+                    by meaning, separately for each topic area.
                 </LI>
                 <LI>
-                    <B>MongoDB.</B> Stores the country reference data, batch jobs and conversation records.
+                    <B>MongoDB.</B> Stores the country reference data, document-processing tasks and batch jobs.
+                </LI>
+                <LI>
+                    <B>SQLite.</B> A small file database on the backend server that keeps conversation history, so
+                    follow-up questions can be understood in context.
                 </LI>
                 <LI>
                     <B>Redis.</B> A cache that keeps the results of repeated questions.
@@ -43,8 +49,8 @@ export function BuiltSection() {
                 </LI>
                 <LI>
                     <B>Topics, prompts and models are mostly configuration.</B> They are set in configuration files
-                    rather than buried in the code. The two current topics are also named in a few places in the
-                    code, so pointing the tool at another subject needs small code changes as well.
+                    rather than buried in the code. The two current topics are also named in a few places in the code,
+                    so pointing the tool at another subject needs small code changes as well.
                 </LI>
                 <LI>
                     <B>The AI provider is replaceable.</B> Any OpenAI-compatible service can be used.

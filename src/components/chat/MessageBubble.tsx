@@ -1,244 +1,189 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-import { Bot, User, Copy, Check } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Message } from ".";
+import { CheckCheck, Copy } from "lucide-react";
 
 interface MessageBubbleProps {
     message: Message;
-    formatTime?: (date: Date) => string;
+}
+
+const markdownComponents: React.ComponentProps<typeof Markdown>["components"] = {
+    h1: (props) => (
+        <h1
+            className="mb-3 mt-6 border-b border-slate-200 pb-2 text-xl font-semibold text-slate-900 first:mt-0"
+            {...props}
+        />
+    ),
+    h2: (props) => <h2 className="mb-2 mt-5 text-lg font-semibold text-slate-900 first:mt-0" {...props} />,
+    h3: (props) => <h3 className="mb-2 mt-4 text-base font-semibold text-slate-900 first:mt-0" {...props} />,
+    p: (props) => <p className="mb-4 leading-relaxed text-slate-700 last:mb-0" {...props} />,
+    ul: (props) => <ul className="mb-4 list-disc space-y-1.5 pl-6" {...props} />,
+    ol: (props) => <ol className="mb-4 list-decimal space-y-1.5 pl-6" {...props} />,
+    li: (props) => <li className="leading-relaxed text-slate-700" {...props} />,
+    code: ({ className, children, ...props }) => {
+        // A fenced block with no language has no className, but its text always ends in a newline
+        const isBlock = Boolean(className) || String(children).includes("\n");
+        return isBlock ? (
+            <code
+                className="block overflow-x-auto rounded-lg bg-slate-900 p-4 font-mono text-sm text-slate-100"
+                {...props}
+            >
+                {children}
+            </code>
+        ) : (
+            <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[0.85em] text-slate-800" {...props}>
+                {children}
+            </code>
+        );
+    },
+    pre: (props) => <pre className="mb-4 overflow-x-auto" {...props} />,
+    blockquote: (props) => <blockquote className="mb-4 border-l-2 border-slate-300 pl-4 text-slate-600" {...props} />,
+    table: (props) => (
+        <div className="mb-4 overflow-x-auto rounded-lg border border-slate-200">
+            <table className="min-w-full text-sm" {...props} />
+        </div>
+    ),
+    thead: (props) => <thead className="bg-slate-50" {...props} />,
+    th: (props) => (
+        <th
+            className="border-b border-slate-200 px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-slate-500"
+            {...props}
+        />
+    ),
+    td: (props) => <td className="border-b border-slate-100 px-4 py-2.5 align-top text-slate-700" {...props} />,
+    a: (props) => (
+        <a
+            className="break-words text-primary underline underline-offset-2 hover:text-primary/80"
+            target="_blank"
+            rel="noopener noreferrer"
+            {...props}
+        />
+    ),
+    strong: (props) => <strong className="font-semibold text-slate-900" {...props} />,
+    hr: (props) => <hr className="my-6 border-slate-200" {...props} />,
+};
+
+// Network chunks arrive in bursts. This reveals them at an even pace instead, speeding up
+// when the backlog grows, so the text flows rather than jumps.
+function useSmoothText(text: string, startEmpty: boolean): string {
+    const [count, setCount] = useState(startEmpty ? 0 : text.length);
+    const countRef = useRef(count);
+
+    useEffect(() => {
+        if (countRef.current >= text.length) return;
+
+        let frame = 0;
+        const tick = () => {
+            const backlog = text.length - countRef.current;
+            countRef.current = Math.min(text.length, countRef.current + Math.max(2, Math.ceil(backlog / 12)));
+            setCount(countRef.current);
+            if (countRef.current < text.length) frame = requestAnimationFrame(tick);
+        };
+        frame = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(frame);
+    }, [text]);
+
+    return text.slice(0, count);
+}
+
+// "14:32" for today, "2 Nov, 14:32" for earlier days
+function formatAnsweredAt(timestamp: number): string {
+    const date = new Date(timestamp);
+    const time = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    if (date.toDateString() === new Date().toDateString()) return time;
+    return `${date.toLocaleDateString([], { day: "numeric", month: "short" })}, ${time}`;
 }
 
 export function MessageBubble({ message }: Readonly<MessageBubbleProps>) {
     const [copied, setCopied] = useState(false);
+    const visibleText = useSmoothText(message.bot, !!message.isStreaming);
 
-    const handleCopyUserMessage = async () => {
+    const copyAnswer = async () => {
         try {
-            await navigator.clipboard.writeText(message.user);
+            await navigator.clipboard.writeText(message.bot);
             setCopied(true);
-            toast.success("Message copied to clipboard");
             setTimeout(() => setCopied(false), 2000);
         } catch {
-            toast.error("Failed to copy message");
+            toast.error("Failed to copy the answer");
         }
     };
 
+    const showAnswer = message.bot || message.isStreaming;
+
     return (
-        <div id={`message-${message.id}`} className="mb-6 px-2 sm:px-4">
-            {/* User Message */}
-            <div className="flex justify-end mb-3">
-                <div className="flex items-start gap-2 max-w-full sm:max-w-3xl">
-                    <Card className="bg-blue-50 border-blue-100 py-3 px-4 shadow-none max-w-full relative group">
-                        <div className="text-gray-800 text-sm sm:text-base break-words pr-8">{message.user}</div>
-                        {/* Copy Button */}
-                        <button
-                            onClick={handleCopyUserMessage}
-                            className="absolute top-3 right-3 p-1.5 rounded-md hover:bg-blue-100 transition-colors opacity-0 group-hover:opacity-100"
-                            aria-label="Copy message"
-                            title="Copy message"
-                        >
-                            {copied ? (
-                                <Check size={14} className="text-green-600" />
-                            ) : (
-                                <Copy size={14} className="text-gray-600" />
-                            )}
-                        </button>
-                        {/* <div className="text-gray-400 text-xs text-right">{formatTime(message.timestamp)}</div> */}
-                    </Card>
-                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shrink-0">
-                        <User size={16} className="text-white" />
-                    </div>
-                </div>
+        <article id={`message-${message.id}`} className="mb-10">
+            <div className="flex justify-end">
+                <p className="max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-tr-md bg-slate-100 px-4 py-3 text-slate-900 sm:max-w-xl">
+                    {message.user}
+                </p>
             </div>
 
-            {/* Bot Message */}
-            {(message.bot || message.isStreaming) && (
-                <div className="flex mb-3">
-                    <div className="flex items-start gap-2 w-full">
-                        <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
-                            <Bot size={16} className="text-white" />
-                        </div>
+            {showAnswer && (
+                <div className="mt-6">
+                    <div className="mb-4 border-b border-slate-200 pb-2.5">
+                        <span className="text-sm font-semibold text-primary uppercase">Policy Analyzer</span>
+                    </div>
 
-                        <Card
-                            className={cn(
-                                "p-4 sm:p-6 shadow-none flex-1 min-w-0",
-                                message.error ? "bg-red-50 border-red-200" : "bg-white border-gray-200"
-                            )}
-                        >
-                            <div className="prose prose-sm sm:prose prose-gray max-w-none">
-                                <Markdown
-                                    remarkPlugins={[remarkGfm]}
-                                    components={{
-                                        // Professional, responsive typography
-                                        h1: ({ ...props }) => (
-                                            <h1
-                                                className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 mt-4 sm:mt-6 first:mt-0 border-b border-gray-200 pb-2"
-                                                {...props}
-                                            />
-                                        ),
-                                        h2: ({ ...props }) => (
-                                            <h2
-                                                className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 mt-4 sm:mt-5 first:mt-0"
-                                                {...props}
-                                            />
-                                        ),
-                                        h3: ({ ...props }) => (
-                                            <h3
-                                                className="text-sm sm:text-base font-medium text-gray-900 mb-2 mt-3 sm:mt-4 first:mt-0"
-                                                {...props}
-                                            />
-                                        ),
-                                        p: ({ ...props }) => (
-                                            <p
-                                                className="mb-3 sm:mb-4 last:mb-0 text-gray-700 leading-relaxed text-sm sm:text-base"
-                                                {...props}
-                                            />
-                                        ),
-                                        ul: ({ ...props }) => (
-                                            <ul
-                                                className="mb-3 sm:mb-4 space-y-1 sm:space-y-2 pl-4 sm:pl-6 list-disc text-sm sm:text-base"
-                                                {...props}
-                                            />
-                                        ),
-                                        ol: ({ ...props }) => (
-                                            <ol
-                                                className="mb-3 sm:mb-4 space-y-1 sm:space-y-2 pl-4 sm:pl-6 list-decimal text-sm sm:text-base"
-                                                {...props}
-                                            />
-                                        ),
-                                        li: ({ ...props }) => (
-                                            <li className="text-gray-700 leading-relaxed" {...props} />
-                                        ),
-                                        code: ({ className, children, ...props }) => {
-                                            const isInline = !className;
-                                            return isInline ? (
-                                                <code
-                                                    className="bg-gray-100 text-gray-800 px-1 sm:px-1.5 py-0.5 rounded text-xs sm:text-sm font-mono"
-                                                    {...props}
-                                                >
-                                                    {children}
-                                                </code>
-                                            ) : (
-                                                <code
-                                                    className="block bg-gray-900 text-gray-100 p-2 sm:p-4 rounded-lg text-xs sm:text-sm font-mono overflow-x-auto"
-                                                    {...props}
-                                                >
-                                                    {children}
-                                                </code>
-                                            );
-                                        },
-                                        pre: ({ ...props }) => (
-                                            <pre className="mb-3 sm:mb-4 overflow-x-auto" {...props} />
-                                        ),
-                                        blockquote: ({ ...props }) => (
-                                            <blockquote
-                                                className="border-l-4 border-primary pl-3 sm:pl-4 py-2 mb-3 sm:mb-4 bg-blue-50 text-gray-700 italic text-sm sm:text-base"
-                                                {...props}
-                                            />
-                                        ),
-                                        table: ({ ...props }) => (
-                                            <div className="overflow-x-auto mb-3 sm:mb-4">
-                                                <table
-                                                    className="min-w-full border border-gray-300 rounded-lg text-sm"
-                                                    {...props}
-                                                />
-                                            </div>
-                                        ),
-                                        thead: ({ ...props }) => <thead className="bg-gray-50" {...props} />,
-                                        th: ({ ...props }) => (
-                                            <th
-                                                className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-300"
-                                                {...props}
-                                            />
-                                        ),
-                                        td: ({ ...props }) => (
-                                            <td
-                                                className="px-2 sm:px-4 py-2 sm:py-3 text-gray-700 border-b border-gray-200 text-sm"
-                                                {...props}
-                                            />
-                                        ),
-                                        a: ({ ...props }) => (
-                                            <a
-                                                className="text-primary hover:text-primary/80 underline break-words"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                {...props}
-                                            />
-                                        ),
-                                        strong: ({ ...props }) => (
-                                            <strong className="font-semibold text-gray-900" {...props} />
-                                        ),
-                                        em: ({ ...props }) => <em className="italic text-gray-700" {...props} />,
-                                        hr: ({ ...props }) => (
-                                            <hr className="my-4 sm:my-6 border-gray-300" {...props} />
-                                        ),
-                                    }}
+                    <div
+                        className={cn(
+                            "min-w-0",
+                            message.error && "rounded-lg border border-red-200 bg-red-50 p-4 text-red-800"
+                        )}
+                    >
+                        {visibleText && (
+                            <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                                {visibleText}
+                            </Markdown>
+                        )}
+
+                        {!message.bot && message.isStreaming && (
+                            <div className="space-y-2.5 py-1" role="status" aria-label="Preparing the answer">
+                                <div className="h-3 w-11/12 animate-pulse rounded bg-slate-100" />
+                                <div className="h-3 w-4/5 animate-pulse rounded bg-slate-100" />
+                                <div className="h-3 w-3/5 animate-pulse rounded bg-slate-100" />
+                            </div>
+                        )}
+                    </div>
+
+                    {!message.isStreaming &&
+                        !message.error &&
+                        visibleText.length === message.bot.length &&
+                        message.bot && (
+                            <div className="mt-4 flex items-center gap-3 text-xs text-slate-500">
+                                <button
+                                    type="button"
+                                    onClick={copyAnswer}
+                                    aria-label={copied ? "Copied" : "Copy answer"}
+                                    title={copied ? "Copied" : "Copy answer"}
+                                    className="-ml-1.5 cursor-pointer rounded-md p-1.5 transition-colors hover:bg-slate-100 hover:text-slate-900"
                                 >
-                                    {message.bot}
-                                </Markdown>
-
-                                {/* Streaming indicator */}
-                                {message.isStreaming && (
-                                    <div className="flex items-center gap-2 text-gray-600 text-sm mt-3 sm:mt-4 pt-3 border-t border-gray-100">
-                                        <div className="flex gap-1">
-                                            <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                                            <div
-                                                className="w-2 h-2 bg-primary rounded-full animate-bounce"
-                                                style={{ animationDelay: "0.1s" }}
-                                            ></div>
-                                            <div
-                                                className="w-2 h-2 bg-primary rounded-full animate-bounce"
-                                                style={{ animationDelay: "0.2s" }}
-                                            ></div>
-                                        </div>
-                                        <span className="text-xs font-medium">AI is typing...</span>
-                                    </div>
+                                    {copied ? (
+                                        <CheckCheck size={14} className="text-emerald-600" />
+                                    ) : (
+                                        <Copy size={14} />
+                                    )}
+                                </button>
+                                {message.answeredAt !== undefined && (
+                                    <>
+                                        <span aria-hidden="true" className="h-3.5 w-px bg-slate-200" />
+                                        <time
+                                            dateTime={new Date(message.answeredAt).toISOString()}
+                                            className="tabular-nums"
+                                        >
+                                            {formatAnsweredAt(message.answeredAt)}
+                                        </time>
+                                    </>
                                 )}
                             </div>
-
-                            {/* Sources */}
-                            {message.sources && message.sources.length > 0 && (
-                                <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200">
-                                    <div className="text-xs font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
-                                        <div className="w-4 h-4 bg-emerald-100 rounded-full flex items-center justify-center">
-                                            <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
-                                        </div>
-                                        Sources ({message.sources.length})
-                                    </div>
-                                    <div className="grid grid-cols-1 gap-2">
-                                        {message.sources.map((source, index) => (
-                                            <div
-                                                key={index}
-                                                className="bg-gray-50 border border-gray-200 rounded-lg p-2 sm:p-3 text-xs"
-                                            >
-                                                <div className="flex items-start gap-2">
-                                                    <Badge variant="secondary" className="text-xs shrink-0">
-                                                        {index + 1}
-                                                    </Badge>
-                                                    <span className="text-gray-700 break-words text-xs sm:text-sm">
-                                                        {source}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* <div className="text-gray-400 text-xs  border-t border-gray-100">
-                                {formatTime(message.timestamp)}
-                            </div> */}
-                        </Card>
-                    </div>
+                        )}
                 </div>
             )}
-        </div>
+        </article>
     );
 }

@@ -1,11 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 import { Conversation } from "@/types/chat";
-import { Database, FileSpreadsheet, History, LayoutGrid, Plus, Trash2, X } from "lucide-react";
+import { ChevronDown, FileSpreadsheet, MoreHorizontal, PanelLeftClose, Pencil, Trash2, Upload } from "lucide-react";
+import { useRef, useState } from "react";
 
 interface ChatHistorySidebarProps {
     readonly showChatHistory: boolean;
@@ -14,47 +21,13 @@ interface ChatHistorySidebarProps {
     readonly activeConversationId: string | null;
     readonly onSelectConversation: (id: string) => void;
     readonly onDeleteConversation: (id: string) => void;
+    readonly onRenameConversation: (id: string, title: string) => void;
     readonly clearAllHistory: () => void;
     readonly isMobile: boolean;
     readonly onNewChat: () => void;
     readonly onOpenBatch?: () => void;
     readonly onOpenDocuments?: () => void;
     readonly activeTab: string;
-}
-
-// Helper to group conversations by relative date
-function groupConversationsByDate(conversations: Conversation[]): Record<string, Conversation[]> {
-    const groups: Record<string, Conversation[]> = {};
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
-    const lastWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const lastMonth = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-
-    for (const conv of conversations) {
-        const convDate = new Date(conv.updatedAt);
-        const convDay = new Date(convDate.getFullYear(), convDate.getMonth(), convDate.getDate());
-
-        let label: string;
-        if (convDay.getTime() === today.getTime()) {
-            label = "Today";
-        } else if (convDay.getTime() === yesterday.getTime()) {
-            label = "Yesterday";
-        } else if (convDay >= lastWeek) {
-            label = "Previous 7 Days";
-        } else if (convDay >= lastMonth) {
-            label = "Previous 30 Days";
-        } else {
-            label = convDate.toLocaleDateString(undefined, { month: "long", year: "numeric" });
-        }
-
-        if (!groups[label]) {
-            groups[label] = [];
-        }
-        groups[label].push(conv);
-    }
-
-    return groups;
 }
 
 export function ChatHistorySidebar({
@@ -64,6 +37,7 @@ export function ChatHistorySidebar({
     activeConversationId,
     onSelectConversation,
     onDeleteConversation,
+    onRenameConversation,
     clearAllHistory,
     isMobile,
     onNewChat,
@@ -71,189 +45,246 @@ export function ChatHistorySidebar({
     onOpenDocuments,
     activeTab,
 }: ChatHistorySidebarProps) {
+    const [recentsOpen, setRecentsOpen] = useState(true);
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [draftTitle, setDraftTitle] = useState("");
+    // Escape cancels a rename; the blur that follows must not save it
+    const cancelledRef = useRef(false);
+
+    const tools = [
+        { label: "Upload documents", hint: "Add a law or policy", Icon: Upload, onClick: onOpenDocuments },
+        {
+            label: "Batch analysis",
+            hint: "Many questions, one PDF report",
+            Icon: FileSpreadsheet,
+            onClick: onOpenBatch,
+        },
+    ];
+
+    const startRename = (conversation: Conversation) => {
+        cancelledRef.current = false;
+        setDraftTitle(conversation.title);
+        setEditingId(conversation.id);
+    };
+
+    const finishRename = (conversation: Conversation) => {
+        if (!cancelledRef.current && draftTitle.trim() && draftTitle.trim() !== conversation.title) {
+            onRenameConversation(conversation.id, draftTitle);
+        }
+        setEditingId(null);
+    };
+
     // Filter conversations by active tab and sort by most recent
     const filteredConversations = conversations
         .filter((conv) => conv.tab === activeTab)
         .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
-    const groupedConversations = groupConversationsByDate(filteredConversations);
-    const groupOrder = ["Today", "Yesterday", "Previous 7 Days", "Previous 30 Days"];
+    const confirmClearAll = () => {
+        if (window.confirm("Delete all conversations in this tab? This cannot be undone.")) clearAllHistory();
+    };
 
-    // Sort groups: known groups first in order, then remaining by date
-    const sortedGroups = Object.entries(groupedConversations).sort(([a], [b]) => {
-        const aIndex = groupOrder.indexOf(a);
-        const bIndex = groupOrder.indexOf(b);
-        if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
-        if (aIndex !== -1) return -1;
-        if (bIndex !== -1) return 1;
-        return 0;
-    });
+    const selectConversation = (id: string) => {
+        onSelectConversation(id);
+        if (isMobile) setShowChatHistory(false);
+    };
 
     return (
         <>
-            {/* Mobile overlay */}
-            {isMobile && showChatHistory && (
-                <div
-                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            {/* Mobile overlay, faded in and out */}
+            {isMobile && (
+                <button
+                    type="button"
+                    tabIndex={showChatHistory ? 0 : -1}
+                    className={cn(
+                        "fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 lg:hidden",
+                        showChatHistory ? "opacity-100" : "pointer-events-none opacity-0"
+                    )}
                     onClick={() => setShowChatHistory(false)}
-                    onKeyDown={(e) => e.key === "Escape" && setShowChatHistory(false)}
-                    role="button"
-                    tabIndex={0}
-                    aria-label="Close sidebar"
+                    aria-label="Close history"
                 />
             )}
 
-            {/* Sidebar */}
-            <div
+            {/* The outer element animates its width; the inner one keeps its size so the content is clipped, not squeezed */}
+            <aside
+                aria-label="Conversation history"
+                inert={!showChatHistory}
                 className={cn(
-                    "bg-slate-50/50 border-r border-gray-200 flex flex-col transition-all duration-300 backdrop-blur-xl",
-                    isMobile ? "fixed left-0 top-0 bottom-0 w-80 transform z-50" : "w-72",
-                    showChatHistory ? "translate-x-0" : isMobile ? "-translate-x-full" : "hidden"
+                    "shrink-0 overflow-hidden bg-slate-50 transition-[width,transform] duration-300 ease-in-out",
+                    isMobile
+                        ? cn(
+                              "fixed bottom-0 left-0 top-0 z-50 w-80",
+                              showChatHistory ? "translate-x-0" : "-translate-x-full"
+                          )
+                        : showChatHistory
+                          ? "w-72"
+                          : "w-0"
                 )}
             >
-                {/* Header & New Chat */}
-                <div className="p-4 space-y-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-slate-700 font-semibold">
-                            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
-                                <LayoutGrid size={18} />
-                            </div>
-                            <span>Workspace</span>
+                <div className={cn("flex h-full flex-col border-r border-slate-200", isMobile ? "w-80" : "w-72")}>
+                    <div className="flex gap-2 p-4">
+                        <Button className="flex-1" onClick={onNewChat}>
+                            New chat
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="shrink-0 text-slate-600"
+                            onClick={() => setShowChatHistory(false)}
+                            aria-label="Hide history"
+                            title="Hide history"
+                        >
+                            <PanelLeftClose size={18} />
+                        </Button>
+                    </div>
+
+                    <div className="px-4 pb-2">
+                        <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">Tools</div>
+                        <div className="-mx-2 flex flex-col gap-0.5">
+                            {tools.map(({ label, hint, Icon, onClick }) => (
+                                <button
+                                    key={label}
+                                    type="button"
+                                    onClick={onClick}
+                                    className="group flex w-full cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-white"
+                                >
+                                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors group-hover:border-primary/30 group-hover:bg-primary/5 group-hover:text-primary">
+                                        <Icon size={18} />
+                                    </span>
+                                    <span className="min-w-0">
+                                        <span className="block text-sm font-medium text-slate-800">{label}</span>
+                                        <span className="block truncate text-xs text-slate-500">{hint}</span>
+                                    </span>
+                                </button>
+                            ))}
                         </div>
-                        {isMobile && (
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 w-8 p-0"
-                                onClick={() => setShowChatHistory(false)}
+                    </div>
+
+                    <div className="mt-2 flex min-h-0 flex-1 flex-col border-t border-slate-200 pt-4">
+                        <div className="mb-2 flex items-center justify-between px-4">
+                            <button
+                                type="button"
+                                onClick={() => setRecentsOpen((open) => !open)}
+                                aria-expanded={recentsOpen}
+                                aria-controls="history-list"
+                                className="-ml-1 flex cursor-pointer items-center gap-1 rounded px-1 text-xs font-semibold uppercase tracking-wide text-slate-500 transition-colors hover:text-slate-900"
                             >
-                                <X size={16} />
-                            </Button>
-                        )}
-                    </div>
+                                Recents
+                                <ChevronDown
+                                    size={14}
+                                    className={cn("transition-transform duration-200", !recentsOpen && "-rotate-90")}
+                                />
+                            </button>
+                            {recentsOpen && filteredConversations.length > 0 && (
+                                <button
+                                    type="button"
+                                    className="cursor-pointer text-xs text-slate-500 hover:text-red-600"
+                                    onClick={confirmClearAll}
+                                >
+                                    Clear all
+                                </button>
+                            )}
+                        </div>
 
-                    <Button
-                        className="w-full justify-start gap-2 bg-white border border-gray-200 text-slate-700 hover:bg-gray-50 hover:text-primary hover:border-primary/30 shadow-sm transition-all"
-                        variant="outline"
-                        onClick={onNewChat}
-                    >
-                        <Plus size={16} />
-                        <span>New Chat</span>
-                    </Button>
-                </div>
-
-                {/* Tools Section */}
-                <div className="px-3 py-2">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Tools</div>
-                    <div className="space-y-1">
-                        <Button
-                            variant="ghost"
-                            className="w-full justify-start gap-3 text-slate-600 hover:text-primary hover:bg-primary/5 h-9 font-medium"
-                            onClick={onOpenDocuments}
+                        <div
+                            id="history-list"
+                            inert={!recentsOpen}
+                            className={cn(
+                                "min-h-0 basis-0 overflow-hidden transition-[flex-grow,opacity] duration-200 ease-out",
+                                recentsOpen ? "grow opacity-100" : "grow-0 opacity-0"
+                            )}
                         >
-                            <Database size={16} />
-                            Knowledge Base
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            className="w-full justify-start gap-3 text-slate-600 hover:text-primary hover:bg-primary/5 h-9 font-medium"
-                            onClick={onOpenBatch}
-                        >
-                            <FileSpreadsheet size={16} />
-                            Batch Analysis
-                        </Button>
-                    </div>
-                </div>
+                            {/* A plain scroller: Radix ScrollArea sizes its content to the longest unwrapped title, which pushed the rows and their menu button past the sidebar edge */}
+                            <div className="h-full overflow-y-auto pl-2 pr-3 [scrollbar-width:thin]">
+                                {filteredConversations.length > 0 ? (
+                                    <ul className="space-y-0.5 pb-2">
+                                        {filteredConversations.map((conversation) => {
+                                            const isActive = activeConversationId === conversation.id;
 
-                {/* History Section */}
-                <div className="flex-1 flex flex-col min-h-0 mt-2">
-                    <div className="flex items-center justify-between px-6 mb-2">
-                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">History</div>
-                        {filteredConversations.length > 0 && (
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-6 text-[10px] text-slate-400 hover:text-red-500 px-2"
-                                onClick={clearAllHistory}
-                            >
-                                Clear All
-                            </Button>
-                        )}
-                    </div>
+                                            if (editingId === conversation.id) {
+                                                return (
+                                                    <li key={conversation.id} className="py-0.5">
+                                                        <Input
+                                                            autoFocus
+                                                            value={draftTitle}
+                                                            maxLength={80}
+                                                            aria-label="Conversation name"
+                                                            onChange={(e) => setDraftTitle(e.target.value)}
+                                                            onFocus={(e) => e.target.select()}
+                                                            onBlur={() => finishRename(conversation)}
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === "Enter") e.currentTarget.blur();
+                                                                if (e.key === "Escape") {
+                                                                    cancelledRef.current = true;
+                                                                    e.currentTarget.blur();
+                                                                }
+                                                            }}
+                                                            className="h-8 bg-white text-sm"
+                                                        />
+                                                    </li>
+                                                );
+                                            }
 
-                    <ScrollArea className="flex-1 px-3">
-                        {sortedGroups.length > 0 ? (
-                            sortedGroups.map(([dateLabel, convs]) => (
-                                <div key={dateLabel} className="mb-4">
-                                    <div className="px-3 py-2 text-[10px] font-medium text-slate-400 sticky top-0 bg-slate-50/95 backdrop-blur-sm z-10">
-                                        {dateLabel}
-                                    </div>
-                                    <div className="space-y-0.5">
-                                        {convs.map((conversation) => (
-                                            <div
-                                                key={conversation.id}
-                                                className={cn(
-                                                    "group px-3 py-1.5 rounded-lg cursor-pointer transition-all border",
-                                                    activeConversationId === conversation.id
-                                                        ? "bg-primary/5 border-primary/10"
-                                                        : "hover:bg-white border-transparent"
-                                                )}
-                                                onClick={() => {
-                                                    onSelectConversation(conversation.id);
-                                                    if (isMobile) {
-                                                        setShowChatHistory(false);
-                                                    }
-                                                }}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === "Enter") {
-                                                        onSelectConversation(conversation.id);
-                                                        if (isMobile) {
-                                                            setShowChatHistory(false);
-                                                        }
-                                                    }
-                                                }}
-                                                role="button"
-                                                tabIndex={0}
-                                            >
-                                                <div className="flex items-start gap-2">
-                                                    <div className="flex-1 min-w-0 pr-2">
-                                                        <div
-                                                            className={cn(
-                                                                "text-xs font-medium line-clamp-2 transition-colors overflow-hidden break-words",
-                                                                activeConversationId === conversation.id
-                                                                    ? "text-primary"
-                                                                    : "text-slate-700 group-hover:text-primary"
-                                                            )}
-                                                        >
-                                                            {conversation.title}
-                                                        </div>
-                                                    </div>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-red-500 hover:bg-red-50 shrink-0"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            onDeleteConversation(conversation.id);
-                                                        }}
+                                            return (
+                                                <li key={conversation.id} className="group relative">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => selectConversation(conversation.id)}
+                                                        aria-current={isActive ? "true" : undefined}
+                                                        className={cn(
+                                                            // Room for the options button: always on touch screens, on hover or focus otherwise
+                                                            "w-full cursor-pointer rounded-md py-1.5 pl-2 pr-8 text-left text-[0.875rem] transition-[background-color,padding] lg:pr-2 lg:group-focus-within:pr-8 lg:group-hover:pr-8 lg:group-has-[[data-state=open]]:pr-8",
+                                                            isActive
+                                                                ? "bg-slate-200/70 font-medium text-slate-900"
+                                                                : "text-slate-700 hover:bg-slate-200/50"
+                                                        )}
                                                     >
-                                                        <Trash2 size={12} />
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="flex flex-col items-center justify-center h-32 text-slate-400 gap-2">
-                                <History size={24} className="opacity-20" />
-                                <span className="text-xs">No conversations yet</span>
+                                                        {/* A long title fades out at the edge instead of ending in an ellipsis */}
+                                                        <span className="block overflow-hidden whitespace-nowrap [mask-image:linear-gradient(to_right,#000_calc(100%-1.5rem),transparent)]">
+                                                            {conversation.title.replace(/\.{3}$/, "")}
+                                                        </span>
+                                                    </button>
+
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <button
+                                                                type="button"
+                                                                aria-label={`Options for ${conversation.title}`}
+                                                                className="absolute right-1 top-1/2 -translate-y-1/2 cursor-pointer rounded p-1 text-slate-500 transition-opacity hover:bg-slate-300/50 hover:text-slate-900 focus-visible:opacity-100 data-[state=open]:bg-slate-300/50 data-[state=open]:opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
+                                                            >
+                                                                <MoreHorizontal size={16} />
+                                                            </button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent
+                                                            align="end"
+                                                            onCloseAutoFocus={(e) => e.preventDefault()}
+                                                        >
+                                                            <DropdownMenuItem
+                                                                onSelect={() => startRename(conversation)}
+                                                            >
+                                                                <Pencil size={14} />
+                                                                Rename
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                variant="destructive"
+                                                                onSelect={() => onDeleteConversation(conversation.id)}
+                                                            >
+                                                                <Trash2 size={14} />
+                                                                Delete
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                ) : (
+                                    <p className="px-2 py-6 text-sm text-slate-500">No conversations yet.</p>
+                                )}
                             </div>
-                        )}
-                    </ScrollArea>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </aside>
         </>
     );
 }
