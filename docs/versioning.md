@@ -31,7 +31,6 @@ For the frontend, a breaking change is anything that requires action from whoeve
 | `package.json` → `version` | The current version. **Bump this in every release.** |
 | Git tag `vX.Y.Z` | The exact commit on `main` that was released |
 | `CHANGELOG.md` | What changed, for humans |
-| `NEXT_PUBLIC_APP_VERSION` | Version shown in the UI; set it from `package.json` at build time |
 | Docker image tag | `pdp-frontend:X.Y.Z` (plus `latest` for the newest release) |
 
 All of these must agree for any given release.
@@ -92,7 +91,7 @@ Write messages that make sense to a reader of the changelog. Avoid messages like
 6. Create a GitHub Release from the tag and paste in that version's changelog section.
 7. Build and push the Docker image with the version tag:
    ```bash
-   docker build --build-arg NEXT_PUBLIC_APP_VERSION=0.9.0 ... -t pdp-frontend:0.9.0 -t pdp-frontend:latest .
+   docker build ... -t pdp-frontend:0.9.0 -t pdp-frontend:latest .
    ```
 8. Merge `main` back into `develop` so the version bump is not lost.
 

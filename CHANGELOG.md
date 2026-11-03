@@ -18,6 +18,7 @@ for how versions are chosen and releases are cut.
 
 ### Removed
 - Safeguards pages (`/safeguards`, `/safeguards/kenya`), their components and data files.
+- All analytics and usage tracking, including its dependency and build arguments. The app no longer collects any usage data.
 
 ### Changed
 - Documentation page is built from components and covers the whole tool.
@@ -81,7 +82,6 @@ Tag target: `22a3715` (PRs #26–#30)
 ### Added
 - `BatchAnalysisPanel` for running analysis across multiple documents.
 - `UploadPanel` for uploading documents into a chat session.
-- PostHog event tracking library and wider tracking coverage across chat components.
 
 ### Changed
 - **Project renamed from `policy-analyzer-frontend` to `pdp-frontend`.**
@@ -99,16 +99,11 @@ Tag target: `22a3715` (PRs #26–#30)
 
 Tag target: `e2791ae` (PRs #22–#25)
 
-### Added
-- PostHog analytics integration, including page-view tracking.
-- PostHog environment variables as Docker build arguments.
-
 ### Changed
 - Simplified Dockerfile and `.dockerignore`; the container runs as a non-root user.
 - General refactor for readability and maintainability.
 
 ### Fixed
-- `PostHogPageView` is wrapped in `Suspense` to avoid loading errors.
 - Mobile navigation sheet now includes a `SheetTitle` for screen readers.
 
 ---

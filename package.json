@@ -25,7 +25,6 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.509.0",
     "next": "^16.4.4",
-    "posthog-js": "^1.304.0",
     "react": "19.2",
     "react-dom": "19.2",
     "react-markdown": "^10.1.0",

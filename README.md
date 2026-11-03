@@ -87,13 +87,10 @@ The API URL is called from the visitor's browser, not from the container. `http:
 | --- | --- | --- | --- |
 | `NEXT_PUBLIC_API_URL` | Yes | Backend API base URL, including `/api` | `http://localhost:8000/api` |
 | `NEXT_PUBLIC_API_KEY` | Yes | Must match the backend's `API_KEY` | |
-| `NEXT_PUBLIC_POSTHOG_KEY` | No | PostHog project key. Leave unset to disable analytics | `phc_...` |
-| `NEXT_PUBLIC_POSTHOG_HOST` | No | PostHog ingestion host | `https://us.i.posthog.com` |
-| `NEXT_PUBLIC_APP_VERSION` | No | Version reported with analytics events | `1.0.0` |
 
 > **All `NEXT_PUBLIC_*` values are visible to anyone who loads the site**, including `NEXT_PUBLIC_API_KEY`. Do not reuse that key for anything else. See the backend README's notes on [exposing an instance publicly](https://github.com/cylab-africa/policy-analyzer-backend#before-exposing-an-instance-publicly).
 
-Analytics are off unless `NEXT_PUBLIC_POSTHOG_KEY` is set, so forks and local installs send no data anywhere.
+The app includes no analytics or tracking, and sends no data anywhere except to your backend.
 
 ---
 
@@ -148,7 +145,7 @@ Without Docker: `npm ci && npm run build && npm start`, with the `NEXT_PUBLIC_*`
 │   ├── app/           # Pages (App Router): /, /chat, /resources, /docs
 │   ├── components/    # UI components by feature (home, chat, resources, docs, layout, ui)
 │   ├── data/          # Static map geometry and data
-│   ├── lib/           # Utilities and analytics events
+│   ├── lib/           # Utilities
 │   ├── redux/         # API client (RTK Query) and store
 │   └── types/         # TypeScript types
 ├── public/            # Static assets

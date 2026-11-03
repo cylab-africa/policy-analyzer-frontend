@@ -4,15 +4,14 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import {
     AlertTriangle,
     Book,
     CreditCard,
     File,
     FileDigit,
-    Fingerprint,
     Globe,
     Loader2,
     RefreshCw,
@@ -24,6 +23,7 @@ import React, { useMemo, useState } from "react";
 
 // Import API hooks
 import { useGetDigitalIdsQuery, useGetPolicyLawsQuery } from "@/redux/api/apiSlice";
+import FolderTabs from "@/components/home/FolderTabs";
 import { FLAG_EMOJIS, describeLink, getDocumentLanguage, getRegion } from "./utils";
 import ResourceCard from "./ResourceCard";
 
@@ -61,6 +61,9 @@ export interface Resource {
     yearLaunched?: string;
     linkType?: string;
 }
+
+// "Continental" is how the data names sources that cover the whole continent
+const regionLabel = (region: string) => (region === "Continental" ? "Pan-African" : region);
 
 export default function ResourcesPage() {
     const [activeTab, setActiveTab] = useState<ResourceType>(ResourceType.DATA_PROTECTION);
@@ -240,52 +243,59 @@ export default function ResourcesPage() {
         return allResources;
     }, [policyLaws, digitalIds]);
 
-    // Filter resources based on current tab, region, and search query
-    const filteredResources = useMemo(() => {
-        let filtered = resources.filter((resource) => resource.type === activeTab);
+    // Sources of the active tab that match the search; the region counts are taken from these
+    const searchedResources = useMemo(() => {
+        const query = searchQuery.trim().toLowerCase();
+        return resources.filter(
+            (resource) =>
+                resource.type === activeTab &&
+                (!query ||
+                    resource.countryName.toLowerCase().includes(query) ||
+                    resource.title.toLowerCase().includes(query))
+        );
+    }, [resources, activeTab, searchQuery]);
 
-        if (selectedRegion !== "all") {
-            filtered = filtered.filter((resource) => resource.region === selectedRegion);
-        }
+    const filteredResources = useMemo(
+        () =>
+            selectedRegion === "all"
+                ? searchedResources
+                : searchedResources.filter((resource) => resource.region === selectedRegion),
+        [searchedResources, selectedRegion]
+    );
 
-        if (searchQuery) {
-            const query = searchQuery.toLowerCase();
-            filtered = filtered.filter(
-                (resource) =>
-                    // resource.title.toLowerCase().includes(query) ||
-                    resource.countryName.toLowerCase().includes(query)
-                // resource.description.toLowerCase().includes(query) ||
-                // resource.authority?.toLowerCase().includes(query) ||
-                // resource.features?.some((f) => f.toLowerCase().includes(query))
-            );
-        }
-
-        return filtered;
-    }, [resources, activeTab, selectedRegion, searchQuery]);
-
-    // Get unique regions from resources
-    const regions = useMemo(() => {
-        const uniqueRegions = [...new Set(resources.map((resource) => resource.region))];
-        const sorted = uniqueRegions
-            .filter((region) => region.toLowerCase() !== "other")
-            .sort((a, b) => a.localeCompare(b));
-
-        const hasOther = uniqueRegions.some((region) => region.toLowerCase() === "other");
-        if (hasOther) sorted.push("Other");
-
-        return ["all", ...sorted];
+    // Regions in display order: pan-African first, "Other" last
+    const regionList = useMemo(() => {
+        const rank = (region: string) => (region === "Continental" ? 0 : region.toLowerCase() === "other" ? 2 : 1);
+        return [...new Set(resources.map((resource) => resource.region))].sort(
+            (a, b) => rank(a) - rank(b) || a.localeCompare(b)
+        );
     }, [resources]);
+
+    const regionOptions = useMemo(
+        () => [
+            { value: "all", label: "All regions", count: searchedResources.length },
+            ...regionList.map((region) => ({
+                value: region,
+                label: regionLabel(region),
+                count: searchedResources.filter((resource) => resource.region === region).length,
+            })),
+        ],
+        [regionList, searchedResources]
+    );
 
     // Group resources by region
     const groupedResources = useMemo(() => {
-        return filteredResources?.reduce((groups, resource) => {
-            const { region } = resource;
-            if (!groups[region]) {
-                groups[region] = [];
-            }
-            groups[region].push(resource);
-            return groups;
-        }, {} as Record<string, Resource[]>);
+        return filteredResources?.reduce(
+            (groups, resource) => {
+                const { region } = resource;
+                if (!groups[region]) {
+                    groups[region] = [];
+                }
+                groups[region].push(resource);
+                return groups;
+            },
+            {} as Record<string, Resource[]>
+        );
     }, [filteredResources]);
 
     // Sort regions
@@ -315,10 +325,22 @@ export default function ResourcesPage() {
         refetchDigitalIds();
     };
 
+    const clearFilters = () => {
+        setSearchQuery("");
+        setSelectedRegion("all");
+    };
+
     return (
-        <div className="w-full bg-gray-50 min-h-screen">
-            <div className="max-w-7xl container mx-auto px-6 pt-5 pb-16">
-                {/* Error Alert */}
+        <div className="min-h-screen w-full bg-gray-50">
+            <div className="container mx-auto max-w-7xl px-6 pb-16 pt-10">
+                <header className="mb-8 max-w-3xl">
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Source library</h1>
+                    <p className="mt-2 text-lg leading-relaxed text-slate-600">
+                        Laws, country fact sheets and research on data protection and digital identity across Africa.
+                        Each entry links to the original publication on its publisher&apos;s site.
+                    </p>
+                </header>
+
                 {hasError && (
                     <div className="mb-6">
                         <Alert variant="destructive">
@@ -326,7 +348,7 @@ export default function ResourcesPage() {
                             <AlertDescription className="flex items-center justify-between">
                                 <span>Failed to load resources. Please check your connection and try again.</span>
                                 <Button variant="outline" size="sm" onClick={handleRetry} className="cursor-pointer">
-                                    <RefreshCw className="h-3 w-3 mr-1" />
+                                    <RefreshCw className="mr-1 h-3 w-3" />
                                     Retry
                                 </Button>
                             </AlertDescription>
@@ -334,129 +356,129 @@ export default function ResourcesPage() {
                     </div>
                 )}
 
-                {/* Tabs and Filters */}
-                <div className="mb-10">
-                    <div className="bg-white rounded-lg shadow-md p-4 flex flex-col md:flex-row gap-4 items-stretch">
-                        {/* Tabs */}
-                        <div className="flex-1 min-w-0">
-                            <Tabs
-                                value={activeTab}
-                                onValueChange={(value) => setActiveTab(value as ResourceType)}
-                                className="w-full"
-                            >
-                                <TabsList className="grid grid-cols-2 h-12">
-                                    <TabsTrigger
-                                        value={ResourceType.DATA_PROTECTION}
-                                        className="flex items-center cursor-pointer justify-center gap-2 data-[state=active]:shadow-sm"
-                                    >
-                                        <Shield className="h-4 w-4" />
-                                        <span>Data Protection</span>
-                                        <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full">
-                                            {resourceCounts[ResourceType.DATA_PROTECTION]}
-                                        </span>
-                                    </TabsTrigger>
-                                    <TabsTrigger
-                                        value={ResourceType.DIGITAL_ID}
-                                        className="flex items-center cursor-pointer justify-center gap-2 data-[state=active]:shadow-sm"
-                                    >
-                                        <Fingerprint className="h-4 w-4" />
-                                        <span>Digital ID</span>
-                                        <span className="bg-primary/10 text-primary text-xs px-1.5 py-0.5 rounded-full">
-                                            {resourceCounts[ResourceType.DIGITAL_ID]}
-                                        </span>
-                                    </TabsTrigger>
-                                </TabsList>
-                            </Tabs>
-                        </div>
+                <Tabs
+                    value={activeTab}
+                    onValueChange={(value) => setActiveTab(value as ResourceType)}
+                    className="w-full gap-0"
+                >
+                    <FolderTabs
+                        tabs={[
+                            {
+                                value: ResourceType.DATA_PROTECTION,
+                                label: "Data Protection",
+                                count: resourceCounts[ResourceType.DATA_PROTECTION],
+                            },
+                            {
+                                value: ResourceType.DIGITAL_ID,
+                                label: "Digital ID",
+                                count: resourceCounts[ResourceType.DIGITAL_ID],
+                            },
+                        ]}
+                    />
 
-                        {/* Search and Filter */}
-                        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                            <div className="relative flex-1 min-w-[200px]">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <div className="rounded-2xl rounded-tl-none border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 max-sm:rounded-tr-none sm:p-6">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="relative w-full sm:max-w-md">
+                                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                                 <Input
                                     type="text"
-                                    placeholder="Search by country..."
+                                    placeholder="Search by country or title"
+                                    aria-label="Search by country or title"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-9 pr-9 h-11 border-gray-200 min-w-[350px]"
+                                    className="h-11 border-slate-200 pl-9 pr-9"
                                 />
                                 {searchQuery && (
-                                    <Button
-                                        variant="ghost"
+                                    <button
+                                        type="button"
                                         onClick={() => setSearchQuery("")}
-                                        className="cursor-pointer absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-red-500 hover:text-red-600 transition-colors"
+                                        aria-label="Clear search"
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded p-1 text-slate-400 transition-colors hover:text-slate-700"
                                     >
                                         <X className="h-4 w-4" />
-                                    </Button>
+                                    </button>
                                 )}
                             </div>
-                            <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-                                <SelectTrigger className="h-12 border-gray-200 min-w-[180px]">
-                                    <SelectValue placeholder="Filter by Region" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Regions</SelectItem>
-                                    {regions
-                                        .filter((r) => r !== "all")
-                                        .map((region, index) => (
-                                            <SelectItem key={index} value={region}>
-                                                {region}
-                                            </SelectItem>
-                                        ))}
-                                </SelectContent>
-                            </Select>
+                            {!isLoading && (
+                                <p className="text-sm text-slate-500" aria-live="polite">
+                                    {filteredResources.length} {filteredResources.length === 1 ? "source" : "sources"}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="mt-6 grid gap-6 lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-8">
+                            <aside className="lg:sticky lg:top-24 lg:self-start">
+                                <nav aria-label="Filter by region">
+                                    <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                        Region
+                                    </h2>
+                                    <ul className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 lg:mx-0 lg:flex-col lg:gap-0.5 lg:overflow-visible lg:px-0 lg:pb-0">
+                                        {regionOptions.map((option) => {
+                                            const isSelected = selectedRegion === option.value;
+                                            return (
+                                                <li key={option.value} className="shrink-0">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setSelectedRegion(option.value)}
+                                                        aria-pressed={isSelected}
+                                                        disabled={option.count === 0 && !isSelected}
+                                                        className={cn(
+                                                            "flex w-full cursor-pointer items-center justify-between gap-3 whitespace-nowrap rounded-md border px-3 py-2 text-sm transition-colors disabled:cursor-default disabled:opacity-40 lg:border-transparent",
+                                                            isSelected
+                                                                ? "border-primary/30 bg-primary/10 font-medium text-primary"
+                                                                : "border-slate-200 text-slate-600 enabled:hover:bg-slate-100 enabled:hover:text-slate-900"
+                                                        )}
+                                                    >
+                                                        <span>{option.label}</span>
+                                                        <span className="tabular-nums text-xs text-slate-400">
+                                                            {option.count}
+                                                        </span>
+                                                    </button>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </nav>
+                            </aside>
+
+                            <div className="min-w-0">
+                                {isLoading && (
+                                    <div className="py-16 text-center">
+                                        <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin text-primary" />
+                                        <p className="text-slate-600">Loading sources…</p>
+                                    </div>
+                                )}
+
+                                {!isLoading && filteredResources.length === 0 && (
+                                    <div className="py-16 text-center">
+                                        <p className="mb-4 text-slate-600">No sources match your filters.</p>
+                                        <Button variant="outline" onClick={clearFilters}>
+                                            Clear filters
+                                        </Button>
+                                    </div>
+                                )}
+
+                                {!isLoading &&
+                                    filteredResources.length > 0 &&
+                                    sortedRegions.map((region) => (
+                                        <section key={region} className="mb-10 last:mb-0">
+                                            <h2 className="mb-4 flex items-baseline gap-2 border-b border-slate-200 pb-2 text-xl font-semibold text-slate-900">
+                                                {regionLabel(region)}
+                                                <span className="text-sm font-normal tabular-nums text-slate-400">
+                                                    {groupedResources[region].length}
+                                                </span>
+                                            </h2>
+                                            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                                                {groupedResources[region].map((resource) => (
+                                                    <ResourceCard key={resource.id} resource={resource} />
+                                                ))}
+                                            </div>
+                                        </section>
+                                    ))}
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                {/* Loading State */}
-                {isLoading && (
-                    <div className="bg-white rounded-lg shadow-sm p-16 text-center">
-                        <Loader2 className="h-12 w-12 text-primary mx-auto mb-4 animate-spin" />
-                        <p className="text-xl text-gray-600">Loading resources...</p>
-                    </div>
-                )}
-
-                {/* Resources Content */}
-                {!isLoading && (
-                    <div>
-                        {filteredResources.length === 0 ? (
-                            <div className="bg-white rounded-lg shadow-sm p-16 text-center">
-                                <AlertTriangle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
-                                <p className="text-xl text-gray-600 mb-6">No resources found.</p>
-                                <Button
-                                    variant="outline"
-                                    onClick={() => {
-                                        setSearchQuery("");
-                                        setSelectedRegion("all");
-                                    }}
-                                >
-                                    Clear Filters
-                                </Button>
-                            </div>
-                        ) : (
-                            sortedRegions.map((region, index) => (
-                                <div key={index} className="mb-10">
-                                    <h2 className="text-2xl font-bold text-gray-800 mb-6 pl-3 border-l-4 border-primary flex items-center gap-2">
-                                        {region === "Continental" ? (
-                                            <>
-                                                <Globe className="h-5 w-5 text-primary" />
-                                                <span>Pan-African Resources</span>
-                                            </>
-                                        ) : (
-                                            region
-                                        )}
-                                    </h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {groupedResources[region].map((resource, resourceIndex) => (
-                                            <ResourceCard key={resourceIndex} resource={resource} />
-                                        ))}
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                )}
+                </Tabs>
             </div>
         </div>
     );
