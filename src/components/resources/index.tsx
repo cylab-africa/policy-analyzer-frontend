@@ -4,6 +4,7 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import {
@@ -329,7 +330,7 @@ export default function ResourcesPage() {
 
     return (
         <div className="min-h-screen w-full bg-gray-50">
-            <div className="container mx-auto max-w-7xl px-6 pb-16 pt-10">
+            <div className="container mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 sm:pt-10">
                 <header className="mb-8 max-w-3xl">
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900">Source library</h1>
                     <p className="mt-2 text-lg leading-relaxed text-slate-600">
@@ -373,57 +374,86 @@ export default function ResourcesPage() {
                         ]}
                     />
 
-                    <div className="rounded-2xl rounded-tl-none border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 max-sm:rounded-tr-none sm:p-6">
+                    <div className="rounded-2xl rounded-tl-none border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/60 max-sm:rounded-tr-none sm:p-6">
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                            <div className="relative w-full sm:max-w-md">
-                                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                                <Input
-                                    type="text"
-                                    placeholder="Search by country or title"
-                                    aria-label="Search by country or title"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="h-11 border-slate-200 pl-9 pr-9"
-                                />
-                                {searchQuery && (
-                                    <button
-                                        type="button"
-                                        onClick={() => setSearchQuery("")}
-                                        aria-label="Clear search"
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded p-1 text-slate-400 transition-colors hover:text-slate-700"
-                                    >
-                                        <X className="h-4 w-4" />
-                                    </button>
-                                )}
+                            <div className="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-center lg:max-w-md">
+                                <div className="relative w-full min-w-0 sm:flex-1">
+                                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                    <Input
+                                        type="text"
+                                        placeholder="Search by country or title"
+                                        aria-label="Search by country or title"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="h-11 border-slate-200 pl-9 pr-9"
+                                    />
+                                    {searchQuery && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setSearchQuery("")}
+                                            aria-label="Clear search"
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded p-1 text-slate-400 transition-colors hover:text-slate-700"
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* Region filter as a dropdown below lg; the sidebar list takes over on large screens */}
+                                <div className="lg:hidden sm:w-44 sm:shrink-0 md:w-56">
+                                    <Select value={selectedRegion} onValueChange={setSelectedRegion}>
+                                        <SelectTrigger
+                                            aria-label="Filter by region"
+                                            className="h-11 w-full cursor-pointer border-slate-200 bg-white"
+                                        >
+                                            <SelectValue placeholder="All regions" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {regionOptions.map((option) => (
+                                                <SelectItem
+                                                    key={option.value}
+                                                    value={option.value}
+                                                    disabled={option.count === 0 && selectedRegion !== option.value}
+                                                    className="cursor-pointer"
+                                                >
+                                                    {option.label}
+                                                    <span className="tabular-nums text-xs text-slate-400">
+                                                        {option.count}
+                                                    </span>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
                             {!isLoading && (
-                                <p className="text-sm text-slate-500" aria-live="polite">
+                                <p className="shrink-0 text-sm text-slate-500 max-lg:sr-only" aria-live="polite">
                                     {filteredResources.length} {filteredResources.length === 1 ? "source" : "sources"}
                                 </p>
                             )}
                         </div>
 
-                        <div className="mt-6 grid gap-6 lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-8">
-                            <aside className="lg:sticky lg:top-24 lg:self-start">
+                        <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-8">
+                            <aside className="hidden lg:sticky lg:top-24 lg:block lg:self-start">
                                 <nav aria-label="Filter by region">
                                     <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
                                         Region
                                     </h2>
-                                    <ul className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 lg:mx-0 lg:flex-col lg:gap-0.5 lg:overflow-visible lg:px-0 lg:pb-0">
+                                    <ul className="flex flex-col gap-0.5">
                                         {regionOptions.map((option) => {
                                             const isSelected = selectedRegion === option.value;
                                             return (
-                                                <li key={option.value} className="shrink-0">
+                                                <li key={option.value}>
                                                     <button
                                                         type="button"
                                                         onClick={() => setSelectedRegion(option.value)}
                                                         aria-pressed={isSelected}
                                                         disabled={option.count === 0 && !isSelected}
                                                         className={cn(
-                                                            "flex w-full cursor-pointer items-center justify-between gap-3 whitespace-nowrap rounded-md border px-3 py-2 text-sm transition-colors disabled:cursor-default disabled:opacity-40 lg:border-transparent",
+                                                            "flex w-full cursor-pointer items-center justify-between gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors disabled:cursor-default disabled:opacity-40",
                                                             isSelected
-                                                                ? "border-primary/30 bg-primary/10 font-medium text-primary"
-                                                                : "border-slate-200 text-slate-600 enabled:hover:bg-slate-100 enabled:hover:text-slate-900"
+                                                                ? "bg-primary/10 font-medium text-primary"
+                                                                : "text-slate-600 enabled:hover:bg-slate-100 enabled:hover:text-slate-900"
                                                         )}
                                                     >
                                                         <span>{option.label}</span>
