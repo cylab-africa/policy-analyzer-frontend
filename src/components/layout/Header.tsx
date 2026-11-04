@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/components/ui/navigation-menu";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import Image from "next/image";
@@ -137,18 +137,21 @@ export default function Header() {
                             <SheetTitle className="sr-only">Main Navigation</SheetTitle>
                             <div className="flex flex-col space-y-2 mt-8">
                                 {navItems.map((item) => (
-                                    <Link
-                                        key={item.href}
-                                        href={item.href}
-                                        className={cn(
-                                            "px-4 py-3 text-base font-medium transition-all duration-300",
-                                            isActive(item.href)
-                                                ? "text-foreground"
-                                                : "text-muted-foreground hover:text-foreground"
-                                        )}
-                                    >
-                                        {item.label}
-                                    </Link>
+                                    // Close the drawer when a link is tapped
+                                    <SheetClose asChild key={item.href}>
+                                        <Link
+                                            href={item.href}
+                                            aria-current={isActive(item.href) ? "page" : undefined}
+                                            className={cn(
+                                                "px-4 py-3 text-base font-medium transition-all duration-300",
+                                                isActive(item.href)
+                                                    ? "text-foreground"
+                                                    : "text-muted-foreground hover:text-foreground"
+                                            )}
+                                        >
+                                            {item.label}
+                                        </Link>
+                                    </SheetClose>
                                 ))}
                             </div>
                         </SheetContent>
