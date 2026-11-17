@@ -9,6 +9,7 @@ import type {
     PolicyLawFile,
     QueryRequest
 } from "@/types/api";
+import { API_BASE_URL } from "@/lib/api-base";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // Re-export types for convenience
@@ -28,9 +29,6 @@ export type {
     ValidationError
 } from "@/types/api";
 
-// API endpoints configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
 export const apiSlice = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({
@@ -41,10 +39,7 @@ export const apiSlice = createApi({
             if (!formDataEndpoints.includes(endpoint)) {
                 headers.set("Content-Type", "application/json");
             }
-            const apiKey = process.env.NEXT_PUBLIC_API_KEY;
-            if (apiKey) {
-                headers.set("X-API-Key", apiKey);
-            }
+            // The API key is added by the server-side proxy, never in the browser
             return headers;
         },
     }),

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, X } from "lucide-react";
 import { toast } from "sonner";
+import { API_BASE_URL } from "@/lib/api-base";
 import { useUploadBatchQueriesMutation, useGetBatchJobStatusQuery } from "@/redux/api/apiSlice";
 
 interface BatchAnalysisPanelProps {
@@ -133,7 +134,8 @@ export function BatchAnalysisPanel({ isOpen, onClose }: BatchAnalysisPanelProps)
     }, [isOpen, onClose]);
 
     const handleDownload = () => {
-        const downloadUrl = jobStatus?.pdf_download_url || `${process.env.NEXT_PUBLIC_API_URL}/batch/download/${jobId}`;
+        // Always go through the proxy: a direct backend URL would need the API key, which the browser does not have
+        const downloadUrl = `${API_BASE_URL}/batch/download/${jobId}`;
         // Open in new tab instead of same window
         window.open(downloadUrl, "_blank", "noopener,noreferrer");
     };

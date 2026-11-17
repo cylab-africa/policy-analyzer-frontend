@@ -25,7 +25,7 @@ export function RunSection() {
                             <Code key="docker">docker compose version</Code>,
                         ],
                         ["Python 3", "Running two small setup commands", <Code key="python">python --version</Code>],
-                        ["Node.js 20.9 or newer", "Running the website", <Code key="node">node --version</Code>],
+                        ["Node.js 22 or newer", "Running the website", <Code key="node">node --version</Code>],
                     ]}
                 />
                 <P>
@@ -120,7 +120,7 @@ MONGODB_CONNECTION_STRING=mongodb://mongo:27017`}</CodeBlock>
 
             <DocSubsection title={parts.frontend}>
                 <P>
-                    Leave the backend running and open a new terminal window. The website needs Node.js 20.9 or newer.
+                    Leave the backend running and open a new terminal window. The website needs Node.js 22 or newer.
                 </P>
                 <Steps>
                     <Step n={1} title="Download the code">
@@ -134,13 +134,14 @@ cd policy-analyzer-frontend`}</CodeBlock>
                     <Step n={3} title="Create the settings file">
                         <CodeBlock label="Terminal">{`cp .env.example .env`}</CodeBlock>
                         <P>Open the new file and set these two values:</P>
-                        <CodeBlock label=".env">{`NEXT_PUBLIC_API_URL=http://localhost:8000/api
-NEXT_PUBLIC_API_KEY=the-same-API_KEY-as-in-the-backend`}</CodeBlock>
+                        <CodeBlock label=".env">{`BACKEND_API_URL=http://localhost:8000/api
+BACKEND_API_KEY=the-same-API_KEY-as-in-the-backend`}</CodeBlock>
                         <P>
-                            <Code>NEXT_PUBLIC_API_URL</Code> is where the backend answers. The value above is right when
-                            the backend runs on your computer. <Code>NEXT_PUBLIC_API_KEY</Code> must be exactly the same
+                            <Code>BACKEND_API_URL</Code> is where the backend answers. The value above is right when
+                            the backend runs on your computer. <Code>BACKEND_API_KEY</Code> must be exactly the same
                             as <Code>API_KEY</Code> in the backend’s <Code>.env</Code>, or the backend will refuse the
-                            website’s requests.
+                            website’s requests. Both values stay on the website’s server: visitors’ browsers never
+                            receive the key.
                         </P>
                     </Step>
                     <Step n={4} title="Start the website">
@@ -154,15 +155,16 @@ NEXT_PUBLIC_API_KEY=the-same-API_KEY-as-in-the-backend`}</CodeBlock>
 
                 <P>
                     <B>Prefer Docker for the website?</B> Skip steps 2 to 4 and build an image instead. The settings are
-                    built into the image, so editing <Code>.env</Code> later changes nothing: rebuild the image after
-                    any change.
+                    passed when the container starts, and Docker ignores <Code>.env</Code>, so pass them with{" "}
+                    <Code>-e</Code>. Inside a container, <Code>localhost</Code> is the container itself, so{" "}
+                    <Code>host.docker.internal</Code> is used to reach a backend on the same computer.
                 </P>
-                <CodeBlock label="Terminal">{`docker build \\
-  --build-arg NEXT_PUBLIC_API_URL=http://localhost:8000/api \\
-  --build-arg NEXT_PUBLIC_API_KEY=the-same-API_KEY-as-in-the-backend \\
-  -t policy-analyzer-frontend .
+                <CodeBlock label="Terminal">{`docker build -t policy-analyzer-frontend .
 
-docker run -d --name policy-analyzer-frontend -p 3000:3000 policy-analyzer-frontend`}</CodeBlock>
+docker run -d --name policy-analyzer-frontend -p 3000:3000 \\
+  -e BACKEND_API_URL=http://host.docker.internal:8000/api \\
+  -e BACKEND_API_KEY=the-same-API_KEY-as-in-the-backend \\
+  policy-analyzer-frontend`}</CodeBlock>
             </DocSubsection>
 
             <DocSubsection title={parts.documents}>
@@ -242,7 +244,7 @@ docker run -d --name policy-analyzer-frontend -p 3000:3000 policy-analyzer-front
                         [
                             "The website cannot reach the backend",
                             <>
-                                Check that <Code>NEXT_PUBLIC_API_KEY</Code> matches <Code>API_KEY</Code> exactly. After
+                                Check that <Code>BACKEND_API_KEY</Code> matches <Code>API_KEY</Code> exactly. After
                                 editing the website’s <Code>.env</Code>, stop <Code>npm run dev</Code> and start it
                                 again.
                             </>,

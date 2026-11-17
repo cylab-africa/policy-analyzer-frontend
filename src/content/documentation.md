@@ -224,7 +224,7 @@ The Policy Analyzer is open source under the MIT licence. This guide takes you f
 | Git | Downloading the code | `git --version` |
 | Docker, with Compose | Running the backend and its databases | `docker compose version` |
 | Python 3 | Running two small setup commands | `python --version` |
-| Node.js 20.9 or newer | Running the website | `node --version` |
+| Node.js 22 or newer | Running the website | `node --version` |
 
 Install Docker Desktop (Windows and macOS) or Docker Engine (Linux), and make sure it is running before you start. If a check prints "command not found", install that tool first. On some systems Python is called `python3`.
 
@@ -311,7 +311,7 @@ Replace `YOUR_API_KEY` with your key. You should get a short JSON reply, not an 
 
 ### Step 2: Set up the website (Frontend)
 
-Leave the backend running and open a new terminal window. The website needs Node.js 20.9 or newer.
+Leave the backend running and open a new terminal window. The website needs Node.js 22 or newer.
 
 **1. Download the code**
 
@@ -337,11 +337,11 @@ cp .env.example .env
 Open the new file and set these two values:
 
 ```bash
-NEXT_PUBLIC_API_URL=http://localhost:8000/api
-NEXT_PUBLIC_API_KEY=the-same-API_KEY-as-in-the-backend
+BACKEND_API_URL=http://localhost:8000/api
+BACKEND_API_KEY=the-same-API_KEY-as-in-the-backend
 ```
 
-`NEXT_PUBLIC_API_URL` is where the backend answers. The value above is right when the backend runs on your computer. `NEXT_PUBLIC_API_KEY` must be exactly the same as `API_KEY` in the backend's `.env`, or the backend will refuse the website's requests.
+`BACKEND_API_URL` is where the backend answers. The value above is right when the backend runs on your computer. `BACKEND_API_KEY` must be exactly the same as `API_KEY` in the backend's `.env`, or the backend will refuse the website's requests. Both values stay on the website's server: visitors' browsers never receive the key.
 
 **4. Start the website**
 
@@ -351,15 +351,15 @@ npm run dev
 
 Open `http://localhost:3000`. The maps should load. If they are empty, the country data was not loaded: repeat step 7 of the backend.
 
-**Prefer Docker for the website?** Skip steps 2 to 4 and build an image instead. The settings are built into the image, so editing `.env` later changes nothing: rebuild the image after any change.
+**Prefer Docker for the website?** Skip steps 2 to 4 and build an image instead. The settings are passed when the container starts, and Docker ignores `.env`, so pass them with `-e`. Inside a container, `localhost` is the container itself, so `host.docker.internal` is used to reach a backend on the same computer.
 
 ```bash
-docker build \
-  --build-arg NEXT_PUBLIC_API_URL=http://localhost:8000/api \
-  --build-arg NEXT_PUBLIC_API_KEY=the-same-API_KEY-as-in-the-backend \
-  -t policy-analyzer-frontend .
+docker build -t policy-analyzer-frontend .
 
-docker run -d --name policy-analyzer-frontend -p 3000:3000 policy-analyzer-frontend
+docker run -d --name policy-analyzer-frontend -p 3000:3000 \
+  -e BACKEND_API_URL=http://host.docker.internal:8000/api \
+  -e BACKEND_API_KEY=the-same-API_KEY-as-in-the-backend \
+  policy-analyzer-frontend
 ```
 
 ### Step 3: Add documents
@@ -387,7 +387,7 @@ Keep the keys in the backend's `.env` and out of the repository.
 | --- | --- |
 | The backend log says `Failed to connect to MongoDB` | Run `docker compose ps` and check that MongoDB is running, and that `MONGODB_CONNECTION_STRING` is `mongodb://mongo:27017`. |
 | The maps or the Sources page are empty | Load the country data (step 7 of the backend). |
-| The website cannot reach the backend | Check that `NEXT_PUBLIC_API_KEY` matches `API_KEY` exactly. After editing the website's `.env`, stop `npm run dev` and start it again. |
+| The website cannot reach the backend | Check that `BACKEND_API_KEY` matches `API_KEY` exactly. After editing the website's `.env`, stop `npm run dev` and start it again. |
 | You changed the backend's .env and nothing happened | Run `docker compose up -d --force-recreate backend`. A plain restart does not reload `.env`. |
 | You want to see what the backend is doing | Run `docker compose logs -f backend`. |
 | `permission denied` when running Docker on Linux | Put sudo in front of the Docker commands, or add your user to the docker group. |

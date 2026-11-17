@@ -36,5 +36,5 @@ Only the latest code on the `main` branch is supported.
 
 ## Running your own instance
 
-- The backend is protected by a single shared API key. Anything the frontend sends from the browser, including `NEXT_PUBLIC_*` values and that key, is visible to every visitor. Read [Before exposing an instance publicly](https://github.com/cylab-africa/policy-analyzer-backend#before-exposing-an-instance-publicly) before putting an instance on the internet.
+- The backend is protected by a single shared API key. The frontend keeps that key on its server (`BACKEND_API_KEY`) and adds it to requests through its `/api/backend` proxy, so it is not sent to browsers. The proxy does not identify visitors, though: anyone who can load the site can use it. Read [Before exposing an instance publicly](https://github.com/cylab-africa/policy-analyzer-backend#before-exposing-an-instance-publicly) before putting an instance on the internet.
 - Never commit `.env` files, API keys or credentials.

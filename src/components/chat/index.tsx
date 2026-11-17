@@ -3,6 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/api-base";
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { ChatHeader } from "./ChatHeader";
@@ -377,14 +378,11 @@ export default function ChatPage() {
         let hasReceivedContent = false;
 
         try {
-            const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
             const response = await fetch(`${API_BASE_URL}/query_v2`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "text/event-stream",
-                    ...(process.env.NEXT_PUBLIC_API_KEY ? { "X-API-Key": process.env.NEXT_PUBLIC_API_KEY } : {}),
                 },
                 body: JSON.stringify({
                     query,
