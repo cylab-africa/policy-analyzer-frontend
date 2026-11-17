@@ -298,7 +298,7 @@ docker compose ps
 This fills the maps and the Sources page. Run it once, after the containers are up.
 
 ```bash
-docker compose exec backend uv run python scripts/seed_reference_data.py
+docker compose exec backend python scripts/seed_reference_data.py
 ```
 
 **8. Check that it works**
@@ -396,7 +396,7 @@ To stop the backend and keep your data, run `docker compose --profile local-db d
 
 ### Before you put it online
 
-The default set-up shares a single API key with the browser, so anyone who can open the site can read it. Keep the admin and document-upload routes off the public internet, and restrict CORS. The backend README lists what to do before exposing an instance publicly.
+The website keeps the API key on its own server and never sends it to visitors' browsers. The key is still one shared password with no user accounts, so anyone who can reach the backend directly with it can use every route. Keep the backend reachable only from the website's server, and keep the admin and document-upload routes off the public internet. Before going live, also set `REDIS_PASSWORD`, leave `ENABLE_API_DOCS` off, and set `TRUSTED_PROXY_IPS` to the website server's address so that each visitor gets their own rate limit. Browsers need no CORS access, because the website calls the backend from its server. The backend README lists everything to check before exposing an instance publicly.
 
 ## Fork and extend
 

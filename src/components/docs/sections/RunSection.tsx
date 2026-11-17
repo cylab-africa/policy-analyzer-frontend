@@ -105,7 +105,7 @@ MONGODB_CONNECTION_STRING=mongodb://mongo:27017`}</CodeBlock>
                     </Step>
                     <Step n={7} title="Load the country data">
                         <P>This fills the maps and the Sources page. Run it once, after the containers are up.</P>
-                        <CodeBlock label="Terminal">{`docker compose exec backend uv run python scripts/seed_reference_data.py`}</CodeBlock>
+                        <CodeBlock label="Terminal">{`docker compose exec backend python scripts/seed_reference_data.py`}</CodeBlock>
                     </Step>
                     <Step n={8} title="Check that it works">
                         <CodeBlock label="Terminal">{`curl http://localhost:8000/api/monitoring/health -H "X-API-Key: YOUR_API_KEY"`}</CodeBlock>
@@ -279,9 +279,14 @@ docker run -d --name policy-analyzer-frontend -p 3000:3000 \\
 
             <DocSubsection title={parts.online}>
                 <P>
-                    The default set-up shares a single API key with the browser, so anyone who can open the site can
-                    read it. Keep the admin and document-upload routes off the public internet, and restrict CORS. The
-                    backend README lists what to do before exposing an instance publicly.
+                    The website keeps the API key on its own server and never sends it to visitors’ browsers. The key is
+                    still one shared password with no user accounts, so anyone who can reach the backend directly with
+                    it can use every route. Keep the backend reachable only from the website’s server, and keep the
+                    admin and document-upload routes off the public internet. Before going live, also set{" "}
+                    <Code>REDIS_PASSWORD</Code>, leave <Code>ENABLE_API_DOCS</Code> off, and set{" "}
+                    <Code>TRUSTED_PROXY_IPS</Code> to the website server’s address so that each visitor gets their own
+                    rate limit. Browsers need no CORS access, because the website calls the backend from its server. The
+                    backend README lists everything to check before exposing an instance publicly.
                 </P>
             </DocSubsection>
         </DocSection>
