@@ -307,7 +307,7 @@ docker compose exec backend uv run python scripts/seed_reference_data.py
 curl http://localhost:8000/api/monitoring/health -H "X-API-Key: YOUR_API_KEY"
 ```
 
-Replace `YOUR_API_KEY` with your key. You should get a short JSON reply, not an error. You can also open `http://localhost:8000/api/docs` in your browser to see the API.
+Replace `YOUR_API_KEY` with your key. You should get a short JSON reply, not an error. You can also open `http://localhost:8000/api/docs` in your browser to see the API (this page only exists while `ENABLE_API_DOCS=true` is set in the backend's `.env`).
 
 ### Step 2: Set up the website (Frontend)
 
