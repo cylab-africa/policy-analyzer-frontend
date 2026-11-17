@@ -92,6 +92,8 @@ Both are server-side variables, read when the app starts. The browser never sees
 
 The proxy only forwards the backend routes the website uses, but it does not identify visitors: anyone who can load the site can use it. See the backend README's notes on [exposing an instance publicly](https://github.com/cylab-africa/policy-analyzer-backend#before-exposing-an-instance-publicly).
 
+**Rate limits per visitor.** The proxy passes each visitor's address to the backend in an `X-Client-IP` header (taken from the last `X-Forwarded-For` entry, so run the site behind a reverse proxy that sets it). The backend believes that header only for requests from an address listed in its `TRUSTED_PROXY_IPS` setting, so set that to this server's address as the backend sees it. Until you do, every visitor shares one rate limit.
+
 The app includes no analytics or tracking, and sends no data anywhere except to your backend.
 
 ---
