@@ -1,5 +1,5 @@
 # --- Dependencies ---
-FROM node:20-alpine AS deps
+FROM node:22-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
 # Install ALL dependencies (including devDependencies like TypeScript)
@@ -7,15 +7,12 @@ COPY package*.json ./
 RUN npm ci --legacy-peer-deps && npm cache clean --force
 
 # --- Builder ---
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 
-# Build-time environment variables
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-
-ARG NEXT_PUBLIC_API_KEY
-ENV NEXT_PUBLIC_API_KEY=$NEXT_PUBLIC_API_KEY
+# No backend URL or API key is needed at build time. The server-side proxy reads
+# BACKEND_API_URL and BACKEND_API_KEY when the container starts, so the key is never baked
+# into the image or the browser bundle.
 
 # Copy package files and install ALL dependencies (including devDependencies)
 COPY package*.json ./
@@ -28,12 +25,13 @@ COPY . .
 RUN npm run build
 
 # --- Runner ---
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 
 # Set production environment
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+# Set at run time (docker run -e ...): BACKEND_API_URL, BACKEND_API_KEY
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \

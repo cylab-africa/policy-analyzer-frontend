@@ -14,6 +14,8 @@ for how versions are chosen and releases are cut.
 ## [Unreleased]
 
 ### Security
+- The backend API key no longer reaches the browser. The website now calls its own `/api/backend/...` route, which adds the key on the server and forwards only the backend routes the site uses. The key is set with `BACKEND_API_KEY` (and the backend address with `BACKEND_API_URL`) when the app starts, instead of `NEXT_PUBLIC_API_KEY` and `NEXT_PUBLIC_API_URL` at build time. Anyone who deployed with the old variables must switch to the new ones.
+- Moved the Docker image and `.nvmrc` from the end-of-life Node 20 to Node 22.
 - Pinned `d3-color` to 3.1 or newer through an npm override. The map library pulled in 2.0, which has a known ReDoS weakness.
 
 ### Removed

@@ -34,7 +34,7 @@ The web app for the Policy Analyzer, a tool for exploring and comparing data pro
 
 The frontend needs a running backend for the maps, Sources and chat. Set up the [backend](https://github.com/cylab-africa/policy-analyzer-backend#quick-start-with-docker) first; it takes about 10 minutes with Docker. Then:
 
-**You need:** [Node.js](https://nodejs.org/) 20.9 or newer (20 LTS is fine) and Git.
+**You need:** [Node.js](https://nodejs.org/) 22 or newer (22 LTS is fine) and Git.
 
 ```bash
 # 1. Clone and install
@@ -46,7 +46,7 @@ npm install
 cp .env.example .env          # Windows PowerShell: Copy-Item .env.example .env
 ```
 
-In `.env`, set `NEXT_PUBLIC_API_KEY` to the same value as `API_KEY` in the backend's `.env`. The default `NEXT_PUBLIC_API_URL` (`http://localhost:8000/api`) matches a local backend.
+In `.env`, set `BACKEND_API_KEY` to the same value as `API_KEY` in the backend's `.env`. The default `BACKEND_API_URL` (`http://localhost:8000/api`) matches a local backend.
 
 ```bash
 # 3. Start the development server
@@ -66,18 +66,18 @@ Open <http://localhost:3000>.
 
 ## Running with Docker
 
-`NEXT_PUBLIC_*` values are compiled into the JavaScript bundle at build time, so they are passed as build arguments. Rebuild the image whenever they change.
+The backend URL and API key are read when the container starts, so nothing secret is built into the image.
 
 ```bash
-docker build \
-  --build-arg NEXT_PUBLIC_API_URL=http://localhost:8000/api \
-  --build-arg NEXT_PUBLIC_API_KEY=your-backend-api-key \
-  -t policy-analyzer-frontend .
+docker build -t policy-analyzer-frontend .
 
-docker run -d --name policy-analyzer-frontend -p 3000:3000 policy-analyzer-frontend
+docker run -d --name policy-analyzer-frontend -p 3000:3000 \
+  -e BACKEND_API_URL=http://host.docker.internal:8000/api \
+  -e BACKEND_API_KEY=your-backend-api-key \
+  policy-analyzer-frontend
 ```
 
-The API URL is called from the visitor's browser, not from the container. `http://localhost:8000/api` therefore works when the backend runs on the same machine. For a deployment, use the backend's public URL.
+The backend is called by the website's server (the container), not by the visitor's browser. Inside a container, `localhost` is the container itself, so use `host.docker.internal` for a backend on the same machine, a container name on a shared Docker network, or the backend's URL for a deployment.
 
 ---
 
@@ -85,10 +85,12 @@ The API URL is called from the visitor's browser, not from the container. `http:
 
 | Variable | Required | Description | Example |
 | --- | --- | --- | --- |
-| `NEXT_PUBLIC_API_URL` | Yes | Backend API base URL, including `/api` | `http://localhost:8000/api` |
-| `NEXT_PUBLIC_API_KEY` | Yes | Must match the backend's `API_KEY` | |
+| `BACKEND_API_URL` | No | Backend API base URL, including `/api`. Defaults to `http://localhost:8000/api` | `http://localhost:8000/api` |
+| `BACKEND_API_KEY` | Yes | Must match the backend's `API_KEY` | |
 
-> **All `NEXT_PUBLIC_*` values are visible to anyone who loads the site**, including `NEXT_PUBLIC_API_KEY`. Do not reuse that key for anything else. See the backend README's notes on [exposing an instance publicly](https://github.com/cylab-africa/policy-analyzer-backend#before-exposing-an-instance-publicly).
+Both are server-side variables, read when the app starts. The browser never sees them: it calls the website's own `/api/backend/...` route, and that route forwards the request to the backend with the key attached. Do not give these variables a `NEXT_PUBLIC_` prefix, because that would send them to every visitor.
+
+The proxy only forwards the backend routes the website uses, but it does not identify visitors: anyone who can load the site can use it. See the backend README's notes on [exposing an instance publicly](https://github.com/cylab-africa/policy-analyzer-backend#before-exposing-an-instance-publicly).
 
 The app includes no analytics or tracking, and sends no data anywhere except to your backend.
 
@@ -98,10 +100,10 @@ The app includes no analytics or tracking, and sends no data anywhere except to 
 
 The Docker image is a multi-stage build that runs as a non-root user (`nextjs`, UID 1001) and serves on port `3000`. It runs on any container platform (a VM with Docker, Kubernetes, ECS, Cloud Run and others):
 
-1. Build the image with your production build arguments (see [Running with Docker](#running-with-docker)).
+1. Build the image (see [Running with Docker](#running-with-docker)). No secrets are needed at build time.
 2. Push it to your container registry.
-3. Run it behind HTTPS and route traffic to port 3000.
-4. Make sure the backend allows requests from the frontend's domain (CORS).
+3. Run it with `BACKEND_API_URL` and `BACKEND_API_KEY` set, behind HTTPS, and route traffic to port 3000.
+4. Make sure the backend accepts requests from the frontend's server. CORS no longer matters, because the browser only talks to the website itself.
 
 Example Kubernetes container spec:
 
@@ -111,24 +113,22 @@ containers:
     image: your-registry/policy-analyzer-frontend:latest
     ports:
       - containerPort: 3000
+    env:
+      - name: BACKEND_API_URL
+        value: https://your-backend.example.org/api
+      - name: BACKEND_API_KEY
+        valueFrom:
+          secretKeyRef: { name: policy-analyzer, key: backend-api-key }
     resources:
       requests: { memory: "256Mi", cpu: "100m" }
       limits: { memory: "512Mi", cpu: "500m" }
 ```
 
-Without Docker: `npm ci && npm run build && npm start`, with the `NEXT_PUBLIC_*` variables set in the environment at build time.
+Without Docker: `npm ci && npm run build && npm start`, with `BACKEND_API_URL` and `BACKEND_API_KEY` set in the environment when you start the app.
 
 ### Updating a deployed frontend
 
-- **`NEXT_PUBLIC_*` values are compiled in.** Docker ignores `.env` files (see `.dockerignore`), so editing `.env` has no effect on a Docker build. Pass each value as a `--build-arg` and rebuild. To avoid retyping them, keep the values in a file outside the repository and read them in a small script:
-
-  ```bash
-  set -a; . ./.env.production; set +a
-  docker build \
-    --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
-    --build-arg NEXT_PUBLIC_API_KEY="$NEXT_PUBLIC_API_KEY" \
-    -t policy-analyzer-frontend .
-  ```
+- **Configuration is read at start-up.** Docker ignores `.env` files (see `.dockerignore`), so pass `BACKEND_API_URL` and `BACKEND_API_KEY` with `-e` (or `--env-file` pointing at a file outside the repository) when you start the container. Changing them does not need a rebuild.
 
 - **Building an image does not change a running container.** Remove the old container and start a new one from the new image.
 - **Behind a reverse proxy in Docker?** If the proxy reaches the frontend by name, start the new container with the same `--name` and on the same Docker network (`--network <proxy network>`), then restart the proxy. A container started without the network flag works on its own but the proxy cannot reach it, and the site shows `502`.
@@ -168,11 +168,11 @@ The `/docs` page is built from components in [`src/components/docs/`](src/compon
 | Problem | Fix |
 | --- | --- |
 | Maps and Sources are empty | Check the backend is running and its reference data is loaded (backend README, Quick start step 5) |
-| `401`/`403` errors in the browser console | `NEXT_PUBLIC_API_KEY` doesn't match the backend's `API_KEY` |
-| Changed `.env` but nothing happened | Restart `npm run dev`. For Docker, `.env` is ignored: pass `--build-arg` values and rebuild the image ([Updating a deployed frontend](#updating-a-deployed-frontend)) |
+| `401`/`403` errors in the browser console | `BACKEND_API_KEY` doesn't match the backend's `API_KEY` |
+| Changed `.env` but nothing happened | Restart `npm run dev`. For Docker, `.env` is ignored: pass the values with `-e` when you start the container ([Updating a deployed frontend](#updating-a-deployed-frontend)) |
 | `502 Bad Gateway` after replacing the container | The new container is not on the proxy's Docker network or has a different name. Start it with the same `--name` and `--network` as before, then restart the proxy |
 | `npm install` reports `ERESOLVE` | Make sure `.npmrc` (with `legacy-peer-deps=true`) is present; `react-simple-maps` declares peer support only up to React 18 |
-| CORS errors | Allow the frontend's origin in the backend |
+| `500` or `502` from `/api/backend/...` | `BACKEND_API_KEY` is not set (500), or the website's server cannot reach `BACKEND_API_URL` (502). In Docker, `localhost` is the container itself |
 
 ---
 
