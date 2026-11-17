@@ -111,7 +111,8 @@ MONGODB_CONNECTION_STRING=mongodb://mongo:27017`}</CodeBlock>
                         <CodeBlock label="Terminal">{`curl http://localhost:8000/api/monitoring/health -H "X-API-Key: YOUR_API_KEY"`}</CodeBlock>
                         <P>
                             Replace <Code>YOUR_API_KEY</Code> with your key. You should get a short JSON reply, not an
-                            error. You can also open <Code>http://localhost:8000/api/docs</Code> in your browser to see
+                            error. You can also open <Code>http://localhost:8000/api/docs</Code> (this page only exists while{" "}
+                            <Code>ENABLE_API_DOCS=true</Code> is set in the backend’s <Code>.env</Code>) in your browser to see
                             the API.
                         </P>
                     </Step>

@@ -76,6 +76,13 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path: st
     }
     headers.set("X-API-Key", apiKey);
 
+    // Tell the backend who the visitor is, so its rate limits apply per visitor instead of to this
+    // server as a whole. The last X-Forwarded-For entry is the one added by the reverse proxy in
+    // front of this app (earlier entries can be forged by the visitor). Without such a proxy the
+    // header is absent and the backend falls back to this server's address.
+    const clientIp = request.headers.get("x-forwarded-for")?.split(",").pop()?.trim();
+    if (clientIp) headers.set("X-Client-IP", clientIp);
+
     const hasBody = request.method !== "GET" && request.method !== "HEAD";
 
     let upstream: Response;
