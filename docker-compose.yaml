@@ -1,0 +1,56 @@
+# Policy Analyzer website.
+#
+# Settings are read from the .env file next to this one (Docker Compose does this on its own):
+#   BACKEND_API_KEY   required, must be the same value as API_KEY in the backend's .env
+#   BACKEND_API_URL   optional, defaults to the backend container on the shared Docker network
+#
+# Both are read when the container starts, not when the image is built, so changing them needs
+# only: docker compose up -d --force-recreate
+#
+# The backend's compose project must be running first: this file joins its network.
+services:
+    policy-analyzer-frontend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: policy-analyzer-frontend:latest
+        container_name: policy-analyzer-frontend
+        ports:
+            - "3001:3000"
+        environment:
+            - NODE_ENV=production
+            # The backend, by its container name on the shared network. This keeps the traffic
+            # off the public internet and lets the backend's TRUSTED_PROXY_IPS name this container
+            # (TRUSTED_PROXY_IPS=policy-analyzer-frontend). To go through the public address
+            # instead, set BACKEND_API_URL=https://<your-domain>/api in .env.
+            - BACKEND_API_URL=${BACKEND_API_URL:-http://pdp-backend:8000/api}
+            - BACKEND_API_KEY=${BACKEND_API_KEY:?set it in .env}
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+            start_period: 15s
+        deploy:
+            resources:
+                limits:
+                    memory: 512M
+                    cpus: "1.0"
+        networks:
+            - pdp-frontend-network
+            - pdp-backend-network
+        logging:
+            driver: json-file
+            options:
+                max-size: "10m"
+                max-file: "3"
+
+networks:
+    pdp-frontend-network:
+        driver: bridge
+        name: pdp-frontend-network
+    # Created by the backend's compose project (pdp-backend); this file only joins it
+    pdp-backend-network:
+        external: true
+        name: pdp-backend-network
