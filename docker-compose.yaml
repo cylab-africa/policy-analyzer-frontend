@@ -1,10 +1,10 @@
 services:
-    policy-analyzer-frontend:
+    pdp-frontend:
         build:
             context: .
             dockerfile: Dockerfile
-        image: policy-analyzer-frontend:latest
-        container_name: policy-analyzer-frontend
+        image: pdp-frontend:latest
+        container_name: pdp-frontend
         ports:
             - "3001:3000"
         environment:
