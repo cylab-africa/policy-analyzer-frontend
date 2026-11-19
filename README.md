@@ -88,7 +88,7 @@ The backend is called by the website's server (the container), not by the visito
 | `BACKEND_API_URL` | No | Backend API base URL, including `/api`. Defaults to `http://localhost:8000/api` | `http://localhost:8000/api` |
 | `BACKEND_API_KEY` | Yes | Must match the backend's `API_KEY` | |
 
-Both are server-side variables, read when the app starts. The browser never sees them: it calls the website's own `/api/backend/...` route, and that route forwards the request to the backend with the key attached. Do not give these variables a `NEXT_PUBLIC_` prefix, because that would send them to every visitor.
+Both are server-side variables, read when the app starts. The browser never sees them: it calls the website's own `/api/...` route, and that route forwards the request to the backend with the key attached. For that reason the reverse proxy in front of the site must send `/api/` to this app, not to the backend. Do not give these variables a `NEXT_PUBLIC_` prefix, because that would send them to every visitor.
 
 The proxy only forwards the backend routes the website uses, but it does not identify visitors: anyone who can load the site can use it. See the backend README's notes on [exposing an instance publicly](https://github.com/cylab-africa/policy-analyzer-backend#before-exposing-an-instance-publicly).
 
@@ -174,7 +174,7 @@ The `/docs` page is built from components in [`src/components/docs/`](src/compon
 | Changed `.env` but nothing happened | Restart `npm run dev`. For Docker, `.env` is ignored: pass the values with `-e` when you start the container ([Updating a deployed frontend](#updating-a-deployed-frontend)) |
 | `502 Bad Gateway` after replacing the container | The new container is not on the proxy's Docker network or has a different name. Start it with the same `--name` and `--network` as before, then restart the proxy |
 | `npm install` reports `ERESOLVE` | Make sure `.npmrc` (with `legacy-peer-deps=true`) is present; `react-simple-maps` declares peer support only up to React 18 |
-| `500` or `502` from `/api/backend/...` | `BACKEND_API_KEY` is not set (500), or the website's server cannot reach `BACKEND_API_URL` (502). In Docker, `localhost` is the container itself |
+| `500` or `502` from `/api/...` | `BACKEND_API_KEY` is not set (500), or the website's server cannot reach `BACKEND_API_URL` (502). In Docker, `localhost` is the container itself |
 
 ---
 

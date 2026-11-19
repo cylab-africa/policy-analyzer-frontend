@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
  * Server-side proxy to the Policy Analyzer backend.
  *
  * The backend is protected by a shared API key. That key must never reach the browser, so the
- * browser calls this same-origin route (`/api/backend/...`) and the key is attached here, on the
+ * browser calls this same-origin route (`/api/...`) and the key is attached here, on the
  * server, from `BACKEND_API_KEY`. Both settings are read at request time, so they are normal
  * runtime environment variables and are not baked into the build.
  */
