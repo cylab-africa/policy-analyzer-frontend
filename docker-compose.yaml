@@ -1,13 +1,3 @@
-# Policy Analyzer website.
-#
-# Settings are read from the .env file next to this one (Docker Compose does this on its own):
-#   BACKEND_API_KEY   required, must be the same value as API_KEY in the backend's .env
-#   BACKEND_API_URL   optional, defaults to the backend container on the shared Docker network
-#
-# Both are read when the container starts, not when the image is built, so changing them needs
-# only: docker compose up -d --force-recreate
-#
-# The backend's compose project must be running first: this file joins its network.
 services:
     policy-analyzer-frontend:
         build:
@@ -19,10 +9,6 @@ services:
             - "3001:3000"
         environment:
             - NODE_ENV=production
-            # The backend, by its container name on the shared network. This keeps the traffic
-            # off the public internet and lets the backend's TRUSTED_PROXY_IPS name this container
-            # (TRUSTED_PROXY_IPS=policy-analyzer-frontend). To go through the public address
-            # instead, set BACKEND_API_URL=https://<your-domain>/api in .env.
             - BACKEND_API_URL=${BACKEND_API_URL:-http://pdp-backend:8000/api}
             - BACKEND_API_KEY=${BACKEND_API_KEY:?set it in .env}
         restart: unless-stopped
