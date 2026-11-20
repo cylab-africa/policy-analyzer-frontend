@@ -285,7 +285,10 @@ docker run -d --name policy-analyzer-frontend -p 3000:3000 \\
                     admin and document-upload routes off the public internet. Before going live, also set{" "}
                     <Code>REDIS_PASSWORD</Code>, leave <Code>ENABLE_API_DOCS</Code> off, and set{" "}
                     <Code>TRUSTED_PROXY_IPS</Code> to the website server’s address so that each visitor gets their own
-                    rate limit. Browsers need no CORS access, because the website calls the backend from its server. The
+                    rate limit. If you use the MongoDB container from this guide, give it a login by setting{" "}
+                    <Code>MONGO_ROOT_USERNAME</Code> and <Code>MONGO_ROOT_PASSWORD</Code> in the backend’s{" "}
+                    <Code>.env</Code> before the first start, and back the database up regularly, because nothing does
+                    it for you. Browsers need no CORS access, because the website calls the backend from its server. The
                     backend README lists everything to check before exposing an instance publicly.
                 </P>
             </DocSubsection>
