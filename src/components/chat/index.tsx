@@ -690,7 +690,7 @@ export default function ChatPage() {
             </div>
 
             {/* Batch Analysis Panel - Slide over from right */}
-            <BatchAnalysisPanel isOpen={showBatchPanel} onClose={() => setShowBatchPanel(false)} />
+            <BatchAnalysisPanel isOpen={showBatchPanel} onClose={() => setShowBatchPanel(false)} onOpen={openBatchPanel} />
         </>
     );
 }

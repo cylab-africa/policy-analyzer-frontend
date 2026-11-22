@@ -91,6 +91,7 @@ export interface BatchQueryJob {
     failed_queries: number;
     created_at: string;
     pdf_download_url?: string;
+    error_message?: string | null;
 }
 
 export interface BatchUploadRequest {
