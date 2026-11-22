@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { API_BASE_URL } from "@/lib/api-base";
+import { getErrorMessage } from "@/lib/errors";
 import { useUploadBatchQueriesMutation, useGetBatchJobStatusQuery } from "@/redux/api/apiSlice";
 import type { BatchQueryJob } from "@/types/api";
 
@@ -17,12 +18,15 @@ interface BatchAnalysisPanelProps {
 }
 
 const STEPS = [
-    "Upload an Excel file with one question per row in the first column.",
+    "Upload an Excel file with one question per row in the first column (up to 100 questions).",
     "Each question is answered against the knowledge base.",
     "Download a PDF report with every answer.",
 ];
 
 const labelClass = "mb-2 block text-sm font-medium text-slate-900";
+
+// A quick check that catches typing mistakes; the server validates the address properly
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // The job id is all that is needed to find a job again, so it is kept in this browser: closing the
 // panel or reloading the page does not lose track of a job that is still running.
@@ -121,10 +125,11 @@ export function BatchAnalysisPanel({ isOpen, onClose, onOpen }: BatchAnalysisPan
     // page loads is shown as it is, without announcing it again.
     const seenRunningRef = useRef(false);
 
-    // This component stays mounted while the panel is closed, so the job keeps being followed
+    // This component stays mounted while the panel is closed, so the job keeps being followed.
+    // Polling stops by interval, not `skip`: skipping would also drop the finished job's status.
     const { data: jobStatus, error: statusError } = useGetBatchJobStatusQuery(jobId!, {
-        skip: !jobId || !isPollingActive,
-        pollingInterval: 5000,
+        skip: !jobId,
+        pollingInterval: isPollingActive ? 5000 : 0,
     });
     const jobIsGone = (statusError as { status?: number } | undefined)?.status === 404;
 
@@ -199,12 +204,16 @@ export function BatchAnalysisPanel({ isOpen, onClose, onOpen }: BatchAnalysisPan
             return;
         }
 
+        const trimmedEmail = email.trim();
+        if (trimmedEmail && !EMAIL_PATTERN.test(trimmedEmail)) {
+            toast.error("Please enter a valid email address, or leave it empty");
+            return;
+        }
+
         const formData = new FormData();
         formData.append("file", file);
-
-        // Add email if provided
-        if (email.trim()) {
-            formData.append("user_email", email.trim());
+        if (trimmedEmail) {
+            formData.append("user_email", trimmedEmail);
         }
 
         try {
@@ -217,11 +226,7 @@ export function BatchAnalysisPanel({ isOpen, onClose, onOpen }: BatchAnalysisPan
             toast.success("Batch analysis started. You can close this panel; progress stays on screen.");
         } catch (err) {
             console.error("Upload failed:", err);
-            const errorMessage =
-                err instanceof Error
-                    ? err.message
-                    : (err as { data?: { detail?: string } })?.data?.detail || "Failed to start batch analysis";
-            toast.error(errorMessage);
+            toast.error(getErrorMessage(err, "The batch analysis could not be started. Please try again."));
         }
     };
 

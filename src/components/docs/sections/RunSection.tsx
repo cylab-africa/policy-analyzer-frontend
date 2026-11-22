@@ -188,8 +188,9 @@ docker run -d --name policy-analyzer-frontend -p 3000:3000 \\
                     <Step n={3} title="Upload and wait">
                         <P>
                             Processing runs in the background. The AI model reads each document to record its country,
-                            title and description, then splits it into passages that can be searched. When it has
-                            finished, ask a question in the chat.
+                            title and description, then splits it into passages that can be searched. The panel shows
+                            when this has finished and names any file that could not be read, and you can close it
+                            meanwhile. Then ask a question in the chat.
                         </P>
                     </Step>
                 </Steps>

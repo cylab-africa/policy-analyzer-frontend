@@ -1,61 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type {
-    BatchQueryJob,
-    DigitalId,
-    DigitalIdFile,
-    DocumentProcessingRequest,
-    DocumentProcessingStatus,
-    PolicyLaw,
-    PolicyLawFile,
-    QueryRequest
-} from "@/types/api";
+import type { BatchQueryJob, DigitalId, DocumentProcessingStatus, DocumentUploadResponse, PolicyLaw } from "@/types/api";
 import { API_BASE_URL } from "@/lib/api-base";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Re-export types for convenience
-export type {
-    BatchQueryJob,
-    CacheStats,
-    DigitalId,
-    DigitalIdFile,
-    DocumentProcessingRequest,
-    DocumentProcessingStatus,
-    HealthStatus,
-    LLMMetrics,
-    PolicyLaw,
-    PolicyLawFile,
-    QueryRequest,
-    TabConfig,
-    ValidationError
-} from "@/types/api";
+export type { BatchQueryJob, DigitalId, DocumentProcessingStatus, DocumentUploadResponse, PolicyLaw } from "@/types/api";
 
+/**
+ * The backend endpoints the website uses. Requests go to the website's own proxy, which adds the
+ * API key on the server and passes on only these routes (see src/app/api/[...path]/route.ts).
+ * The chat answer is streamed with fetch in components/chat, not through this slice.
+ */
 export const apiSlice = createApi({
     reducerPath: "api",
-    baseQuery: fetchBaseQuery({
-        baseUrl: API_BASE_URL,
-        prepareHeaders: (headers, { endpoint }) => {
-            // Don't set Content-Type for FormData uploads - browser will set it automatically with boundary
-            const formDataEndpoints = ["uploadBatchQueries", "uploadDocuments"];
-            if (!formDataEndpoints.includes(endpoint)) {
-                headers.set("Content-Type", "application/json");
-            }
-            // The API key is added by the server-side proxy, never in the browser
-            return headers;
-        },
-    }),
-    tagTypes: [
-        "PolicyLaw",
-        "DigitalId",
-        "PolicyLawFile",
-        "DigitalIdFile",
-        "Task",
-        "Session",
-        "BatchJob",
-        "Document",
-        "Admin",
-    ],
+    // JSON bodies get their Content-Type automatically; FormData keeps the browser's boundary
+    baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
+    tagTypes: ["PolicyLaw", "DigitalId", "BatchJob", "Document"],
     endpoints: (builder) => ({
-        // Policy Laws endpoints
         getPolicyLaws: builder.query<PolicyLaw[], { page?: number; limit?: number }>({
             query: ({ page = 1, limit = 100 } = {}) => ({
                 url: "/info/policy_laws",
@@ -64,38 +23,6 @@ export const apiSlice = createApi({
             providesTags: ["PolicyLaw"],
         }),
 
-        createPolicyLaw: builder.mutation<PolicyLaw, Omit<PolicyLaw, "id">>({
-            query: (body) => ({
-                url: "/info/policy_laws",
-                method: "POST",
-                body,
-            }),
-            invalidatesTags: ["PolicyLaw"],
-        }),
-
-        getPolicyLawByCountry: builder.query<PolicyLaw, string>({
-            query: (countryCode) => `/info/policy_laws/country/${countryCode}`,
-            providesTags: (result, error, countryCode) => [{ type: "PolicyLaw", id: countryCode }],
-        }),
-
-        updatePolicyLawByCountry: builder.mutation<PolicyLaw, { countryCode: string; data: Partial<PolicyLaw> }>({
-            query: ({ countryCode, data }) => ({
-                url: `/info/policy_laws/country/${countryCode}`,
-                method: "PATCH",
-                body: data,
-            }),
-            invalidatesTags: (result, error, { countryCode }) => [{ type: "PolicyLaw", id: countryCode }, "PolicyLaw"],
-        }),
-
-        deletePolicyLawByCountry: builder.mutation<Record<string, any>, string>({
-            query: (countryCode) => ({
-                url: `/info/policy_laws/country/${countryCode}`,
-                method: "DELETE",
-            }),
-            invalidatesTags: ["PolicyLaw"],
-        }),
-
-        // Digital ID endpoints
         getDigitalIds: builder.query<DigitalId[], { page?: number; limit?: number }>({
             query: ({ page = 1, limit = 100 } = {}) => ({
                 url: "/info/digital_id",
@@ -104,116 +31,6 @@ export const apiSlice = createApi({
             providesTags: ["DigitalId"],
         }),
 
-        createDigitalId: builder.mutation<DigitalId, Omit<DigitalId, "id">>({
-            query: (body) => ({
-                url: "/info/digital_id",
-                method: "POST",
-                body,
-            }),
-            invalidatesTags: ["DigitalId"],
-        }),
-
-        getDigitalIdByCountry: builder.query<DigitalId, string>({
-            query: (countryCode) => `/info/digital_id/country/${countryCode}`,
-            providesTags: (result, error, countryCode) => [{ type: "DigitalId", id: countryCode }],
-        }),
-
-        updateDigitalIdByCountry: builder.mutation<DigitalId, { countryCode: string; data: Partial<DigitalId> }>({
-            query: ({ countryCode, data }) => ({
-                url: `/info/digital_id/country/${countryCode}`,
-                method: "PATCH",
-                body: data,
-            }),
-            invalidatesTags: (result, error, { countryCode }) => [{ type: "DigitalId", id: countryCode }, "DigitalId"],
-        }),
-
-        deleteDigitalIdByCountry: builder.mutation<Record<string, any>, string>({
-            query: (countryCode) => ({
-                url: `/info/digital_id/country/${countryCode}`,
-                method: "DELETE",
-            }),
-            invalidatesTags: ["DigitalId"],
-        }),
-
-        // File endpoints
-        getPolicyLawFiles: builder.query<PolicyLawFile[], { page?: number; limit?: number }>({
-            query: ({ page = 1, limit = 100 } = {}) => ({
-                url: "/info/policy_laws/files",
-                params: { page, limit },
-            }),
-            providesTags: ["PolicyLawFile"],
-        }),
-
-        getDigitalIdFiles: builder.query<DigitalIdFile[], { page?: number; limit?: number }>({
-            query: ({ page = 1, limit = 100 } = {}) => ({
-                url: "/info/digital_id/files",
-                params: { page, limit },
-            }),
-            providesTags: ["DigitalIdFile"],
-        }),
-
-        // Document processing endpoints
-        processDocuments: builder.mutation<
-            string,
-            {
-                documents: DocumentProcessingRequest;
-                model_provider?: string;
-                model_name?: string;
-                temperature?: number;
-                max_tokens?: number;
-                streaming?: boolean;
-            }
-        >({
-            query: ({
-                documents,
-                model_provider = "openai",
-                model_name = "gpt-4o",
-                temperature = 0,
-                max_tokens,
-                streaming = true,
-            }) => ({
-                url: "/document_processing/process_documents",
-                method: "POST",
-                body: documents,
-                params: {
-                    model_provider,
-                    model_name,
-                    temperature,
-                    ...(max_tokens && { max_tokens }),
-                    streaming,
-                },
-            }),
-            invalidatesTags: ["Task"],
-        }),
-
-        getTasks: builder.query<string, void>({
-            query: () => "/document_processing/tasks",
-            providesTags: ["Task"],
-        }),
-
-        getTaskStatus: builder.query<string, string>({
-            query: (taskId) => `/document_processing/task_status/${taskId}`,
-            providesTags: (result, error, taskId) => [{ type: "Task", id: taskId }],
-        }),
-
-        // Session and chat endpoints
-        getSession: builder.query<string, string>({
-            query: (sessionId) => `/sessions/${sessionId}`,
-            providesTags: (result, error, sessionId) => [{ type: "Session", id: sessionId }],
-        }),
-
-        // Updated to v3.1 API endpoint
-        queryStream: builder.mutation<string, QueryRequest>({
-            query: (body) => ({
-                url: "/query_v2",
-                method: "POST",
-                body,
-            }),
-            invalidatesTags: (result, error, { session_id }) =>
-                session_id ? [{ type: "Session", id: session_id }] : [],
-        }),
-
-        // Batch Query endpoints (v3.1 API)
         uploadBatchQueries: builder.mutation<BatchQueryJob, FormData>({
             query: (formData) => ({
                 url: "/batch/upload",
@@ -224,25 +41,11 @@ export const apiSlice = createApi({
         }),
 
         getBatchJobStatus: builder.query<BatchQueryJob, string>({
-            query: (jobId) => `/batch/status/${jobId}`,
+            query: (jobId) => `/batch/status/${encodeURIComponent(jobId)}`,
             providesTags: (result, error, jobId) => [{ type: "BatchJob", id: jobId }],
         }),
 
-        getBatchJobs: builder.query<BatchQueryJob[], void>({
-            query: () => "/batch/jobs",
-            providesTags: ["BatchJob"],
-        }),
-
-        deleteBatchJob: builder.mutation<void, string>({
-            query: (jobId) => ({
-                url: `/batch/${jobId}`,
-                method: "DELETE",
-            }),
-            invalidatesTags: ["BatchJob"],
-        }),
-
-        // Document Upload endpoints (v3.1 API)
-        uploadDocuments: builder.mutation<DocumentProcessingStatus, FormData>({
+        uploadDocuments: builder.mutation<DocumentUploadResponse, FormData>({
             query: (formData) => ({
                 url: "/documents/upload-documents",
                 method: "POST",
@@ -250,49 +53,24 @@ export const apiSlice = createApi({
             }),
             invalidatesTags: ["Document"],
         }),
+
+        getDocumentProcessingStatus: builder.query<DocumentProcessingStatus, string>({
+            query: (processingId) => `/documents/status/${encodeURIComponent(processingId)}`,
+            providesTags: (result, error, processingId) => [{ type: "Document", id: processingId }],
+        }),
     }),
 });
 
-// Export hooks for usage in components
 export const {
-    // Policy Laws hooks
     useGetPolicyLawsQuery,
-    useCreatePolicyLawMutation,
-    useGetPolicyLawByCountryQuery,
-    useUpdatePolicyLawByCountryMutation,
-    useDeletePolicyLawByCountryMutation,
-
-    // Digital ID hooks
     useGetDigitalIdsQuery,
-    useCreateDigitalIdMutation,
-    useGetDigitalIdByCountryQuery,
-    useUpdateDigitalIdByCountryMutation,
-    useDeleteDigitalIdByCountryMutation,
-
-    // File hooks
-    useGetPolicyLawFilesQuery,
-    useGetDigitalIdFilesQuery,
-
-    // Document processing hooks
-    useProcessDocumentsMutation,
-    useGetTasksQuery,
-    useGetTaskStatusQuery,
-
-    // Session and chat hooks
-    useGetSessionQuery,
-    useQueryStreamMutation,
-
-    // Batch Query hooks (v3.1 API)
     useUploadBatchQueriesMutation,
     useGetBatchJobStatusQuery,
-    useGetBatchJobsQuery,
-    useDeleteBatchJobMutation,
-
-    // Document Upload hooks (v3.1 API)
     useUploadDocumentsMutation,
+    useGetDocumentProcessingStatusQuery,
 } = apiSlice;
 
-// Updated custom hook for policy law data
+// Summary counts for the country maps and statistics
 export const usePolicyLawData = (params?: { page?: number; limit?: number }) => {
     const { data, isLoading, error } = useGetPolicyLawsQuery(params ?? {});
 
@@ -314,7 +92,7 @@ export const usePolicyLawData = (params?: { page?: number; limit?: number }) => 
     };
 };
 
-// Updated custom hook for digital ID data based on your actual data structure
+// Summary counts for the digital ID map and statistics
 export const useDigitalIdData = (params?: { page?: number; limit?: number }) => {
     const { data, isLoading, error } = useGetDigitalIdsQuery(params ?? {});
 

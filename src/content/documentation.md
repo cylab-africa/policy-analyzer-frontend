@@ -368,7 +368,7 @@ The chat answers from a collection of documents, and the collection starts empty
 
 1. **Open the chat.** On the website, open **Chat** and choose **Upload documents** in the sidebar.
 2. **Choose the files and the topic.** Select PDF, Word, text or Markdown files, then choose whether they concern Data Protection or Digital ID.
-3. **Upload and wait.** Processing runs in the background. The AI model reads each document to record its country, title and description, then splits it into passages that can be searched. When it has finished, ask a question in the chat.
+3. **Upload and wait.** Processing runs in the background. The AI model reads each document to record its country, title and description, then splits it into passages that can be searched. The panel shows when this has finished and names any file that could not be read, and you can close it meanwhile. Then ask a question in the chat.
 
 ### Connect an AI gateway
 
