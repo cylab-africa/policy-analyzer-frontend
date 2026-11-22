@@ -27,6 +27,10 @@ const ALLOWED_PREFIXES = [
 
 const ALLOWED_METHODS = new Set(["GET", "POST", "PATCH", "DELETE"]);
 
+// The website only reads the country reference data. Changing it is for the operator, with the
+// admin key, which this proxy never has, so writes there are refused before reaching the backend.
+const READ_ONLY_PREFIXES = ["info/"];
+
 // Request headers that are safe to pass on. Everything else (cookies, a client-supplied
 // X-API-Key, host, ...) is dropped.
 const FORWARDED_REQUEST_HEADERS = ["content-type", "accept"];
@@ -64,6 +68,9 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path: st
     const { path } = await context.params;
     if (!isAllowedPath(path)) {
         return Response.json({ detail: "Not found" }, { status: 404 });
+    }
+    if (request.method !== "GET" && READ_ONLY_PREFIXES.some((prefix) => path.join("/").startsWith(prefix))) {
+        return new Response("Method not allowed", { status: 405 });
     }
 
     const backendUrl = (process.env.BACKEND_API_URL || DEFAULT_BACKEND_URL).replace(/\/+$/, "");
