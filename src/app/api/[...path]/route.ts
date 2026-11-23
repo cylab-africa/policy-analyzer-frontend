@@ -15,17 +15,30 @@ export const runtime = "nodejs";
 
 const DEFAULT_BACKEND_URL = "http://localhost:8000/api";
 
-// Only the backend routes the website actually uses are reachable through the proxy.
-const ALLOWED_PREFIXES = [
-    "info/",
-    "document_processing/",
-    "sessions/",
-    "query_v2",
-    "batch/",
-    "documents/",
+// The backend routes the website uses, by method. Nothing else is passed on: operator routes
+// (admin, folder processing, editing the country data, listing batch jobs) and routes the
+// website does not use (conversation history by session ID) stay unreachable from the internet
+// even though this proxy holds the API key.
+const ID = "[A-Za-z0-9-]{1,64}";
+const ROUTES: ReadonlyArray<{ method: "GET" | "POST"; path: RegExp }> = [
+    { method: "GET", path: /^info\/(policy_laws|digital_id)(\/files|\/country\/[A-Za-z]{2})?$/ },
+    { method: "POST", path: /^query_v2$/ },
+    { method: "POST", path: /^batch\/upload$/ },
+    { method: "GET", path: new RegExp(`^batch/(status|download)/${ID}$`) },
+    { method: "POST", path: /^documents\/upload-documents$/ },
+    { method: "GET", path: new RegExp(`^documents/status/${ID}$`) },
 ];
 
-const ALLOWED_METHODS = new Set(["GET", "POST", "PATCH", "DELETE"]);
+/** 200 when the route is allowed, 405 for a known path with another method, 404 otherwise. */
+function routeStatus(method: string, segments: string[]): 200 | 404 | 405 {
+    if (segments.length === 0) return 404;
+    // Reject traversal and anything that could change the path once it is joined.
+    if (segments.some((s) => s === "" || s === "." || s === ".." || /[\\/]/.test(s))) return 404;
+    const path = segments.join("/");
+    const matching = ROUTES.filter((route) => route.path.test(path));
+    if (matching.length === 0) return 404;
+    return matching.some((route) => route.method === method) ? 200 : 405;
+}
 
 // Request headers that are safe to pass on. Everything else (cookies, a client-supplied
 // X-API-Key, host, ...) is dropped.
@@ -42,19 +55,7 @@ const DROPPED_RESPONSE_HEADERS = new Set([
     "set-cookie",
 ]);
 
-function isAllowedPath(segments: string[]): boolean {
-    if (segments.length === 0) return false;
-    // Reject traversal and anything that could change the path once it is joined.
-    if (segments.some((s) => s === "" || s === "." || s === ".." || /[\\/]/.test(s))) return false;
-    const path = segments.join("/");
-    return ALLOWED_PREFIXES.some((prefix) => (prefix.endsWith("/") ? path.startsWith(prefix) : path === prefix));
-}
-
 async function proxy(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
-    if (!ALLOWED_METHODS.has(request.method)) {
-        return new Response("Method not allowed", { status: 405 });
-    }
-
     const apiKey = process.env.BACKEND_API_KEY;
     if (!apiKey) {
         console.error("BACKEND_API_KEY is not set; refusing to proxy request.");
@@ -62,9 +63,9 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path: st
     }
 
     const { path } = await context.params;
-    if (!isAllowedPath(path)) {
-        return Response.json({ detail: "Not found" }, { status: 404 });
-    }
+    const status = routeStatus(request.method, path);
+    if (status === 404) return Response.json({ detail: "Not found" }, { status: 404 });
+    if (status === 405) return Response.json({ detail: "Method not allowed" }, { status: 405 });
 
     const backendUrl = (process.env.BACKEND_API_URL || DEFAULT_BACKEND_URL).replace(/\/+$/, "");
     const target = `${backendUrl}/${path.map(encodeURIComponent).join("/")}${request.nextUrl.search}`;
@@ -121,4 +122,4 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path: st
     });
 }
 
-export { proxy as GET, proxy as POST, proxy as PATCH, proxy as DELETE };
+export { proxy as GET, proxy as POST };

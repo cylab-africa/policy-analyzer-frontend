@@ -11,6 +11,9 @@ import { Input } from "../ui/input";
 
 const FEEDBACK_URL = "https://form.typeform.com/to/D7we4T7R";
 
+// Same limit as the backend (QueryRequest.query in main.py)
+const MAX_QUESTION_LENGTH = 4000;
+
 const menuItemClass =
     "w-full cursor-pointer px-4 py-2.5 text-left transition-colors hover:bg-slate-50 focus-visible:bg-slate-50 focus-visible:outline-none";
 
@@ -132,6 +135,7 @@ export function ChatInput({
                                     : "Ask about digital identity systems"
                             }
                             aria-label="Your question"
+                            maxLength={MAX_QUESTION_LENGTH}
                             className="h-auto min-w-0 flex-1 border-0 bg-transparent px-2 py-0 text-sm shadow-none placeholder:text-slate-400 focus-visible:ring-0"
                             disabled={isStreaming}
                         />

@@ -6,7 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, X } from "lucide-react";
 import { toast } from "sonner";
-import { useUploadDocumentsMutation } from "@/redux/api/apiSlice";
+import { getErrorMessage } from "@/lib/errors";
+import { useGetDocumentProcessingStatusQuery, useUploadDocumentsMutation } from "@/redux/api/apiSlice";
+import type { DocumentProcessingStatus } from "@/types/api";
 
 interface UploadPanelProps {
     readonly isOpen: boolean;
@@ -15,7 +17,19 @@ interface UploadPanelProps {
 
 const VALID_EXTENSIONS = [".pdf", ".txt", ".doc", ".docx", ".md"];
 
+// The backend's default limit (MAX_FILE_SIZE). The server has the final say; checking here saves
+// uploading a file only to have it refused.
+const MAX_FILE_BYTES = 10 * 1024 * 1024;
+
 const labelClass = "mb-2 block text-sm font-medium text-slate-900";
+
+const fileKey = (file: File) => `${file.name}:${file.size}:${file.lastModified}`;
+
+const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
+
+function formatSize(bytes: number): string {
+    return bytes >= 1024 * 1024 ? `${(bytes / (1024 * 1024)).toFixed(1)} MB` : `${(bytes / 1024).toFixed(1)} KB`;
+}
 
 export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
     const [uploadDocuments, { isLoading: isUploading }] = useUploadDocumentsMutation();
@@ -24,24 +38,65 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
     const [visibility, setVisibility] = useState<"public" | "private">("public");
     const [category, setCategory] = useState("data-protection");
     const [clientId, setClientId] = useState("");
-    const [isComplete, setIsComplete] = useState(false);
+    const [processingId, setProcessingId] = useState<string | null>(null);
     const [uploadedCount, setUploadedCount] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const toastShownRef = useRef(false);
+    const announcedRef = useRef<string | null>(null);
+    const isOpenRef = useRef(isOpen);
+    useEffect(() => {
+        isOpenRef.current = isOpen;
+    }, [isOpen]);
+
+    // Indexing runs in the background after the upload; follow it until it is over. The panel
+    // stays mounted while closed, so a closed panel still hears how it ended. Polling stops by
+    // interval rather than `skip`, which would also drop the last result.
+    const [lastStatus, setLastStatus] = useState<string | undefined>(undefined);
+    const doneStatus = lastStatus === "completed" || lastStatus === "error";
+    const { data: task, error: statusError } = useGetDocumentProcessingStatusQuery(processingId!, {
+        skip: !processingId,
+        pollingInterval: doneStatus ? 0 : 4000,
+    });
+    const finished = task?.status === "completed" || task?.status === "error";
+    if (task?.status !== lastStatus) setLastStatus(task?.status); // adjust state during render, not in an effect
+    const statusLost = (statusError as { status?: unknown } | undefined)?.status === 404;
+    const indexing = Boolean(processingId) && !finished && !statusLost;
+
+    // Tell the visitor how indexing ended, once, if the panel is not open to show it
+    useEffect(() => {
+        if (!processingId || !task || !finished || announcedRef.current === processingId) return;
+        announcedRef.current = processingId;
+        if (isOpenRef.current) return;
+        if (task.status === "error") {
+            toast.error(task.error_message || "The documents could not be indexed.");
+        } else if (task.failed_count > 0) {
+            toast.warning(`${plural(task.processed_count, "document")} indexed. Could not index: ${task.failed_files.join(", ")}`);
+        } else {
+            toast.success(`${plural(task.processed_count, "document")} indexed and ready to search.`);
+        }
+    }, [processingId, task, finished]);
 
     const addFiles = (selectedFiles: File[]) => {
-        const invalidFiles = selectedFiles.filter(
-            (file) => !VALID_EXTENSIONS.some((ext) => file.name.toLowerCase().endsWith(ext))
-        );
+        const problems: string[] = [];
+        const accepted: File[] = [];
+        const known = new Set(files.map(fileKey));
 
-        if (invalidFiles.length > 0) {
-            toast.error(`Invalid file types: ${invalidFiles.map((f) => f.name).join(", ")}`);
-            return;
+        for (const file of selectedFiles) {
+            if (!VALID_EXTENSIONS.some((ext) => file.name.toLowerCase().endsWith(ext))) {
+                problems.push(`${file.name} is not a PDF, TXT, DOC, DOCX or MD file`);
+            } else if (file.size === 0) {
+                problems.push(`${file.name} is empty`);
+            } else if (file.size > MAX_FILE_BYTES) {
+                problems.push(`${file.name} is larger than 10 MB`);
+            } else if (!known.has(fileKey(file))) {
+                known.add(fileKey(file));
+                accepted.push(file);
+            }
         }
 
-        setFiles((prev) => [...prev, ...selectedFiles]);
+        if (problems.length > 0) toast.error(problems.join(". "));
+        if (accepted.length > 0) setFiles((prev) => [...prev, ...accepted]);
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,8 +113,8 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
         addFiles(Array.from(e.dataTransfer.files));
     };
 
-    const removeFile = (index: number) => {
-        setFiles((prev) => prev.filter((_, i) => i !== index));
+    const removeFile = (key: string) => {
+        setFiles((prev) => prev.filter((file) => fileKey(file) !== key));
     };
 
     const handleUpload = async () => {
@@ -68,7 +123,8 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
             return;
         }
 
-        if (visibility === "private" && !clientId) {
+        const trimmedClientId = clientId.trim();
+        if (visibility === "private" && !trimmedClientId) {
             toast.error("Client ID is required for private documents");
             return;
         }
@@ -79,60 +135,39 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
         }
         formData.append("visibility", visibility);
         formData.append("tab", category);
-        if (visibility === "private" && clientId) {
-            formData.append("client_id", clientId);
+        if (visibility === "private") {
+            formData.append("client_id", trimmedClientId);
         }
 
         try {
-            await uploadDocuments(formData).unwrap();
+            const result = await uploadDocuments(formData).unwrap();
             setUploadedCount(files.length);
-            setIsComplete(true);
-            // Only show toast once
-            if (!toastShownRef.current) {
-                toastShownRef.current = true;
-                toast.success(`${files.length} document${files.length > 1 ? "s" : ""} uploaded`);
-            }
+            setProcessingId(result.processing_id);
         } catch (err) {
             console.error("Upload failed:", err);
-            let errorMessage = "Failed to upload documents";
-            if (err instanceof Error) {
-                errorMessage = err.message;
-            } else if (
-                err &&
-                typeof err === "object" &&
-                "data" in err &&
-                err.data &&
-                typeof err.data === "object" &&
-                "detail" in err.data &&
-                typeof err.data.detail === "string"
-            ) {
-                errorMessage = err.data.detail;
-            }
-            toast.error(errorMessage);
+            toast.error(getErrorMessage(err, "The documents could not be uploaded. Please try again."));
         }
     };
 
     const handleReset = () => {
         setFiles([]);
         setClientId("");
-        setIsComplete(false);
+        setProcessingId(null);
+        setLastStatus(undefined);
         setUploadedCount(0);
-        toastShownRef.current = false;
     };
 
-    const handleClose = () => {
+    // Closing only hides the panel: the selection and any indexing in progress are kept
+    const handleDone = () => {
         handleReset();
         onClose();
     };
 
-    // Escape closes the panel
+    // Escape hides the panel
     useEffect(() => {
         if (!isOpen) return;
         const onKeyDown = (event: KeyboardEvent) => {
-            if (event.key === "Escape") {
-                handleReset();
-                onClose();
-            }
+            if (event.key === "Escape") onClose();
         };
         document.addEventListener("keydown", onKeyDown);
         return () => document.removeEventListener("keydown", onKeyDown);
@@ -145,7 +180,7 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
             <button
                 type="button"
                 className="fixed inset-0 z-40 cursor-default bg-black/30 animate-in fade-in duration-200"
-                onClick={handleClose}
+                onClick={onClose}
                 aria-label="Close panel"
                 tabIndex={-1}
             />
@@ -166,7 +201,7 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        onClick={handleClose}
+                        onClick={onClose}
                         aria-label="Close"
                         className="-mr-2 h-9 w-9 p-0 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
                     >
@@ -175,7 +210,7 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-6">
-                    {!isComplete ? (
+                    {!processingId ? (
                         <div className="space-y-6">
                             <div>
                                 <span className={labelClass}>Documents</span>
@@ -216,17 +251,15 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
                                 <div>
                                     <span className={labelClass}>Selected ({files.length})</span>
                                     <ul className="max-h-44 divide-y divide-slate-200 overflow-y-auto rounded-lg border border-slate-200">
-                                        {files.map((file, idx) => (
-                                            <li key={idx} className="flex items-center justify-between gap-3 px-3 py-2">
+                                        {files.map((file) => (
+                                            <li key={fileKey(file)} className="flex items-center justify-between gap-3 px-3 py-2">
                                                 <div className="min-w-0">
                                                     <p className="truncate text-sm text-slate-900">{file.name}</p>
-                                                    <p className="text-xs text-slate-500">
-                                                        {(file.size / 1024).toFixed(1)} KB
-                                                    </p>
+                                                    <p className="text-xs text-slate-500">{formatSize(file.size)}</p>
                                                 </div>
                                                 <button
                                                     type="button"
-                                                    onClick={() => removeFile(idx)}
+                                                    onClick={() => removeFile(fileKey(file))}
                                                     className="shrink-0 cursor-pointer text-xs font-medium text-slate-500 hover:text-red-600"
                                                     aria-label={`Remove ${file.name}`}
                                                 >
@@ -280,6 +313,7 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
                                         value={clientId}
                                         onChange={(e) => setClientId(e.target.value)}
                                         placeholder="Your client identifier"
+                                        maxLength={100}
                                     />
                                     <p className="mt-1.5 text-xs text-slate-500">Required to access private documents.</p>
                                 </div>
@@ -301,31 +335,111 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                         Uploading…
                                     </>
+                                ) : files.length > 1 ? (
+                                    `Upload ${files.length} documents`
                                 ) : (
-                                    `Upload ${files.length > 1 ? `${files.length} documents` : files.length === 1 ? "document" : "documents"}`
+                                    "Upload document"
                                 )}
                             </Button>
                         </div>
                     ) : (
-                        <div className="py-8">
-                            <h3 className="text-lg font-semibold text-slate-900">Upload complete</h3>
-                            <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                                {uploadedCount} document{uploadedCount > 1 ? "s" : ""} uploaded. They are being indexed
-                                and will be searchable shortly.
-                            </p>
+                        <div className="py-8" role="status" aria-live="polite">
+                            <UploadResult
+                                indexing={indexing}
+                                statusLost={statusLost}
+                                uploadedCount={uploadedCount}
+                                task={task}
+                            />
 
                             <div className="mt-8 flex flex-col gap-3">
-                                <Button onClick={handleReset} className="h-11">
-                                    Upload more documents
-                                </Button>
-                                <Button onClick={handleClose} variant="outline" className="h-11">
-                                    Done
+                                {!indexing && (
+                                    <Button onClick={handleReset} className="h-11">
+                                        Upload more documents
+                                    </Button>
+                                )}
+                                <Button onClick={indexing ? onClose : handleDone} variant="outline" className="h-11">
+                                    {indexing ? "Close" : "Done"}
                                 </Button>
                             </div>
                         </div>
                     )}
                 </div>
             </div>
+        </>
+    );
+}
+
+function UploadResult({
+    indexing,
+    statusLost,
+    uploadedCount,
+    task,
+}: {
+    readonly indexing: boolean;
+    readonly statusLost: boolean;
+    readonly uploadedCount: number;
+    readonly task: DocumentProcessingStatus | undefined;
+}) {
+    if (indexing) {
+        return (
+            <>
+                <h3 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+                    <Loader2 className="h-5 w-5 animate-spin text-primary" aria-hidden="true" />
+                    Indexing {plural(uploadedCount, "document")}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                    Each document is read and split into searchable passages. This can take a minute or two per
+                    document. You can close this panel; you will be told when it is done.
+                </p>
+            </>
+        );
+    }
+
+    if (statusLost || !task) {
+        return (
+            <>
+                <h3 className="text-lg font-semibold text-slate-900">Upload received</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                    The documents were uploaded, but their indexing status is no longer available.
+                </p>
+            </>
+        );
+    }
+
+    if (task.status === "error") {
+        return (
+            <>
+                <h3 className="text-lg font-semibold text-slate-900">Indexing failed</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                    {task.error_message || "The documents could not be indexed. Please try again."}
+                </p>
+            </>
+        );
+    }
+
+    return (
+        <>
+            <h3 className="text-lg font-semibold text-slate-900">
+                {task.failed_count > 0 ? "Indexing finished with problems" : "Documents ready"}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                {plural(task.processed_count, "document")} indexed and now searchable in the chat.
+            </p>
+            {task.failed_count > 0 && (
+                <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                    <p className="font-medium">Could not be indexed:</p>
+                    <ul className="mt-1 list-disc pl-5">
+                        {task.failed_files.map((name) => (
+                            <li key={name} className="break-all">
+                                {name}
+                            </li>
+                        ))}
+                    </ul>
+                    <p className="mt-2 text-amber-800">
+                        Check that these files contain readable text (not only scanned images) and try again.
+                    </p>
+                </div>
+            )}
         </>
     );
 }

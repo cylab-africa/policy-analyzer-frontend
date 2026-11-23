@@ -4,6 +4,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { API_BASE_URL } from "@/lib/api-base";
+import { getErrorMessage, messageForStatus } from "@/lib/errors";
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { ChatHeader } from "./ChatHeader";
@@ -83,21 +84,35 @@ const saveConversations = (conversations: Conversation[]): void => {
     }
 };
 
-// Load active conversation ID
+// Load active conversation ID. Storage can be blocked (private windows, strict settings): the
+// chat then works without remembering anything, instead of failing to load.
 const loadActiveConversationId = (): string | null => {
     if (typeof window === "undefined") return null;
-    return localStorage.getItem(ACTIVE_CONVERSATION_KEY);
+    try {
+        return localStorage.getItem(ACTIVE_CONVERSATION_KEY);
+    } catch {
+        return null;
+    }
 };
 
 // Save active conversation ID
 const saveActiveConversationId = (id: string | null): void => {
     if (typeof window === "undefined") return;
-    if (id) {
-        localStorage.setItem(ACTIVE_CONVERSATION_KEY, id);
-    } else {
-        localStorage.removeItem(ACTIVE_CONVERSATION_KEY);
+    try {
+        if (id) {
+            localStorage.setItem(ACTIVE_CONVERSATION_KEY, id);
+        } else {
+            localStorage.removeItem(ACTIVE_CONVERSATION_KEY);
+        }
+    } catch {
+        // Not remembered; nothing else depends on it
     }
 };
+
+/** An error whose message is already written for the visitor */
+class ChatError extends Error {}
+
+const ANSWER_FAILED = "The answer could not be completed. Please try again.";
 
 // Suggested questions
 const SUGGESTED_QUESTIONS: Record<ChatTab, string[]> = {
@@ -128,7 +143,7 @@ function ErrorAlert({
     return (
         <div role="alert" className="shrink-0 border-b border-red-200 bg-red-50 px-4 py-3">
             <div className="flex items-center gap-3 text-red-800">
-                <span className="flex-1 text-sm">Connection error: {streamError}</span>
+                <span className="flex-1 text-sm">{streamError}</span>
                 <Button variant="outline" size="sm" onClick={() => setStreamError(null)} className="shrink-0">
                     Dismiss
                 </Button>
@@ -390,74 +405,46 @@ export default function ChatPage() {
                     tab: activeTab,
                     enable_web_search: true,
                     search_tool: "tavily",
-                    max_docs_per_query: 2,
-                    max_total_docs: 4,
-                    enable_country_filter: false,
                 }),
                 signal: controller.signal,
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                // The backend explains most refusals in a JSON `detail`; a proxy may send HTML
+                const body = await response.json().catch(() => null);
+                throw new ChatError(messageForStatus(response.status, body, ANSWER_FAILED));
             }
 
             if (!response.body) {
-                throw new Error("Response body is null");
+                throw new ChatError(ANSWER_FAILED);
             }
 
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let streamCompleted = false;
 
+            // Each event is a JSON object: {type: "metadata"}, {type: "content", content} or
+            // {type: "error", message} when the answer fails after it has started.
             const applyData = (data: string) => {
+                let event: { type?: string; content?: unknown; message?: unknown };
                 try {
-                    let parsedData;
-                    try {
-                        parsedData = JSON.parse(data);
-                    } catch {
-                        const jsonString = data
-                            .replaceAll("'", '"')
-                            .replaceAll("True", "true")
-                            .replaceAll("False", "false")
-                            .replaceAll("None", "null");
-                        parsedData = JSON.parse(jsonString);
-                    }
+                    event = JSON.parse(data);
+                } catch {
+                    console.warn("Ignoring a malformed stream event:", data);
+                    return;
+                }
 
-                    if (parsedData.type === "content" || parsedData.content) {
-                        let contentText = "";
+                if (event.type === "error") {
+                    throw new ChatError(typeof event.message === "string" && event.message ? event.message : ANSWER_FAILED);
+                }
 
-                        if (parsedData.content?.content) {
-                            contentText = parsedData.content.content;
-                        } else if (parsedData.content) {
-                            contentText = parsedData.content;
-                        } else if (parsedData.text) {
-                            contentText = parsedData.text;
-                        } else if (typeof parsedData === "string") {
-                            contentText = parsedData;
-                        }
-
-                        if (contentText?.trim()) {
-                            hasReceivedContent = true;
-                            accumulated += contentText;
-
-                            updateMessageInConversation(conversationId!, newMessageId, {
-                                bot: accumulated,
-                                isStreaming: true,
-                            });
-                        }
-                    }
-                } catch (parseError) {
-                    console.error("Error parsing SSE data:", parseError, "Raw data:", data);
-
-                    if (data?.trim() && !data.includes("{") && !data.includes("[DONE]")) {
-                        hasReceivedContent = true;
-                        accumulated += data;
-
-                        updateMessageInConversation(conversationId!, newMessageId, {
-                            bot: accumulated,
-                            isStreaming: true,
-                        });
-                    }
+                if (event.type === "content" && typeof event.content === "string" && event.content) {
+                    hasReceivedContent = true;
+                    accumulated += event.content;
+                    updateMessageInConversation(conversationId!, newMessageId, {
+                        bot: accumulated,
+                        isStreaming: true,
+                    });
                 }
             };
 
@@ -493,21 +480,19 @@ export default function ChatPage() {
 
                 if (streamCompleted) break;
             }
-        } catch (error: any) {
-            if (error.name === "AbortError") {
+        } catch (error: unknown) {
+            if (error instanceof DOMException && error.name === "AbortError") {
                 return;
             }
 
             console.error("Stream error:", error);
             failed = true;
-            setStreamError(error.message);
-
-            const errorMessage = hasReceivedContent
-                ? accumulated
-                : "I apologize, but I encountered an issue processing your request. Please try rephrasing your question or try again.";
+            const message = error instanceof ChatError ? error.message : getErrorMessage(error, ANSWER_FAILED);
+            setStreamError(message);
 
             updateMessageInConversation(conversationId!, newMessageId, {
-                bot: errorMessage,
+                // Keep any part of the answer that arrived; otherwise say what went wrong
+                bot: hasReceivedContent ? accumulated : message,
                 error: !hasReceivedContent,
                 isStreaming: false,
             });
@@ -521,9 +506,7 @@ export default function ChatPage() {
             // A question the user cancelled is not an error: keep what arrived, or nothing
             const cancelled = controller.signal.aborted;
             updateMessageInConversation(conversationId!, newMessageId, {
-                bot:
-                    accumulated ||
-                    (cancelled ? "" : "I apologize, but I didn't receive a proper response. Please try again."),
+                ...(failed ? {} : { bot: accumulated || (cancelled ? "" : "No answer was returned. Please try again.") }),
                 isStreaming: false,
                 error: !accumulated && !cancelled,
                 // Only a complete answer gets a time; a cancelled or broken one would show a misleading stamp
@@ -690,7 +673,7 @@ export default function ChatPage() {
             </div>
 
             {/* Batch Analysis Panel - Slide over from right */}
-            <BatchAnalysisPanel isOpen={showBatchPanel} onClose={() => setShowBatchPanel(false)} />
+            <BatchAnalysisPanel isOpen={showBatchPanel} onClose={() => setShowBatchPanel(false)} onOpen={openBatchPanel} />
         </>
     );
 }

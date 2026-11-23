@@ -476,7 +476,8 @@ export default function ResourcesPage() {
                                     </div>
                                 )}
 
-                                {!isLoading && filteredResources.length === 0 && (
+                                {/* After a failed load the banner above explains it; "no match" would mislead */}
+                                {!isLoading && !hasError && filteredResources.length === 0 && (
                                     <div className="py-16 text-center">
                                         <p className="mb-4 text-slate-600">No sources match your filters.</p>
                                         <Button variant="outline" onClick={clearFilters}>
