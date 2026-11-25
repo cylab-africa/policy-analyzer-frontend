@@ -367,7 +367,7 @@ docker run -d --name policy-analyzer-frontend -p 3000:3000 \
 The chat answers from a collection of documents, and the collection starts empty. To add your first laws or policies:
 
 1. **Open the chat.** On the website, open **Chat** and choose **Upload documents** in the sidebar.
-2. **Choose the files and the topic.** Select PDF, Word, text or Markdown files, then choose whether they concern Data Protection or Digital ID.
+2. **Choose the files and the topic.** Select up to 10 PDF, Word (.docx), text or Markdown files, then choose whether they concern Data Protection or Digital ID.
 3. **Upload and wait.** Processing runs in the background. The AI model reads each document to record its country, title and description, then splits it into passages that can be searched. The panel shows when this has finished and names any file that could not be read, and you can close it meanwhile. Then ask a question in the chat.
 
 ### Connect an AI gateway
@@ -396,7 +396,7 @@ To stop the backend and keep your data, run `docker compose --profile local-db d
 
 ### Before you put it online
 
-The website keeps the API key on its own server and never sends it to visitors' browsers. The key is still one shared password with no user accounts, so anyone who can reach the backend directly with it can use every route. Keep the backend reachable only from the website's server, and keep the admin and document-upload routes off the public internet. Before going live, also set `REDIS_PASSWORD`, leave `ENABLE_API_DOCS` off, and set `TRUSTED_PROXY_IPS` to the website server's address so that each visitor gets their own rate limit. If you use the MongoDB container from this guide, give it a login by setting `MONGO_ROOT_USERNAME` and `MONGO_ROOT_PASSWORD` in the backend's `.env` before the first start, and back the database up regularly, because nothing does it for you. Browsers need no CORS access, because the website calls the backend from its server. The backend README lists everything to check before exposing an instance publicly.
+The website keeps the API key on its own server and never sends it to visitors' browsers. The key is still one shared password with no user accounts, so anyone who can reach the backend directly with it can ask questions and upload documents. Operator actions, such as the admin routes and changing the country data, also need a separate `ADMIN_API_KEY` that the website never holds, and stay switched off until you set one. Keep the backend reachable only from the website's server, and keep the admin and document-upload routes off the public internet. Before going live, also set `REDIS_PASSWORD`, leave `ENABLE_API_DOCS` off, and set `TRUSTED_PROXY_IPS` to the website server's address so that each visitor gets their own rate limit. If you use the MongoDB container from this guide, give it a login by setting `MONGO_ROOT_USERNAME` and `MONGO_ROOT_PASSWORD` in the backend's `.env` before the first start, and back the database up regularly, because nothing does it for you. Browsers need no CORS access, because the website calls the backend from its server. The backend README lists everything to check before exposing an instance publicly.
 
 ## Fork and extend
 
