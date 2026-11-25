@@ -33,6 +33,12 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 # Set at run time (docker run -e ...): BACKEND_API_URL, BACKEND_API_KEY
 
+# The running app needs only Node. Remove the package managers that come with the base image: they
+# are never used here, and the packages bundled inside npm are what image scans report.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+    /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack \
+    /usr/local/bin/yarn /usr/local/bin/yarnpkg /opt/yarn-*
+
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nextjs -u 1001
@@ -52,4 +58,5 @@ USER nextjs
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+# What "npm start" runs, without needing npm
+CMD ["node", "node_modules/next/dist/bin/next", "start"]

@@ -38,10 +38,11 @@ export interface Message {
 const STORAGE_KEY = "policyAnalyzer_conversations";
 const ACTIVE_CONVERSATION_KEY = "policyAnalyzer_activeConversation";
 
-// Generate unique ID
-const generateId = (): string => {
-    return `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-};
+// Generate unique ID. A conversation's ID is also its session ID on the backend, which loads the
+// earlier messages by it, so it must be impossible to guess: 128 random bits from the secure
+// generator. (crypto.randomUUID would do, but only exists on HTTPS and localhost.)
+const generateId = (): string =>
+    Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) => byte.toString(16).padStart(2, "0")).join("");
 
 // Generate conversation title from first message. The sidebar fades long titles at its edge,
 // so this only caps the length and adds no ellipsis.

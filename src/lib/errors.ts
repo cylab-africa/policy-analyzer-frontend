@@ -9,7 +9,7 @@
 
 const STATUS_MESSAGES: Record<number, string> = {
     413: "The file is too large to upload.",
-    429: "Too many requests in a short time. Please wait a minute and try again.",
+    429: "Too many requests in a short time. Please wait a while and try again.",
     502: "The service is unavailable right now. Please try again in a few minutes.",
     503: "The service is unavailable right now. Please try again in a few minutes.",
     504: "The request took too long. Please try again.",

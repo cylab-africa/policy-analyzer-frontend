@@ -181,7 +181,7 @@ docker run -d --name policy-analyzer-frontend -p 3000:3000 \\
                     </Step>
                     <Step n={2} title="Choose the files and the topic">
                         <P>
-                            Select PDF, Word, text or Markdown files, then choose whether they concern Data Protection
+                            Select up to 10 PDF, Word (.docx), text or Markdown files, then choose whether they concern Data Protection
                             or Digital ID.
                         </P>
                     </Step>
@@ -282,8 +282,10 @@ docker run -d --name policy-analyzer-frontend -p 3000:3000 \\
                 <P>
                     The website keeps the API key on its own server and never sends it to visitors’ browsers. The key is
                     still one shared password with no user accounts, so anyone who can reach the backend directly with
-                    it can use every route. Keep the backend reachable only from the website’s server, and keep the
-                    admin and document-upload routes off the public internet. Before going live, also set{" "}
+                    it can ask questions and upload documents. Operator actions, such as the admin routes and changing
+                    the country data, also need a separate <Code>ADMIN_API_KEY</Code> that the website never holds, and
+                    stay switched off until you set one. Keep the backend reachable only from the website’s server, and
+                    keep the admin and document-upload routes off the public internet. Before going live, also set{" "}
                     <Code>REDIS_PASSWORD</Code>, leave <Code>ENABLE_API_DOCS</Code> off, and set{" "}
                     <Code>TRUSTED_PROXY_IPS</Code> to the website server’s address so that each visitor gets their own
                     rate limit. If you use the MongoDB container from this guide, give it a login by setting{" "}

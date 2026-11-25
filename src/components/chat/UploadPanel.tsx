@@ -15,11 +15,14 @@ interface UploadPanelProps {
     readonly onClose: () => void;
 }
 
-const VALID_EXTENSIONS = [".pdf", ".txt", ".doc", ".docx", ".md"];
+// The types the backend can read. The old Word format (.doc) is not one of them.
+const VALID_EXTENSIONS = [".pdf", ".txt", ".docx", ".md"];
 
 // The backend's default limit (MAX_FILE_SIZE). The server has the final say; checking here saves
 // uploading a file only to have it refused.
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
+// The backend refuses more than this in one upload
+const MAX_FILES = 10;
 
 const labelClass = "mb-2 block text-sm font-medium text-slate-900";
 
@@ -84,7 +87,7 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
 
         for (const file of selectedFiles) {
             if (!VALID_EXTENSIONS.some((ext) => file.name.toLowerCase().endsWith(ext))) {
-                problems.push(`${file.name} is not a PDF, TXT, DOC, DOCX or MD file`);
+                problems.push(`${file.name} is not a PDF, TXT, DOCX or MD file`);
             } else if (file.size === 0) {
                 problems.push(`${file.name} is empty`);
             } else if (file.size > MAX_FILE_BYTES) {
@@ -93,6 +96,12 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
                 known.add(fileKey(file));
                 accepted.push(file);
             }
+        }
+
+        const room = MAX_FILES - files.length;
+        if (accepted.length > room) {
+            problems.push(`You can upload up to ${MAX_FILES} files at a time`);
+            accepted.splice(room);
         }
 
         if (problems.length > 0) toast.error(problems.join(". "));
@@ -243,7 +252,7 @@ export function UploadPanel({ isOpen, onClose }: UploadPanelProps) {
                                     <p className="text-sm font-medium text-slate-900">
                                         Drop files here or click to browse
                                     </p>
-                                    <p className="mt-1 text-xs text-slate-500">PDF, TXT, DOC, DOCX or MD, up to 10 MB each</p>
+                                    <p className="mt-1 text-xs text-slate-500">Up to 10 files (PDF, TXT, DOCX or MD), 10 MB each</p>
                                 </div>
                             </div>
 
