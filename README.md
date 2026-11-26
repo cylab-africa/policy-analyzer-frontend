@@ -19,8 +19,8 @@ The web app for the Policy Analyzer, a tool for exploring and comparing data pro
 
 ## Contents
 
-- [Quick start](#quick-start)
-- [Running with Docker](#running-with-docker)
+- [Architecture](#architecture)
+- [Setup](#setup)
 - [Configuration](#configuration)
 - [Deployment](#deployment)
 - [Project structure](#project-structure)
@@ -30,30 +30,44 @@ The web app for the Policy Analyzer, a tool for exploring and comparing data pro
 
 ---
 
-## Quick start
+## Architecture
 
-The frontend needs a running backend for the maps, Sources and chat. Set up the [backend](https://github.com/cylab-africa/policy-analyzer-backend#quick-start-with-docker) first; it takes about 10 minutes with Docker. Then:
+```mermaid
+flowchart LR
+    browser["Browser"] --> web["Next.js server<br/>pages and API proxy"] -->|"adds API key"| backend["Backend API"]
+```
 
-**You need:** [Node.js](https://nodejs.org/) 22 or newer (22 LTS is fine) and Git.
+- **The API key stays on the server.** The browser calls the website's `/api/...` route, which forwards only the backend routes the website uses.
+- **The chat's conversation list is saved in the browser** (`localStorage`). The backend also records questions and answers.
+- **Map shapes ship with the app** (`src/data/`). Country records come from the backend.
+- **No analytics or tracking** is included.
+
+---
+
+## Setup
+
+**Requirements:** Git, a running [backend](https://github.com/cylab-africa/policy-analyzer-backend#setup), and either [Node.js](https://nodejs.org/) 22 or newer, or Docker.
 
 ```bash
-# 1. Clone and install
 git clone https://github.com/cylab-africa/policy-analyzer-frontend.git
 cd policy-analyzer-frontend
-npm install
-
-# 2. Configure
-cp .env.example .env          # Windows PowerShell: Copy-Item .env.example .env
+cp .env.example .env          # PowerShell: Copy-Item .env.example .env
 ```
 
-In `.env`, set `BACKEND_API_KEY` to the same value as `API_KEY` in the backend's `.env`. The default `BACKEND_API_URL` (`http://localhost:8000/api`) matches a local backend.
+In `.env`, set `BACKEND_API_KEY` to the same value as the backend's `API_KEY`. Then set `BACKEND_API_URL` for the option you choose:
+
+| How you run the frontend | `BACKEND_API_URL` | Website address |
+| --- | --- | --- |
+| [Local development](#local-development) | `http://localhost:8000/api` (default) | <http://localhost:3000> |
+| [Docker Compose](#docker-compose), with the backend in Compose on the same machine | `http://pdp-backend:8000/api` | <http://localhost:3001> |
+| [Docker](#docker) | The backend's address as the container sees it, ending in `/api` | <http://localhost:3000> |
+
+### Local development
 
 ```bash
-# 3. Start the development server
+npm install
 npm run dev
 ```
-
-Open <http://localhost:3000>.
 
 | Command | Description |
 | --- | --- |
@@ -62,22 +76,22 @@ Open <http://localhost:3000>.
 | `npm start` | Serve the production build on port 3000 |
 | `npm run lint` | ESLint |
 
----
+### Docker Compose
 
-## Running with Docker
+Start the backend first: its Compose project creates the `pdp-backend-network` network that the frontend joins.
 
-The backend URL and API key are read when the container starts, so nothing secret is built into the image.
+```bash
+docker compose up -d --build
+```
+
+### Docker
 
 ```bash
 docker build -t policy-analyzer-frontend .
-
-docker run -d --name policy-analyzer-frontend -p 3000:3000 \
-  -e BACKEND_API_URL=http://host.docker.internal:8000/api \
-  -e BACKEND_API_KEY=your-backend-api-key \
-  policy-analyzer-frontend
+docker run -d --name policy-analyzer-frontend -p 3000:3000 --env-file .env policy-analyzer-frontend
 ```
 
-The backend is called by the website's server (the container), not by the visitor's browser. Inside a container, `localhost` is the container itself, so use `host.docker.internal` for a backend on the same machine, a container name on a shared Docker network, or the backend's URL for a deployment.
+Inside a container, `localhost` means the container itself. For a backend on the same machine, use `http://host.docker.internal:8000/api`. On Linux, also add `--add-host=host.docker.internal:host-gateway` to `docker run`; the backend must be reachable on that address.
 
 ---
 
@@ -94,15 +108,13 @@ The proxy only forwards the backend routes the website uses, but it does not ide
 
 **Rate limits per visitor.** The proxy passes each visitor's address to the backend in an `X-Client-IP` header (taken from the last `X-Forwarded-For` entry, so run the site behind a reverse proxy that sets it). The backend believes that header only for requests from an address listed in its `TRUSTED_PROXY_IPS` setting, so set that to this server's address as the backend sees it. Until you do, every visitor shares one rate limit.
 
-The app includes no analytics or tracking, and sends no data anywhere except to your backend.
-
 ---
 
 ## Deployment
 
 The Docker image is a multi-stage build that runs as a non-root user (`nextjs`, UID 1001) and serves on port `3000`. It runs on any container platform (a VM with Docker, Kubernetes, ECS, Cloud Run and others):
 
-1. Build the image (see [Running with Docker](#running-with-docker)). No secrets are needed at build time.
+1. Build the image (see [Docker](#docker)). No secrets are needed at build time.
 2. Push it to your container registry.
 3. Run it with `BACKEND_API_URL` and `BACKEND_API_KEY` set, behind HTTPS, and route traffic to port 3000.
 4. Make sure the backend accepts requests from the frontend's server. CORS no longer matters, because the browser only talks to the website itself.
@@ -144,7 +156,7 @@ Without Docker: `npm ci && npm run build && npm start`, with `BACKEND_API_URL` a
 
 ```
 ├── src/
-│   ├── app/           # Pages (App Router): /, /chat, /resources, /docs
+│   ├── app/           # Pages (App Router): /, /chat, /sources, /docs, and the API proxy
 │   ├── components/    # UI components by feature (home, chat, resources, docs, layout, ui)
 │   ├── data/          # Static map geometry and data
 │   ├── lib/           # Utilities
@@ -169,7 +181,7 @@ The `/docs` page is built from components in [`src/components/docs/`](src/compon
 
 | Problem | Fix |
 | --- | --- |
-| Maps and Sources are empty | Check the backend is running and its reference data is loaded (backend README, Quick start step 5) |
+| Maps and Sources are empty | Check the backend is running and its reference data is loaded ([backend setup](https://github.com/cylab-africa/policy-analyzer-backend#setup)) |
 | `401`/`403` errors in the browser console | `BACKEND_API_KEY` doesn't match the backend's `API_KEY` |
 | Changed `.env` but nothing happened | Restart `npm run dev`. For Docker, `.env` is ignored: pass the values with `-e` when you start the container ([Updating a deployed frontend](#updating-a-deployed-frontend)) |
 | `502 Bad Gateway` after replacing the container | The new container is not on the proxy's Docker network or has a different name. Start it with the same `--name` and `--network` as before, then restart the proxy |
