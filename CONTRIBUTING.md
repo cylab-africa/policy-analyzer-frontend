@@ -17,7 +17,7 @@ For anything larger than a small fix, please open an issue first to discuss the 
 
 ## Setting up
 
-Follow the [Quick start](README.md#quick-start) in the README. The app needs the [backend](https://github.com/cylab-africa/policy-analyzer-backend) running for the maps, Sources and chat.
+Follow [Setup](README.md#setup) in the README. The app needs the [backend](https://github.com/cylab-africa/policy-analyzer-backend) running for the maps, Sources and chat.
 
 ## Making a change
 
