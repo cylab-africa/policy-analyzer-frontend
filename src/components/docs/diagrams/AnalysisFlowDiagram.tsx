@@ -2,30 +2,30 @@ import { Fragment } from "react";
 import { Figure } from "../primitives";
 
 const steps = [
-    { title: "Question", text: "Your question, with the last few messages for context.", optional: false },
+    { title: "Question", text: "Your question, with recent messages as context.", optional: false },
     {
-        title: "Check and frame",
-        text: "Follow-ups are made complete. Off-topic questions are declined.",
+        title: "Query processing",
+        text: "Query rewriting, scope guardrail, and detection of countries and intent.",
         optional: false,
     },
     {
-        title: "Find evidence",
-        text: "Passages closest in meaning, for the topic and the countries named.",
+        title: "Hybrid retrieval",
+        text: "Semantic and keyword search with metadata filters, merged by rank fusion.",
         optional: false,
     },
     {
-        title: "Web results",
-        text: "Added only when little is found or the question is about recent news.",
+        title: "Web search",
+        text: "Augments the context only when little is found or the question asks for recent news.",
         optional: true,
     },
-    { title: "Write the answer", text: "From the evidence, saying when information is missing.", optional: false },
+    { title: "Grounded generation", text: "An LLM writes the answer from the retrieved context.", optional: false },
 ];
 
 // The steps sit in a row when the figure is wide enough to read them (the container query measures the figure,
 // not the window, because the contents list takes part of the width), and stack below that.
 export function AnalysisFlowDiagram() {
     return (
-        <Figure caption="Figure 2. From question to answer. The dashed step happens only when needed.">
+        <Figure caption="Figure 2. The RAG pipeline, from question to answer. The dashed step happens only when needed.">
             <div className="@container">
                 <ol className="flex flex-col @[44rem]:flex-row">
                     {steps.map((step, index) => (

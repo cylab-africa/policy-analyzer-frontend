@@ -17,10 +17,10 @@ export function InsightsSection() {
                     the timeline.
                 </LI>
                 <LI>
-                    <B>Document-based findings.</B> An answer is a new synthesis of the evidence found for that
-                    question, not a stored conclusion. Rewording a question can bring up different passages and so
-                    produce a different answer. Asking questions in a fixed form, as batch analysis does, makes results
-                    easier to compare.
+                    <B>Document-based findings.</B> Each answer is generated from the chunks retrieved for that
+                    question; it is not a stored conclusion. LLM output is not fully predictable, so the same question
+                    can be answered differently, and rewording it can retrieve different chunks. Asking questions in a
+                    fixed form, as batch analysis does, makes results easier to compare.
                 </LI>
             </UL>
         </DocSection>

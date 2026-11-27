@@ -154,7 +154,7 @@ export function ChatInput({
                         <p>
                             Verify important points against the original law.
                             <Link
-                                href="/docs#analysis-method"
+                                href="/docs#retrieval-augmented-generation-rag"
                                 className="underline underline-offset-2 hover:text-slate-700 ml-1"
                             >
                                 How answers are produced

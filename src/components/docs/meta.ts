@@ -13,7 +13,7 @@ export const docMeta = {
         },
     },
     features: { title: "What the Policy Analyzer does", parts: {} },
-    built: { title: "How it is built", parts: {} },
+    built: { title: "How it is built", parts: { pipeline: "AI pipeline at a glance" } },
     collection: {
         title: "How information was collected",
         parts: {
@@ -29,14 +29,22 @@ export const docMeta = {
             digitalId: "Digital identity indicators",
         },
     },
-    extraction: { title: "Information extraction", parts: {} },
-    analysis: {
-        title: "Analysis method",
+    extraction: {
+        title: "Document ingestion and indexing",
         parts: {
-            framing: "Framing the question",
-            locating: "Locating the evidence",
-            supplementary: "Supplementary evidence",
-            writing: "Writing the answer",
+            parsing: "Document parsing",
+            metadata: "Metadata extraction",
+            chunking: "Chunking strategy",
+            indexing: "Embedding and indexing",
+        },
+    },
+    analysis: {
+        title: "Retrieval-augmented generation (RAG)",
+        parts: {
+            framing: "Query processing",
+            locating: "Hybrid retrieval",
+            supplementary: "Web search augmentation",
+            writing: "Grounded generation",
             batch: "Analysing many questions at once",
         },
     },

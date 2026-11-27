@@ -49,16 +49,16 @@ export function ArchitectureDiagram() {
                     <div>
                         <GroupLabel>Data stores</GroupLabel>
                         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-1">
-                            <Box title="Qdrant">Document passages, searched by meaning.</Box>
+                            <Box title="Qdrant">Vector database: chunk embeddings and keyword vectors.</Box>
                             <Box title="MongoDB">Country data, document tasks, batch jobs.</Box>
-                            <Box title="SQLite">Conversation history.</Box>
-                            <Box title="Redis">Cache of repeated questions.</Box>
+                            <Box title="SQLite">Chat history.</Box>
+                            <Box title="Redis">Semantic cache of search results.</Box>
                         </div>
                     </div>
                     <div>
                         <GroupLabel>Outside services</GroupLabel>
                         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-1">
-                            <Box title="AI provider">Language and embedding models.</Box>
+                            <Box title="AI model provider">Large language model and embedding model.</Box>
                             <Box title="Web search, email, S3" optional>
                                 Recent news, batch notifications, file storage.
                             </Box>
