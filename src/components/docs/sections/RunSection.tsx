@@ -98,7 +98,7 @@ MONGODB_CONNECTION_STRING=mongodb://mongo:27017`}</CodeBlock>
                         <CodeBlock label="Terminal">{`docker compose --profile local-db up -d --build`}</CodeBlock>
                         <P>
                             This builds the backend and starts four containers: the backend, MongoDB, Qdrant (which
-                            stores the document passages) and Redis (a cache). The first run takes several minutes. When
+                            stores the document chunks) and Redis (a cache). The first run takes several minutes. When
                             the command returns, check that all four are running:
                         </P>
                         <CodeBlock label="Terminal">{`docker compose ps`}</CodeBlock>
@@ -187,10 +187,10 @@ docker run -d --name policy-analyzer-frontend -p 3000:3000 \\
                     </Step>
                     <Step n={3} title="Upload and wait">
                         <P>
-                            Processing runs in the background. The AI model reads each document to record its country,
-                            title and description, then splits it into passages that can be searched. The panel shows
-                            when this has finished and names any file that could not be read, and you can close it
-                            meanwhile. Then ask a question in the chat.
+                            Processing runs in the background. Each file is parsed, an LLM extracts its country, title
+                            and description, and the text is chunked, embedded and indexed. The panel shows when this has
+                            finished and names any file that could not be read, and you can close it meanwhile. Then ask
+                            a question in the chat.
                         </P>
                     </Step>
                 </Steps>
@@ -198,10 +198,11 @@ docker run -d --name policy-analyzer-frontend -p 3000:3000 \\
 
             <DocSubsection title={parts.gateway}>
                 <P>
-                    The analysis uses two AI services: a language model, which rewrites questions and writes answers,
-                    and an embedding model, which turns passages and questions into numbers so that similar ones can be
-                    matched. Both are reached through an OpenAI-compatible API. The backend can call OpenAI directly, or
-                    a gateway that you run, such as LiteLLM, which forwards requests to other providers.
+                    The tool uses two kinds of AI model: a large language model (LLM), which processes questions and
+                    documents and generates answers, and an embedding model, which turns chunks and questions into
+                    vectors so that similar meanings can be matched. Both are reached through an OpenAI-compatible API.
+                    The backend can call OpenAI directly, or a gateway that you run, such as LiteLLM, which forwards
+                    requests to other providers.
                 </P>
                 <UL>
                     <LI>
@@ -216,12 +217,13 @@ docker run -d --name policy-analyzer-frontend -p 3000:3000 \\
                         offers.
                     </LI>
                     <LI>
-                        <B>Changing the embedding model.</B> Passages indexed with one embedding model cannot be
+                        <B>Changing the embedding model.</B> Chunks indexed with one embedding model cannot be
                         searched reliably with another. Upload the documents again after you change it.
                     </LI>
                     <LI>
                         <B>Web search (optional).</B> Set <Code>TAVILY_API_KEY</Code> to enable the web search described
-                        under <A href={anchor(docMeta.analysis.parts.supplementary)}>Supplementary evidence</A>.
+                        under{" "}
+                        <A href={anchor(docMeta.analysis.parts.supplementary)}>{docMeta.analysis.parts.supplementary}</A>.
                     </LI>
                 </UL>
                 <P>

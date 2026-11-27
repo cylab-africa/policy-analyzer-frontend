@@ -14,8 +14,9 @@ export interface DocsGroup {
     headings: DocsHeading[];
 }
 
-// Highlight the last heading that has reached the band under the site header, and the last one at the bottom of
-// the page, where short final sections could never get that far up
+// Highlight the last heading that has scrolled up to where a link to it places it. At the bottom of the page, short
+// final sections can never get that far up, so highlight the section that was linked to if it is in view, and
+// otherwise the last one.
 function useActiveHeading(groups: DocsGroup[]) {
     const [activeId, setActiveId] = useState(groups[0]?.headings[0]?.id);
 
@@ -25,13 +26,22 @@ function useActiveHeading(groups: DocsGroup[]) {
 
         const update = () => {
             frame = 0;
-            const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
             let current = ids[0];
             for (const id of ids) {
                 const element = document.getElementById(id);
-                if (element && element.getBoundingClientRect().top <= 120) current = id;
+                if (!element) continue;
+                // Where a link to this heading leaves it: its scroll margin, which differs between screen sizes
+                const linkedTop = Number.parseFloat(getComputedStyle(element).scrollMarginTop) || 0;
+                if (element.getBoundingClientRect().top <= linkedTop + 8) current = id;
             }
-            setActiveId(atBottom ? ids[ids.length - 1] : current);
+
+            const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+            if (atBottom) {
+                const linked = decodeURIComponent(window.location.hash.slice(1));
+                const top = ids.includes(linked) ? document.getElementById(linked)?.getBoundingClientRect().top : undefined;
+                current = top !== undefined && top >= 0 && top < window.innerHeight ? linked : ids[ids.length - 1];
+            }
+            setActiveId(current);
         };
         const onScroll = () => {
             if (!frame) frame = requestAnimationFrame(update);
@@ -40,10 +50,12 @@ function useActiveHeading(groups: DocsGroup[]) {
         onScroll();
         window.addEventListener("scroll", onScroll, { passive: true });
         window.addEventListener("resize", onScroll);
+        window.addEventListener("hashchange", onScroll);
         return () => {
             cancelAnimationFrame(frame);
             window.removeEventListener("scroll", onScroll);
             window.removeEventListener("resize", onScroll);
+            window.removeEventListener("hashchange", onScroll);
         };
     }, [groups]);
 

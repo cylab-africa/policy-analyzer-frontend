@@ -19,12 +19,13 @@ export function FeaturesSection() {
                 </LI>
                 <LI>
                     <B>Chat.</B> Write your question in plain language, in data protection or digital identity mode.
-                    Answers are written from a collection of policy documents, with web results added when the
-                    collection has too little. Your conversations are saved in your own browser.
+                    Answers are generated with retrieval-augmented generation (RAG) from a collection of policy
+                    documents, with web results added when needed. Your list of conversations is saved in your own
+                    browser, and the backend server also keeps your questions and answers in its chat history.
                 </LI>
                 <LI>
-                    <B>Document upload.</B> Add a law or policy document, and choose its topic area, so that it can be
-                    drawn on in answers.
+                    <B>Document upload.</B> Add a law or policy document, and choose its topic area. It is then ingested
+                    and indexed so that it can be retrieved for answers.
                 </LI>
                 <LI>
                     <B>Batch analysis.</B> Run up to 100 questions at once from a spreadsheet and receive the answers as

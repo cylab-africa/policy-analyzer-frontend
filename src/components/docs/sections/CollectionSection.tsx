@@ -33,8 +33,8 @@ export function CollectionSection() {
                     Document-level analysis draws on a collection of policy documents, including laws, regulations and
                     frameworks, organised by topic area. The collection is made of the texts of national legal
                     instruments, such as data protection laws, added through the project’s upload tools. The Sources
-                    library is a reading list for checking and further study. The document collection is what the
-                    analysis actually searches.
+                    library is a reading list for checking and further study. The document collection is the knowledge base
+                    that retrieval actually searches.
                 </P>
                 <P>
                     The collection is not a complete register of African law. It holds the documents that have been
